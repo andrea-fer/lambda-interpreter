@@ -1,5 +1,11 @@
 <script>
 import CodeEditor from "./components/CodeEditor.vue";
+import antlr4 from "antlr4";
+const { CommonTokenStream, InputStream } = antlr4;
+import lambdaLexer from "../interpreter/lambdaLexer.js";
+import lambdaParser from "../interpreter/lambdaParser.js";
+import myLambdaVisitor from "../interpreter/myLambdaVisitor.js";
+import { parseStringStyle } from "@vue/shared";
 
 export default {
     components: {
@@ -19,12 +25,27 @@ export default {
             });
             view.dispatch(transaction);
         },
+        printSolution(event) {
+            console.log("Hello");
+            var input = view.state.doc.text[0];
+            //var input = "Lx.Ly.x\n";
+            console.log(input);
+            var chars = new InputStream(input, true);
+            var lexer = new lambdaLexer(chars);
+            var tokens = new CommonTokenStream(lexer);
+            var parser = new lambdaParser(tokens);
+
+            parser.buildParseTrees = true;
+            var tree = parser.file_();
+            console.log(new myLambdaVisitor().visit(tree));
+        },
     },
 };
 </script>
 
 <template>
     <CodeEditor @keydown="printLambda"></CodeEditor>
+    <button @click="printSolution()">click me</button>
 </template>
 
 <style scoped></style>
