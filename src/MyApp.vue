@@ -26,8 +26,9 @@ export default {
             view.dispatch(transaction);
         },
         printSolution(event) {
-            console.log("Hello");
-            var input = view.state.doc.text[0];
+            //console.log("Hello");
+            var lastLine = view.state.doc.lines;
+            var input = view.state.doc.text[lastLine - 2];
             //var input = "Lx.Ly.x\n";
             console.log(input);
             var chars = new InputStream(input, true);
@@ -36,7 +37,7 @@ export default {
             var parser = new lambdaParser(tokens);
 
             parser.buildParseTrees = true;
-            var tree = parser.file_();
+            var tree = parser.term();
             console.log(new myLambdaVisitor().visit(tree));
         },
     },

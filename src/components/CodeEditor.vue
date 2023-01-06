@@ -9,7 +9,7 @@ import { javascript } from "../../node_modules/@codemirror/lang-javascript";
 export default {
     mounted() {
         window.view = new EditorView({
-            doc: "Lx.Ly.x\n",
+            doc: "(Lx. Ly. x) a\n",
             extensions: [basicSetup, javascript()],
             parent: document.querySelector("#editor"),
         });

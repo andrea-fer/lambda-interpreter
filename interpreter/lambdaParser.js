@@ -4,14 +4,17 @@ import antlr4 from 'antlr4';
 import lambdaListener from './lambdaListener.js';
 import lambdaVisitor from './lambdaVisitor.js';
 
-const serializedATN = [4,1,6,31,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,
-1,0,1,0,1,0,1,1,1,1,1,1,3,1,17,8,1,1,2,1,2,1,2,1,2,1,2,1,3,1,3,1,3,1,3,1,
-3,1,4,1,4,1,4,0,0,5,0,2,4,6,8,0,0,27,0,10,1,0,0,0,2,16,1,0,0,0,4,18,1,0,
-0,0,6,23,1,0,0,0,8,28,1,0,0,0,10,11,3,2,1,0,11,12,5,0,0,1,12,1,1,0,0,0,13,
-17,5,5,0,0,14,17,3,4,2,0,15,17,3,6,3,0,16,13,1,0,0,0,16,14,1,0,0,0,16,15,
-1,0,0,0,17,3,1,0,0,0,18,19,5,1,0,0,19,20,5,5,0,0,20,21,5,2,0,0,21,22,3,8,
-4,0,22,5,1,0,0,0,23,24,5,3,0,0,24,25,3,2,1,0,25,26,3,2,1,0,26,27,5,4,0,0,
-27,7,1,0,0,0,28,29,3,2,1,0,29,9,1,0,0,0,1,16];
+const serializedATN = [4,1,6,37,2,0,7,0,2,1,7,1,2,2,7,2,1,0,1,0,1,0,3,0,
+10,8,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,1,20,8,1,1,2,1,2,1,2,1,2,1,2,1,
+2,3,2,28,8,2,1,2,1,2,5,2,32,8,2,10,2,12,2,35,9,2,1,2,0,1,4,3,0,2,4,0,0,38,
+0,9,1,0,0,0,2,19,1,0,0,0,4,27,1,0,0,0,6,10,5,5,0,0,7,10,3,2,1,0,8,10,3,4,
+2,0,9,6,1,0,0,0,9,7,1,0,0,0,9,8,1,0,0,0,10,1,1,0,0,0,11,12,5,1,0,0,12,13,
+5,5,0,0,13,14,5,2,0,0,14,20,3,0,0,0,15,16,5,3,0,0,16,17,3,2,1,0,17,18,5,
+4,0,0,18,20,1,0,0,0,19,11,1,0,0,0,19,15,1,0,0,0,20,3,1,0,0,0,21,22,6,2,-1,
+0,22,23,5,5,0,0,23,28,3,0,0,0,24,25,3,2,1,0,25,26,3,0,0,0,26,28,1,0,0,0,
+27,21,1,0,0,0,27,24,1,0,0,0,28,33,1,0,0,0,29,30,10,1,0,0,30,32,3,0,0,0,31,
+29,1,0,0,0,32,35,1,0,0,0,33,31,1,0,0,0,33,34,1,0,0,0,34,5,1,0,0,0,35,33,
+1,0,0,0,4,9,19,27,33];
 
 
 const atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
@@ -25,8 +28,7 @@ export default class lambdaParser extends antlr4.Parser {
     static grammarFileName = "java-escape";
     static literalNames = [ null, "'L'", "'.'", "'('", "')'" ];
     static symbolicNames = [ null, null, null, null, null, "VARIABLE", "WS" ];
-    static ruleNames = [ "file_", "expression", "function_", "application", 
-                         "scope" ];
+    static ruleNames = [ "term", "abstraction", "application" ];
 
     constructor(input) {
         super(input);
@@ -40,17 +42,54 @@ export default class lambdaParser extends antlr4.Parser {
         return atn;
     }
 
+    sempred(localctx, ruleIndex, predIndex) {
+    	switch(ruleIndex) {
+    	case 2:
+    	    		return this.application_sempred(localctx, predIndex);
+        default:
+            throw "No predicate with index:" + ruleIndex;
+       }
+    }
+
+    application_sempred(localctx, predIndex) {
+    	switch(predIndex) {
+    		case 0:
+    			return this.precpred(this._ctx, 1);
+    		default:
+    			throw "No predicate with index:" + predIndex;
+    	}
+    };
 
 
-	file_() {
-	    let localctx = new File_Context(this, this._ctx, this.state);
-	    this.enterRule(localctx, 0, lambdaParser.RULE_file_);
+
+
+	term() {
+	    let localctx = new TermContext(this, this._ctx, this.state);
+	    this.enterRule(localctx, 0, lambdaParser.RULE_term);
 	    try {
-	        this.enterOuterAlt(localctx, 1);
-	        this.state = 10;
-	        this.expression();
-	        this.state = 11;
-	        this.match(lambdaParser.EOF);
+	        this.state = 9;
+	        this._errHandler.sync(this);
+	        var la_ = this._interp.adaptivePredict(this._input,0,this._ctx);
+	        switch(la_) {
+	        case 1:
+	            this.enterOuterAlt(localctx, 1);
+	            this.state = 6;
+	            this.match(lambdaParser.VARIABLE);
+	            break;
+
+	        case 2:
+	            this.enterOuterAlt(localctx, 2);
+	            this.state = 7;
+	            this.abstraction();
+	            break;
+
+	        case 3:
+	            this.enterOuterAlt(localctx, 3);
+	            this.state = 8;
+	            this.application(0);
+	            break;
+
+	        }
 	    } catch (re) {
 	    	if(re instanceof antlr4.error.RecognitionException) {
 		        localctx.exception = re;
@@ -67,27 +106,32 @@ export default class lambdaParser extends antlr4.Parser {
 
 
 
-	expression() {
-	    let localctx = new ExpressionContext(this, this._ctx, this.state);
-	    this.enterRule(localctx, 2, lambdaParser.RULE_expression);
+	abstraction() {
+	    let localctx = new AbstractionContext(this, this._ctx, this.state);
+	    this.enterRule(localctx, 2, lambdaParser.RULE_abstraction);
 	    try {
-	        this.state = 16;
+	        this.state = 19;
 	        this._errHandler.sync(this);
 	        switch(this._input.LA(1)) {
-	        case 5:
-	            this.enterOuterAlt(localctx, 1);
-	            this.state = 13;
-	            this.match(lambdaParser.VARIABLE);
-	            break;
 	        case 1:
-	            this.enterOuterAlt(localctx, 2);
+	            this.enterOuterAlt(localctx, 1);
+	            this.state = 11;
+	            this.match(lambdaParser.T__0);
+	            this.state = 12;
+	            this.match(lambdaParser.VARIABLE);
+	            this.state = 13;
+	            this.match(lambdaParser.T__1);
 	            this.state = 14;
-	            this.function_();
+	            this.term();
 	            break;
 	        case 3:
-	            this.enterOuterAlt(localctx, 3);
+	            this.enterOuterAlt(localctx, 2);
 	            this.state = 15;
-	            this.application();
+	            this.match(lambdaParser.T__2);
+	            this.state = 16;
+	            this.abstraction();
+	            this.state = 17;
+	            this.match(lambdaParser.T__3);
 	            break;
 	        default:
 	            throw new antlr4.error.NoViableAltException(this);
@@ -107,82 +151,71 @@ export default class lambdaParser extends antlr4.Parser {
 	}
 
 
-
-	function_() {
-	    let localctx = new Function_Context(this, this._ctx, this.state);
-	    this.enterRule(localctx, 4, lambdaParser.RULE_function_);
+	application(_p) {
+		if(_p===undefined) {
+		    _p = 0;
+		}
+	    const _parentctx = this._ctx;
+	    const _parentState = this.state;
+	    let localctx = new ApplicationContext(this, this._ctx, _parentState);
+	    let _prevctx = localctx;
+	    const _startState = 4;
+	    this.enterRecursionRule(localctx, 4, lambdaParser.RULE_application, _p);
 	    try {
 	        this.enterOuterAlt(localctx, 1);
-	        this.state = 18;
-	        this.match(lambdaParser.T__0);
-	        this.state = 19;
-	        this.match(lambdaParser.VARIABLE);
-	        this.state = 20;
-	        this.match(lambdaParser.T__1);
-	        this.state = 21;
-	        this.scope();
-	    } catch (re) {
-	    	if(re instanceof antlr4.error.RecognitionException) {
-		        localctx.exception = re;
-		        this._errHandler.reportError(this, re);
-		        this._errHandler.recover(this, re);
+	        this.state = 27;
+	        this._errHandler.sync(this);
+	        switch(this._input.LA(1)) {
+	        case 5:
+	            this.state = 22;
+	            this.match(lambdaParser.VARIABLE);
+	            this.state = 23;
+	            this.term();
+	            break;
+	        case 1:
+	        case 3:
+	            this.state = 24;
+	            this.abstraction();
+	            this.state = 25;
+	            this.term();
+	            break;
+	        default:
+	            throw new antlr4.error.NoViableAltException(this);
+	        }
+	        this._ctx.stop = this._input.LT(-1);
+	        this.state = 33;
+	        this._errHandler.sync(this);
+	        var _alt = this._interp.adaptivePredict(this._input,3,this._ctx)
+	        while(_alt!=2 && _alt!=antlr4.atn.ATN.INVALID_ALT_NUMBER) {
+	            if(_alt===1) {
+	                if(this._parseListeners!==null) {
+	                    this.triggerExitRuleEvent();
+	                }
+	                _prevctx = localctx;
+	                localctx = new ApplicationContext(this, _parentctx, _parentState);
+	                this.pushNewRecursionContext(localctx, _startState, lambdaParser.RULE_application);
+	                this.state = 29;
+	                if (!( this.precpred(this._ctx, 1))) {
+	                    throw new antlr4.error.FailedPredicateException(this, "this.precpred(this._ctx, 1)");
+	                }
+	                this.state = 30;
+	                this.term(); 
+	            }
+	            this.state = 35;
+	            this._errHandler.sync(this);
+	            _alt = this._interp.adaptivePredict(this._input,3,this._ctx);
+	        }
+
+	    } catch( error) {
+	        if(error instanceof antlr4.error.RecognitionException) {
+		        localctx.exception = error;
+		        this._errHandler.reportError(this, error);
+		        this._errHandler.recover(this, error);
 		    } else {
-		    	throw re;
+		    	throw error;
 		    }
 	    } finally {
-	        this.exitRule();
-	    }
-	    return localctx;
-	}
-
-
-
-	application() {
-	    let localctx = new ApplicationContext(this, this._ctx, this.state);
-	    this.enterRule(localctx, 6, lambdaParser.RULE_application);
-	    try {
-	        this.enterOuterAlt(localctx, 1);
-	        this.state = 23;
-	        this.match(lambdaParser.T__2);
-	        this.state = 24;
-	        this.expression();
-	        this.state = 25;
-	        this.expression();
-	        this.state = 26;
-	        this.match(lambdaParser.T__3);
-	    } catch (re) {
-	    	if(re instanceof antlr4.error.RecognitionException) {
-		        localctx.exception = re;
-		        this._errHandler.reportError(this, re);
-		        this._errHandler.recover(this, re);
-		    } else {
-		    	throw re;
-		    }
-	    } finally {
-	        this.exitRule();
-	    }
-	    return localctx;
-	}
-
-
-
-	scope() {
-	    let localctx = new ScopeContext(this, this._ctx, this.state);
-	    this.enterRule(localctx, 8, lambdaParser.RULE_scope);
-	    try {
-	        this.enterOuterAlt(localctx, 1);
-	        this.state = 28;
-	        this.expression();
-	    } catch (re) {
-	    	if(re instanceof antlr4.error.RecognitionException) {
-		        localctx.exception = re;
-		        this._errHandler.reportError(this, re);
-		        this._errHandler.recover(this, re);
-		    } else {
-		    	throw re;
-		    }
-	    } finally {
-	        this.exitRule();
+	        this.unrollRecursionContexts(_parentctx)
 	    }
 	    return localctx;
 	}
@@ -198,13 +231,11 @@ lambdaParser.T__3 = 4;
 lambdaParser.VARIABLE = 5;
 lambdaParser.WS = 6;
 
-lambdaParser.RULE_file_ = 0;
-lambdaParser.RULE_expression = 1;
-lambdaParser.RULE_function_ = 2;
-lambdaParser.RULE_application = 3;
-lambdaParser.RULE_scope = 4;
+lambdaParser.RULE_term = 0;
+lambdaParser.RULE_abstraction = 1;
+lambdaParser.RULE_application = 2;
 
-class File_Context extends antlr4.ParserRuleContext {
+class TermContext extends antlr4.ParserRuleContext {
 
     constructor(parser, parent, invokingState) {
         if(parent===undefined) {
@@ -215,62 +246,15 @@ class File_Context extends antlr4.ParserRuleContext {
         }
         super(parent, invokingState);
         this.parser = parser;
-        this.ruleIndex = lambdaParser.RULE_file_;
-    }
-
-	expression() {
-	    return this.getTypedRuleContext(ExpressionContext,0);
-	};
-
-	EOF() {
-	    return this.getToken(lambdaParser.EOF, 0);
-	};
-
-	enterRule(listener) {
-	    if(listener instanceof lambdaListener ) {
-	        listener.enterFile_(this);
-		}
-	}
-
-	exitRule(listener) {
-	    if(listener instanceof lambdaListener ) {
-	        listener.exitFile_(this);
-		}
-	}
-
-	accept(visitor) {
-	    if ( visitor instanceof lambdaVisitor ) {
-	        return visitor.visitFile_(this);
-	    } else {
-	        return visitor.visitChildren(this);
-	    }
-	}
-
-
-}
-
-
-
-class ExpressionContext extends antlr4.ParserRuleContext {
-
-    constructor(parser, parent, invokingState) {
-        if(parent===undefined) {
-            parent = null;
-        }
-        if(invokingState===undefined || invokingState===null) {
-            invokingState = -1;
-        }
-        super(parent, invokingState);
-        this.parser = parser;
-        this.ruleIndex = lambdaParser.RULE_expression;
+        this.ruleIndex = lambdaParser.RULE_term;
     }
 
 	VARIABLE() {
 	    return this.getToken(lambdaParser.VARIABLE, 0);
 	};
 
-	function_() {
-	    return this.getTypedRuleContext(Function_Context,0);
+	abstraction() {
+	    return this.getTypedRuleContext(AbstractionContext,0);
 	};
 
 	application() {
@@ -279,19 +263,19 @@ class ExpressionContext extends antlr4.ParserRuleContext {
 
 	enterRule(listener) {
 	    if(listener instanceof lambdaListener ) {
-	        listener.enterExpression(this);
+	        listener.enterTerm(this);
 		}
 	}
 
 	exitRule(listener) {
 	    if(listener instanceof lambdaListener ) {
-	        listener.exitExpression(this);
+	        listener.exitTerm(this);
 		}
 	}
 
 	accept(visitor) {
 	    if ( visitor instanceof lambdaVisitor ) {
-	        return visitor.visitExpression(this);
+	        return visitor.visitTerm(this);
 	    } else {
 	        return visitor.visitChildren(this);
 	    }
@@ -302,7 +286,7 @@ class ExpressionContext extends antlr4.ParserRuleContext {
 
 
 
-class Function_Context extends antlr4.ParserRuleContext {
+class AbstractionContext extends antlr4.ParserRuleContext {
 
     constructor(parser, parent, invokingState) {
         if(parent===undefined) {
@@ -313,32 +297,36 @@ class Function_Context extends antlr4.ParserRuleContext {
         }
         super(parent, invokingState);
         this.parser = parser;
-        this.ruleIndex = lambdaParser.RULE_function_;
+        this.ruleIndex = lambdaParser.RULE_abstraction;
     }
 
 	VARIABLE() {
 	    return this.getToken(lambdaParser.VARIABLE, 0);
 	};
 
-	scope() {
-	    return this.getTypedRuleContext(ScopeContext,0);
+	term() {
+	    return this.getTypedRuleContext(TermContext,0);
+	};
+
+	abstraction() {
+	    return this.getTypedRuleContext(AbstractionContext,0);
 	};
 
 	enterRule(listener) {
 	    if(listener instanceof lambdaListener ) {
-	        listener.enterFunction_(this);
+	        listener.enterAbstraction(this);
 		}
 	}
 
 	exitRule(listener) {
 	    if(listener instanceof lambdaListener ) {
-	        listener.exitFunction_(this);
+	        listener.exitAbstraction(this);
 		}
 	}
 
 	accept(visitor) {
 	    if ( visitor instanceof lambdaVisitor ) {
-	        return visitor.visitFunction_(this);
+	        return visitor.visitAbstraction(this);
 	    } else {
 	        return visitor.visitChildren(this);
 	    }
@@ -363,15 +351,20 @@ class ApplicationContext extends antlr4.ParserRuleContext {
         this.ruleIndex = lambdaParser.RULE_application;
     }
 
-	expression = function(i) {
-	    if(i===undefined) {
-	        i = null;
-	    }
-	    if(i===null) {
-	        return this.getTypedRuleContexts(ExpressionContext);
-	    } else {
-	        return this.getTypedRuleContext(ExpressionContext,i);
-	    }
+	VARIABLE() {
+	    return this.getToken(lambdaParser.VARIABLE, 0);
+	};
+
+	term() {
+	    return this.getTypedRuleContext(TermContext,0);
+	};
+
+	abstraction() {
+	    return this.getTypedRuleContext(AbstractionContext,0);
+	};
+
+	application() {
+	    return this.getTypedRuleContext(ApplicationContext,0);
 	};
 
 	enterRule(listener) {
@@ -399,52 +392,7 @@ class ApplicationContext extends antlr4.ParserRuleContext {
 
 
 
-class ScopeContext extends antlr4.ParserRuleContext {
 
-    constructor(parser, parent, invokingState) {
-        if(parent===undefined) {
-            parent = null;
-        }
-        if(invokingState===undefined || invokingState===null) {
-            invokingState = -1;
-        }
-        super(parent, invokingState);
-        this.parser = parser;
-        this.ruleIndex = lambdaParser.RULE_scope;
-    }
-
-	expression() {
-	    return this.getTypedRuleContext(ExpressionContext,0);
-	};
-
-	enterRule(listener) {
-	    if(listener instanceof lambdaListener ) {
-	        listener.enterScope(this);
-		}
-	}
-
-	exitRule(listener) {
-	    if(listener instanceof lambdaListener ) {
-	        listener.exitScope(this);
-		}
-	}
-
-	accept(visitor) {
-	    if ( visitor instanceof lambdaVisitor ) {
-	        return visitor.visitScope(this);
-	    } else {
-	        return visitor.visitChildren(this);
-	    }
-	}
-
-
-}
-
-
-
-
-lambdaParser.File_Context = File_Context; 
-lambdaParser.ExpressionContext = ExpressionContext; 
-lambdaParser.Function_Context = Function_Context; 
+lambdaParser.TermContext = TermContext; 
+lambdaParser.AbstractionContext = AbstractionContext; 
 lambdaParser.ApplicationContext = ApplicationContext; 
-lambdaParser.ScopeContext = ScopeContext; 
