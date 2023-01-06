@@ -1,9 +1,9 @@
-import { keymap } from "@codemirror/view";
 import lambdaVisitor from "./lambdaVisitor.js";
 import lambdaParser from "./lambdaParser.js";
 
 export default class myLambdaVisitor extends lambdaVisitor {
-    // Visit a parse tree produced by lambdaParser#term.
+
+	// Visit a parse tree produced by lambdaParser#term.
 	visitTerm(ctx) {
         if(ctx.VARIABLE()) {
             console.log("Output: ", ctx.VARIABLE().getText());
@@ -26,7 +26,7 @@ export default class myLambdaVisitor extends lambdaVisitor {
             /* if(bodyScope instanceof lambdaParser.AbstractionContext) {
                 //console.log("Child parameter: ", this.visit(ctx.getChild(3).getChild(0))[0]);
                 let b = bodyScope.getChild(3).getText();
-                console.error("Child body: ", b);
+                console.info("Child body: ", b);
                 bodyScope = ctx.getChild(3).getChild(0);
             } */
         }
@@ -40,7 +40,7 @@ export default class myLambdaVisitor extends lambdaVisitor {
 
         let p, b = this.visitAbstraction(ctx.getChild(0).getChild(1));
         console.log("APP Child parameter: ", p);
-        console.error("APP Child body: ", b);
+        console.info("APP Child body: ", b);
 	    return this.visitChildren(ctx);
 	}
 }
