@@ -18,29 +18,51 @@ export default class myLambdaVisitor extends lambdaVisitor {
         if(ctx.VARIABLE()) {
             console.log("In Abstraction: ", ctx.getChild(1).getText());
             param = ctx.VARIABLE().getText();
-            console.info("Abstraction parameter: ", param);
-            body = ctx.getChild(3).getText();
-            console.info("Abstraction body: ", body);
+            //body = ctx.getChild(3).getText();
+            //console.info("Abstraction body: ", body);
             //console.info(ctx.getChild(3).getChild(0).constructor.name);
+            console.info("Abstraction parameter: ", param);
             let bodyScope = ctx.getChild(3).getChild(0);
-            /* if(bodyScope instanceof lambdaParser.AbstractionContext) {
+            if(bodyScope instanceof lambdaParser.AbstractionContext) {
                 //console.log("Child parameter: ", this.visit(ctx.getChild(3).getChild(0))[0]);
                 let b = bodyScope.getChild(3).getText();
                 console.info("Child body: ", b);
-                bodyScope = ctx.getChild(3).getChild(0);
-            } */
+                bodyScope = bodyScope.getChild(3).getChild(0);
+            }
+            body = bodyScope.getText();
         }
-        return this.visitChildren(ctx), param, body;
+        return [param, body];
 	}
 
 	// Visit a parse tree produced by lambdaParser#application.
 	visitApplication(ctx) {
         console.log("In application");
-        console.log("My child: ", ctx.getChild(0).getText(), ctx.getChild(1).getText());
+        let applicationLeftSide = ctx.getChild(0).getText();
+        let applicationRightSide = ctx.getChild(1).getText();
+        console.log("My child: ", applicationLeftSide, applicationRightSide);
 
-        let p, b = this.visitAbstraction(ctx.getChild(0).getChild(1));
-        console.log("APP Child parameter: ", p);
-        console.info("APP Child body: ", b);
+        let [param, body] = this.visitAbstraction(ctx.getChild(0).getChild(1));
+        console.log("APP Child parameter: ", param);
+        console.info("APP Child body: ", body);
+
+        let value = ctx.getChild(1).getText();
+        console.log("APP Value: ", value);
+
+        body = body.replaceAll(param, value);
+        console.log("NEW BODY ", body);
+
+        let abstractionTerm = ctx.getChild(0).getChild(1).getChild(3).getChild(0);
+        let newAbstraction = "";
+        if(abstractionTerm instanceof lambdaParser.AbstractionContext) {
+            let b = abstractionTerm.getChild(3).getText();
+            console.info(">>APP Child body: ", b);
+            console.log("> APP abstractionTerm = ", abstractionTerm.getText());
+            newAbstraction = abstractionTerm.getText().replace(new RegExp(b + "$"), body);
+            abstractionTerm = abstractionTerm.getChild(3).getChild(0).getText();
+        }
+        console.log("newAbstraction: ", newAbstraction);
+
+
 	    return this.visitChildren(ctx);
 	}
 }
