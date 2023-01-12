@@ -38,7 +38,7 @@ export default {
 
             parser.buildParseTrees = true;
             var tree = parser.term();
-            console.log(new myLambdaVisitor().visit(tree));
+            console.log("Solution = ", new myLambdaVisitor().visit(tree));
         },
     },
 };

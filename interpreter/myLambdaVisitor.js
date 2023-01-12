@@ -1,3 +1,6 @@
+import antlr4 from "antlr4";
+const { CommonTokenStream, InputStream } = antlr4;
+import lambdaLexer from "./lambdaLexer.js";
 import lambdaVisitor from "./lambdaVisitor.js";
 import lambdaParser from "./lambdaParser.js";
 
@@ -6,9 +9,9 @@ export default class myLambdaVisitor extends lambdaVisitor {
 
 	// Visit a parse tree produced by lambdaParser#term.
 	visitTerm(ctx) {
-        if(ctx.VARIABLE()) {
+        /* if(ctx.VARIABLE()) {
             console.log("Output: ", ctx.VARIABLE().getText());
-        }
+        } */
 	    return this.visitChildren(ctx);
 	}
 
@@ -33,11 +36,13 @@ export default class myLambdaVisitor extends lambdaVisitor {
             body = bodyScope.getText();
         }
         return [param, body];
+
+        //return this.visitChildren(ctx);
 	}
 
 	// Visit a parse tree produced by lambdaParser#application.
 	visitApplication(ctx) {
-        console.log("In application");
+        /* console.log("In application");
         let applicationLeftSide = ctx.getChild(0);
         let applicationRightSide = ctx.getChild(1);
         console.log("My LEFT child: ", applicationLeftSide.getText());
@@ -72,9 +77,45 @@ export default class myLambdaVisitor extends lambdaVisitor {
             newAbstraction = abstractionTerm.getText().replace(new RegExp(b + "$"), body);
             abstractionTerm = abstractionTerm.getChild(3).getChild(0).getText();
         }
-        console.log("newAbstraction: ", newAbstraction);
+        console.log("newAbstraction: ", newAbstraction); */
 
+        console.log("In Child: ", ctx.getChild(0).getText(), "type = ", ctx.getChild(0).constructor.name);
+        let leftChild = this.visit(ctx.getChild(0));
+        let myChild = ctx.getChild(0);
+        if(leftChild instanceof lambdaParser.TermContext) {
+            console.log("CTX: ", ctx.getText(), "+ TREE = ", leftChild.toStringTree());
+            /* console.log("TREE 0 = ", leftChild.getChild(0).getChild(0).getText());
+            console.log("TREE 1 = ", leftChild.getChild(0).getChild(1).getText());
+            console.log("TREE 2 = ", leftChild.getChild(0).getChild(2).getText()); */
+            myChild = leftChild.getChild(0);
+        } else {
+            console.log("CTX: ", ctx.getText(), "+ return value = ", leftChild);
+        }
+        let [param, body] = [null, null];
+        if(myChild instanceof lambdaParser.AbstractionContext) {
+            let abstraction = myChild;
+            if(abstraction.getChild(0).getText() == '(') {
+                abstraction = abstraction.getChild(1);
+            }
+            [param, body] = this.visitAbstraction(abstraction);
+            console.log("Param: ", param, ", Body: ", body);
+            let value = ctx.getChild(1).getText();
+            body = body.replaceAll(param, value);
+            let tree = this.makeTree(body);
+            console.log(">TREE: ", tree.getChild(0).constructor.name);
+            return tree;
+        }
 
-	    return this.visitChildren(ctx);
+	    return "2";
 	}
+
+    makeTree(input) {
+        var chars = new InputStream(input, true);
+        var lexer = new lambdaLexer(chars);
+        var tokens = new CommonTokenStream(lexer);
+        var parser = new lambdaParser(tokens);
+
+        parser.buildParseTrees = true;
+        return parser.term();
+    }
 }
