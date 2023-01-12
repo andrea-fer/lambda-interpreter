@@ -13,6 +13,7 @@ application
     : VARIABLE term
     | abstraction term
     | application term
+    | '(' application ')'
     ;
 
 VARIABLE

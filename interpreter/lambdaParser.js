@@ -4,17 +4,18 @@ import antlr4 from 'antlr4';
 import lambdaListener from './lambdaListener.js';
 import lambdaVisitor from './lambdaVisitor.js';
 
-const serializedATN = [4,1,6,37,2,0,7,0,2,1,7,1,2,2,7,2,1,0,1,0,1,0,3,0,
+const serializedATN = [4,1,6,41,2,0,7,0,2,1,7,1,2,2,7,2,1,0,1,0,1,0,3,0,
 10,8,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,1,20,8,1,1,2,1,2,1,2,1,2,1,2,1,
-2,3,2,28,8,2,1,2,1,2,5,2,32,8,2,10,2,12,2,35,9,2,1,2,0,1,4,3,0,2,4,0,0,38,
-0,9,1,0,0,0,2,19,1,0,0,0,4,27,1,0,0,0,6,10,5,5,0,0,7,10,3,2,1,0,8,10,3,4,
-2,0,9,6,1,0,0,0,9,7,1,0,0,0,9,8,1,0,0,0,10,1,1,0,0,0,11,12,5,1,0,0,12,13,
-5,5,0,0,13,14,5,2,0,0,14,20,3,0,0,0,15,16,5,3,0,0,16,17,3,2,1,0,17,18,5,
-4,0,0,18,20,1,0,0,0,19,11,1,0,0,0,19,15,1,0,0,0,20,3,1,0,0,0,21,22,6,2,-1,
-0,22,23,5,5,0,0,23,28,3,0,0,0,24,25,3,2,1,0,25,26,3,0,0,0,26,28,1,0,0,0,
-27,21,1,0,0,0,27,24,1,0,0,0,28,33,1,0,0,0,29,30,10,1,0,0,30,32,3,0,0,0,31,
-29,1,0,0,0,32,35,1,0,0,0,33,31,1,0,0,0,33,34,1,0,0,0,34,5,1,0,0,0,35,33,
-1,0,0,0,4,9,19,27,33];
+2,1,2,1,2,1,2,1,2,3,2,32,8,2,1,2,1,2,5,2,36,8,2,10,2,12,2,39,9,2,1,2,0,1,
+4,3,0,2,4,0,0,43,0,9,1,0,0,0,2,19,1,0,0,0,4,31,1,0,0,0,6,10,5,5,0,0,7,10,
+3,2,1,0,8,10,3,4,2,0,9,6,1,0,0,0,9,7,1,0,0,0,9,8,1,0,0,0,10,1,1,0,0,0,11,
+12,5,1,0,0,12,13,5,5,0,0,13,14,5,2,0,0,14,20,3,0,0,0,15,16,5,3,0,0,16,17,
+3,2,1,0,17,18,5,4,0,0,18,20,1,0,0,0,19,11,1,0,0,0,19,15,1,0,0,0,20,3,1,0,
+0,0,21,22,6,2,-1,0,22,23,5,5,0,0,23,32,3,0,0,0,24,25,3,2,1,0,25,26,3,0,0,
+0,26,32,1,0,0,0,27,28,5,3,0,0,28,29,3,4,2,0,29,30,5,4,0,0,30,32,1,0,0,0,
+31,21,1,0,0,0,31,24,1,0,0,0,31,27,1,0,0,0,32,37,1,0,0,0,33,34,10,2,0,0,34,
+36,3,0,0,0,35,33,1,0,0,0,36,39,1,0,0,0,37,35,1,0,0,0,37,38,1,0,0,0,38,5,
+1,0,0,0,39,37,1,0,0,0,4,9,19,31,37];
 
 
 const atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
@@ -54,7 +55,7 @@ export default class lambdaParser extends antlr4.Parser {
     application_sempred(localctx, predIndex) {
     	switch(predIndex) {
     		case 0:
-    			return this.precpred(this._ctx, 1);
+    			return this.precpred(this._ctx, 2);
     		default:
     			throw "No predicate with index:" + predIndex;
     	}
@@ -163,27 +164,36 @@ export default class lambdaParser extends antlr4.Parser {
 	    this.enterRecursionRule(localctx, 4, lambdaParser.RULE_application, _p);
 	    try {
 	        this.enterOuterAlt(localctx, 1);
-	        this.state = 27;
+	        this.state = 31;
 	        this._errHandler.sync(this);
-	        switch(this._input.LA(1)) {
-	        case 5:
+	        var la_ = this._interp.adaptivePredict(this._input,2,this._ctx);
+	        switch(la_) {
+	        case 1:
 	            this.state = 22;
 	            this.match(lambdaParser.VARIABLE);
 	            this.state = 23;
 	            this.term();
 	            break;
-	        case 1:
-	        case 3:
+
+	        case 2:
 	            this.state = 24;
 	            this.abstraction();
 	            this.state = 25;
 	            this.term();
 	            break;
-	        default:
-	            throw new antlr4.error.NoViableAltException(this);
+
+	        case 3:
+	            this.state = 27;
+	            this.match(lambdaParser.T__2);
+	            this.state = 28;
+	            this.application(0);
+	            this.state = 29;
+	            this.match(lambdaParser.T__3);
+	            break;
+
 	        }
 	        this._ctx.stop = this._input.LT(-1);
-	        this.state = 33;
+	        this.state = 37;
 	        this._errHandler.sync(this);
 	        var _alt = this._interp.adaptivePredict(this._input,3,this._ctx)
 	        while(_alt!=2 && _alt!=antlr4.atn.ATN.INVALID_ALT_NUMBER) {
@@ -194,14 +204,14 @@ export default class lambdaParser extends antlr4.Parser {
 	                _prevctx = localctx;
 	                localctx = new ApplicationContext(this, _parentctx, _parentState);
 	                this.pushNewRecursionContext(localctx, _startState, lambdaParser.RULE_application);
-	                this.state = 29;
-	                if (!( this.precpred(this._ctx, 1))) {
-	                    throw new antlr4.error.FailedPredicateException(this, "this.precpred(this._ctx, 1)");
+	                this.state = 33;
+	                if (!( this.precpred(this._ctx, 2))) {
+	                    throw new antlr4.error.FailedPredicateException(this, "this.precpred(this._ctx, 2)");
 	                }
-	                this.state = 30;
+	                this.state = 34;
 	                this.term(); 
 	            }
-	            this.state = 35;
+	            this.state = 39;
 	            this._errHandler.sync(this);
 	            _alt = this._interp.adaptivePredict(this._input,3,this._ctx);
 	        }

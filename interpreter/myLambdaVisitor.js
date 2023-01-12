@@ -1,6 +1,7 @@
 import lambdaVisitor from "./lambdaVisitor.js";
 import lambdaParser from "./lambdaParser.js";
 
+// Tree Traverser Class
 export default class myLambdaVisitor extends lambdaVisitor {
 
 	// Visit a parse tree produced by lambdaParser#term.
@@ -37,11 +38,22 @@ export default class myLambdaVisitor extends lambdaVisitor {
 	// Visit a parse tree produced by lambdaParser#application.
 	visitApplication(ctx) {
         console.log("In application");
-        let applicationLeftSide = ctx.getChild(0).getText();
-        let applicationRightSide = ctx.getChild(1).getText();
-        console.log("My child: ", applicationLeftSide, applicationRightSide);
+        let applicationLeftSide = ctx.getChild(0);
+        let applicationRightSide = ctx.getChild(1);
+        console.log("My LEFT child: ", applicationLeftSide.getText());
+        console.log("My RIGHT child: ", applicationRightSide.getText());
 
-        let [param, body] = this.visitAbstraction(ctx.getChild(0).getChild(1));
+        if(applicationLeftSide instanceof lambdaParser.ApplicationContext) {
+            if(applicationLeftSide.getChild(0) == '(') {
+                applicationRightSide = applicationLeftSide.getChild(1).getChild(1);
+                applicationLeftSide = applicationLeftSide.getChild(1).getChild(0);
+            }
+        }
+
+        console.log(">My LEFT child: ", applicationLeftSide.getText());
+        console.log(">My RIGHT child: ", applicationRightSide.getText());
+
+        let [param, body] = this.visitAbstraction(applicationLeftSide.getChild(1));
         console.log("APP Child parameter: ", param);
         console.info("APP Child body: ", body);
 
@@ -51,7 +63,7 @@ export default class myLambdaVisitor extends lambdaVisitor {
         body = body.replaceAll(param, value);
         console.log("NEW BODY ", body);
 
-        let abstractionTerm = ctx.getChild(0).getChild(1).getChild(3).getChild(0);
+        let abstractionTerm = applicationLeftSide.getChild(1).getChild(3).getChild(0);
         let newAbstraction = "";
         if(abstractionTerm instanceof lambdaParser.AbstractionContext) {
             let b = abstractionTerm.getChild(3).getText();
