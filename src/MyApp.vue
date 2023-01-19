@@ -45,8 +45,39 @@ export default {
 </script>
 
 <template>
-    <CodeEditor @keydown="printLambda"></CodeEditor>
-    <button @click="printSolution()">click me</button>
+    <header>
+        <h1>LAMBDA CALCULUS INTERPRETER</h1>
+    </header>
+        <div id="layout">
+            <div id="help"></div>
+            <div id="code_editor">
+                <div class="btn_heading_row">
+                    <button @click="printSolution()">EVALUATE</button>
+                    <button>Strategy<br>call-by-value</button>
+                    <button>Upload</button>
+                    <button>Save</button>
+                </div>
+                <CodeEditor @keydown="printLambda"></CodeEditor>
+            </div>
+            <div id="results">
+                <div class="btn_heading_row">
+                    <h2>SOLUTION</h2>
+                </div>
+                <div id="solution_short"></div>
+                <div class="btn_heading_row">
+                    <h2>Step-by-step</h2>
+                    <button>Next</button>
+                    <button>View All</button>
+                </div>
+                <div id="solution_steps"></div>
+                <div class="btn_heading_row">
+                    <h2>3.step</h2>
+                    <textarea></textarea>
+                    <button>Try</button>
+                </div>
+            </div>
+        </div>
+    <footer><p>2023</p></footer>
 </template>
 
 <style scoped></style>

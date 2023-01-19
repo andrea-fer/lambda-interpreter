@@ -18,17 +18,17 @@ export default class myLambdaVisitor extends lambdaVisitor {
         let param = null;
         let body = null;
         if(ctx.VARIABLE()) {
-            console.log("In Abstraction: ", ctx.getChild(1).getText());
+            //console.log("In Abstraction: ", ctx.getChild(1).getText());
             param = ctx.VARIABLE().getText();
             //body = ctx.getChild(3).getText();
             //console.info("Abstraction body: ", body);
             //console.info(ctx.getChild(3).getChild(0).constructor.name);
-            console.info("Abstraction parameter: ", param);
+            //console.info("Abstraction parameter: ", param);
             let bodyScope = ctx.getChild(3).getChild(0);
             if(bodyScope instanceof lambdaParser.AbstractionContext) {
                 //console.log("Child parameter: ", this.visit(ctx.getChild(3).getChild(0))[0]);
-                let b = bodyScope.getChild(3).getText();
-                console.info("Child body: ", b);
+                //let b = bodyScope.getChild(3).getText();
+                //console.info("Child body: ", b);
                 bodyScope = bodyScope.getChild(3).getChild(0);
             }
             body = bodyScope.getText();
@@ -41,18 +41,18 @@ export default class myLambdaVisitor extends lambdaVisitor {
 	// Visit a parse tree produced by lambdaParser#application.
 	visitApplication(ctx) {
         let leftChild = ctx.getChild(0);
-        console.log("In Child: ", leftChild.getText(), "type = ", leftChild.constructor.name);
+        let rightChild = ctx.getChild(1);
+        //let test = rightChild.getParent();
+        //console.log(ctx.getChild(0).getText());
+        //console.log("In Child: ", leftChild.getText(), "type = ", leftChild.constructor.name);
         // if left child is application, go deeper in tree
         if(leftChild instanceof lambdaParser.ApplicationContext) {
-            leftChild = this.visit(ctx.getChild(0));
+            leftChild = this.visitApplication(ctx.getChild(0));
             //let newChild = leftChild.getChild(0);
             if(leftChild instanceof lambdaParser.AbstractionContext) {
-                console.log("CTX1: ", ctx.getText(), "+ TREE = ", leftChild.getText());
-                //console.log("NEW CHILD: ", newChild.getText());
+                console.log("CTX: ", ctx.getText(), "+ TREE = ", leftChild.getText());
             }
-            console.log("CTX2: ", ctx.getText(), "+ TREE = ", leftChild.getText());
         }
-        console.log("CTX3: ", ctx.getText(), "+ TREE = ", leftChild.getText());
         /* if(leftChild instanceof lambdaParser.TermContext) {
             console.log("CTX: ", ctx.getText(), "+ TREE = ", leftChild.toStringTree());
             console.log("TREE 0 = ", leftChild.getChild(0).getChild(0).getText());
@@ -63,23 +63,25 @@ export default class myLambdaVisitor extends lambdaVisitor {
             console.log("CTX: ", ctx.getText(), "+ return value = ", leftChild);
         } */
         let [param, body] = [null, null];
+
+        console.log("< TERM: ", leftChild.getText(), rightChild.getText());
         
         //if left child is finally abstraction, apply value from right child to body
         let abstraction = leftChild;
-        console.log("** LEFT CHILD = ", abstraction.getText());
+        //console.log("** LEFT CHILD = ", abstraction.getText());
         if(abstraction.getChild(0).getText() == '(') {
             abstraction = abstraction.getChild(1);
         }
         [param, body] = this.visitAbstraction(abstraction);
-        console.log("Param: ", param, ", Body: ", body);
+        //console.log("Param: ", param, ", Body: ", body);
         let value = ctx.getChild(1).getText();
         body = body.replaceAll(param, value);
-        console.log("NEW Body: ", body);
+        //console.log("NEW Body: ", body);
         let tree = this.makeTree(body);
         if(tree.getChild(0) instanceof lambdaParser.AbstractionContext) {
             tree = tree.getChild(0);
         }
-        console.log(">TREE PARENT: ", tree.constructor.name);
+        //console.log(">TREE PARENT: ", tree.constructor.name);
         //console.log(">TREE: ", tree.getChild(0).constructor.name);
         // return evaluated subtree to the parent
         return tree;
@@ -87,6 +89,7 @@ export default class myLambdaVisitor extends lambdaVisitor {
 	    //return "2";
 	}
 
+    // helper function for creating a subtree
     makeTree(input) {
         var chars = new InputStream(input, true);
         var lexer = new lambdaLexer(chars);

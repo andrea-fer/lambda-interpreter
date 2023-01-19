@@ -1,0 +1,141 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+:root {
+    font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 400;
+
+    /* color-scheme: light dark; */
+    color: rgba(0, 0, 0, 0.87);
+    background-color: #EAEAEA;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+}
+
+a {
+    font-weight: 500;
+    color: #646cff;
+    text-decoration: inherit;
+}
+a:hover {
+    color: #535bf2;
+}
+
+button {
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: #CBC5EA;
+    cursor: pointer;
+    transition: border-color 0.25s;
+}
+button:hover {
+    border-color: #876CAC;
+}
+button:focus,
+button:focus-visible {
+    outline: 4px auto -webkit-focus-ring-color;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+header {
+    height: 9%;
+    display: flex;
+    align-items: center;
+}
+header h1 {
+    padding-left: 2%;
+}
+
+#layout {
+    display: flex;
+    align-content: stretch;
+    height: 85%;
+    max-height: 85%;
+}
+
+#help {
+    background-color:#73628A;
+    width: 20vw;
+}
+
+#code_editor {
+    display: flex;
+    flex-direction: column;
+    width: 40vw;
+}
+
+#editor {
+    flex: 1;
+    height: 90%;
+}
+
+#editor .cm-editor { 
+    height: 100%;
+}
+#editor .cm-scroller { 
+    overflow: auto;
+
+}
+.btn_heading_row {
+    display: flex;
+    flex-direction: row;
+    background-color: #A8A4BA;
+    height: 10%;
+    align-items: center;
+}
+.btn_heading_row>button {
+    flex: 1;
+    height: 100%;
+}
+.btn_heading_row>h2 {
+    padding: 0 5%;
+}
+
+#editor {
+    background-color: #EAEAEA;
+    border-right: 1px solid #A8A4BA;
+}
+
+#results {
+    background-color: #EAEAEA;
+    width: 40vw;
+    border-left: 1px solid #A8A4BA;
+}
+#solution_short {
+    height: 20%;
+}
+#solution_steps {
+    height: 50%;
+}
+#results textarea {
+    resize: vertical; 
+    height: 100%;
+    max-height: 100%;
+    width: 28vw;
+    line-height: 5em;
+    font-size: 16px;
+}
+
+footer {
+    height: 6%;
+    background-color: #031926;
+    color: #EAEAEA;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
