@@ -19,7 +19,15 @@ export default {
         window.view = new EditorView({
             //doc: "(Lx. Ly. x) a\n",
             //doc: "(Lx.x)(Lz.z)(Lb.b)a\n",
-            doc: "(Lx.x)((Ly.y)z)\n",
+            //doc: "(Lx.x)((Ly.y)z)\n",
+            doc: "(Lz.z) (Ly.y y) (Lx.x a)\n",
+            //doc: "(Lx.Ly.xyy)(La.a)b\n",
+            //(Lx.y)((Ly.yyy)(Lx.xxx))
+
+            //(Lx.xx)(Ly.yx)z
+            //(Lx.(Ly.(xy))y)z      (Lx.(Ly.xy)y)z
+            //((Lx.xx)(Ly.y))(Ly.y)
+            //(((Ly.Ly.(xy))(Ly.y))w)
             extensions: [[
                 lineNumbers(),
                 highlightActiveLineGutter(),

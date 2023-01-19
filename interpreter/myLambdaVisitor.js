@@ -10,8 +10,12 @@ export default class myLambdaVisitor extends lambdaVisitor {
 	// Visit a parse tree produced by lambdaParser#term.
 	visitTerm(ctx) {
         console.info("°°IN TERM°°");
-        let solution = this.visit(ctx.getChild(0)).getText();
-	    return solution;
+        let solution = ctx;
+        while(solution.getChild(0) instanceof lambdaParser.ApplicationContext || 
+            solution.getChild(0) instanceof lambdaParser.AbstractionContext) {
+            solution = this.visit(solution.getChild(0));
+        }
+        return solution.getText();
 	}
 
     // Visit a parse tree produced by lambdaParser#abstraction.
@@ -43,6 +47,10 @@ export default class myLambdaVisitor extends lambdaVisitor {
 	visitApplication(ctx) {
         let leftChild = ctx.getChild(0);
         let rightChild = ctx.getChild(1);
+        if(leftChild.getText() == '(') {
+            leftChild = ctx.getChild(1).getChild(0);
+            rightChild = ctx.getChild(1).getChild(1);
+        }
         //let test = rightChild.getParent();
         //console.log(ctx.getChild(0).getText());
         //console.log("In Child: ", leftChild.getText(), "type = ", leftChild.constructor.name);
@@ -65,7 +73,7 @@ export default class myLambdaVisitor extends lambdaVisitor {
         } */
         let [param, body] = [null, null];
 
-        console.log("< TERM: ", leftChild.getText(), rightChild.getText());
+        console.log("< TERM: ", leftChild.getText(), " > ", rightChild.getText());
         
         //if left child is finally abstraction, apply value from right child to body
         let abstraction = leftChild;
@@ -75,7 +83,11 @@ export default class myLambdaVisitor extends lambdaVisitor {
         }
         [param, body] = this.visitAbstraction(abstraction);
         //console.log("Param: ", param, ", Body: ", body);
-        let value = ctx.getChild(1).getText();
+        console.log(rightChild.getChild(0).constructor.name);
+        let value = rightChild.getText();
+        if(rightChild.getChild(0) instanceof lambdaParser.ApplicationContext) {
+            value = this.visitApplication(rightChild.getChild(0)).getText();
+        }
         body = body.replaceAll(param, value);
         //console.log("NEW Body: ", body);
         let tree = this.makeTree(body);
