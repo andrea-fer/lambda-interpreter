@@ -17,17 +17,19 @@ import { lintKeymap } from '@codemirror/lint';
 export default {
     mounted() {
         window.view = new EditorView({
-            //doc: "(Lx. Ly. x) a\n",
-            //doc: "(Lx.x)(Lz.z)(Lb.b)a\n",
-            //doc: "(Lx.x)((Ly.y)z)\n",
-            doc: "(Lz.z) (Ly.y y) (Lx.x a)\n",
-            //doc: "(Lx.Ly.xyy)(La.a)b\n",
-            //(Lx.y)((Ly.yyy)(Lx.xxx))
-
-            //(Lx.xx)(Ly.yx)z
-            //(Lx.(Ly.(xy))y)z      (Lx.(Ly.xy)y)z
-            //((Lx.xx)(Ly.y))(Ly.y)
-            //(((Ly.Ly.(xy))(Ly.y))w)
+            //doc: "(Lx. Ly. x) a\n",   // Ly.a *
+            //doc: "(Lx.x)(Lz.z)(Lb.b)a\n", // a *
+            //doc: "(Lx.x)((Ly.y)z)\n",   // z *
+            //doc: "(Lz.z) (Ly.y y) (Lx.x a)\n",    // aa 
+            //doc: "(Lz.z) (Lz.z z) (Lz.z y)\n",    // yy 
+            //doc: "(Lx.Ly.xyy)(La.a)b\n",  // bb *
+            //doc: "(Lx.Ly.xyy)(La.a)\n",   // Ly. (La.a) y y *
+            //doc: "(Lx.Ly.x y y) (Ly.y) y\n",  // yy *
+            //doc: "(Lx.y)((Ly.yyy)(Lx.xxx))\n", // y *
+            //doc: "(Lx.xx)(Ly.yx)z\n", // xxz *
+            //doc: "(Lx.(Ly.(xy))y)z\n",  // zy *
+            //doc: "((Lx.xx)(Ly.y))(Ly.y)\n",  // Ly.y *
+            //doc: "(((Lx.Ly.(xy))(Ly.y))w)\n", //w *
             extensions: [[
                 lineNumbers(),
                 highlightActiveLineGutter(),

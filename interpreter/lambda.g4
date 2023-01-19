@@ -1,7 +1,7 @@
 grammar lambda;
 
 term
-    : VARIABLE | abstraction | application
+    : VARIABLE | abstraction | application | '(' term ')'
     ;
 
 abstraction
