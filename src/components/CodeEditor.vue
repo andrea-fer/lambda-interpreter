@@ -18,7 +18,8 @@ export default {
     mounted() {
         window.view = new EditorView({
             //doc: "(Lx. Ly. x) a\n",
-            doc: "(Lx.x)(Lz.z)(Lb.b)a\n",
+            //doc: "(Lx.x)(Lz.z)(Lb.b)a\n",
+            doc: "(Lx.x)((Ly.y)z)\n",
             extensions: [[
                 lineNumbers(),
                 highlightActiveLineGutter(),

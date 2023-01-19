@@ -10,7 +10,8 @@ export default class myLambdaVisitor extends lambdaVisitor {
 	// Visit a parse tree produced by lambdaParser#term.
 	visitTerm(ctx) {
         console.info("°°IN TERM°°");
-	    return this.visit(ctx.getChild(0)).getText();
+        let solution = this.visit(ctx.getChild(0)).getText();
+	    return solution;
 	}
 
     // Visit a parse tree produced by lambdaParser#abstraction.

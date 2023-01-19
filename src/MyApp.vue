@@ -1,5 +1,6 @@
 <script>
 import CodeEditor from "./components/CodeEditor.vue";
+import SolutionShort from "./components/SolutionShort.vue"
 import antlr4 from "antlr4";
 const { CommonTokenStream, InputStream } = antlr4;
 import lambdaLexer from "../interpreter/lambdaLexer.js";
@@ -10,6 +11,12 @@ import { parseStringStyle } from "@vue/shared";
 export default {
     components: {
         CodeEditor,
+        SolutionShort
+    },
+    data() {
+        return {
+            sol: ''
+        }
     },
     methods: {
         printLambda(event) {
@@ -38,7 +45,9 @@ export default {
 
             parser.buildParseTrees = true;
             var tree = parser.term();
-            console.log("Solution = ", new myLambdaVisitor().visit(tree));
+            var solution = new myLambdaVisitor().visit(tree)
+            console.log("Solution = ", solution);
+            return solution;
         },
     },
 };
@@ -52,7 +61,7 @@ export default {
             <div id="help"></div>
             <div id="code_editor">
                 <div class="btn_heading_row">
-                    <button @click="printSolution()">EVALUATE</button>
+                    <button @click="sol = printSolution()">EVALUATE</button>
                     <button>Strategy<br>call-by-value</button>
                     <button>Upload</button>
                     <button>Save</button>
@@ -63,7 +72,9 @@ export default {
                 <div class="btn_heading_row">
                     <h2>SOLUTION</h2>
                 </div>
-                <div id="solution_short"></div>
+                <div id="solution_short">
+                    <SolutionShort :solution="sol"></SolutionShort>
+                </div>
                 <div class="btn_heading_row">
                     <h2>Step-by-step</h2>
                     <button>Next</button>

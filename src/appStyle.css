@@ -52,6 +52,7 @@ button:focus-visible {
     flex-direction: column;
     height: 100vh;
 }
+
 header {
     height: 9%;
     display: flex;
@@ -77,20 +78,20 @@ header h1 {
     display: flex;
     flex-direction: column;
     width: 40vw;
+    border-right: 1px solid #A8A4BA;
 }
-
 #editor {
+    background-color: #EAEAEA;
     flex: 1;
     height: 90%;
 }
-
 #editor .cm-editor { 
     height: 100%;
 }
 #editor .cm-scroller { 
     overflow: auto;
-
 }
+
 .btn_heading_row {
     display: flex;
     flex-direction: row;
@@ -104,11 +105,6 @@ header h1 {
 }
 .btn_heading_row>h2 {
     padding: 0 5%;
-}
-
-#editor {
-    background-color: #EAEAEA;
-    border-right: 1px solid #A8A4BA;
 }
 
 #results {
@@ -138,4 +134,50 @@ footer {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+/* tablet resolution */
+@media screen and (max-width: 1024px) {
+    #help {
+        display: none;
+    }
+    #code_editor, #results {
+        width: 50%;
+        flex: 1;
+    }
+}
+
+/* phone resolution */
+@media screen and (max-width: 480px) {
+    #help {
+        display: none;
+    }
+    #code_editor, #results {
+        width: 100%;
+        flex: 1;
+    }
+    .btn_heading_row {
+        height: 15%;
+    }
+    #editor {
+        height: 85%;
+    }
+    #solution_short {
+        height: 15%;
+    }
+    #solution_steps {
+        height: 40%;
+    }
+    #results textarea {
+        line-height: 3em;
+        font-size: 16px;
+    }
+    #layout {
+        display: flex;
+        flex-direction: column;
+        align-content: stretch;
+        justify-content: flex-start;
+        /* height: 85%;
+        max-height: 85%; */
+    }
 }
