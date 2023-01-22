@@ -17,7 +17,7 @@ import { lintKeymap } from '@codemirror/lint';
 export default {
     mounted() {
         window.view = new EditorView({
-            //doc: "(Lx. Ly. x) a\n",   // Ly.a *
+            doc: "(λ x. λ y. x) a\n",   // Ly.a *
             //doc: "(Lx.x)(Lz.z)(Lb.b)a\n", // a *
             //doc: "(Lx.x)((Ly.y)z)\n",   // z *
             //doc: "(Lz.z) (Ly.y y) (Lx.x a)\n",    // aa 

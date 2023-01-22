@@ -5,7 +5,7 @@ term
     ;
 
 abstraction
-    : 'L' VARIABLE '.' term
+    : '\\lambda' VARIABLE '.' term
     | '(' abstraction ')'
     ;
 
