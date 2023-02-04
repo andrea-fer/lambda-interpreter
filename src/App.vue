@@ -34,20 +34,20 @@ export default {
         },
         printSolution(event) {
             //console.log("Hello");
-            var lastLine = view.state.doc.lines;
-            var input = view.state.doc.text[lastLine - 2];
-            input = input.replaceAll('λ', '\\lambda');
+            let lastLine = view.state.doc.lines;
+            let input = view.state.doc.text[lastLine - 2];
+            input = input.replaceAll('λ', 'L');
             //var input = "Lx.Ly.x\n";
             console.log(input);
-            var chars = new InputStream(input, true);
-            var lexer = new lambdaLexer(chars);
-            var tokens = new CommonTokenStream(lexer);
-            var parser = new lambdaParser(tokens);
+            let chars = new InputStream(input, true);
+            let lexer = new lambdaLexer(chars);
+            let tokens = new CommonTokenStream(lexer);
+            let parser = new lambdaParser(tokens);
 
             parser.buildParseTrees = true;
-            var tree = parser.term();
-            var solution = new myLambdaVisitor().visit(tree)
-            solution = solution.replaceAll('\\lambda', 'λ');
+            let tree = parser.term();
+            let solution = new myLambdaVisitor(input).visit(tree);
+            solution = solution.replaceAll('L', 'λ');
             console.log("Solution = ", solution);
             return solution;
         },

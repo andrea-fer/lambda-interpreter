@@ -17,19 +17,20 @@ import { lintKeymap } from '@codemirror/lint';
 export default {
     mounted() {
         window.view = new EditorView({
-            doc: "(λ x. λ y. x) a\n",   // Ly.a *
-            //doc: "(Lx.x)(Lz.z)(Lb.b)a\n", // a *
-            //doc: "(Lx.x)((Ly.y)z)\n",   // z *
-            //doc: "(Lz.z) (Ly.y y) (Lx.x a)\n",    // aa 
-            //doc: "(Lz.z) (Lz.z z) (Lz.z y)\n",    // yy 
-            //doc: "(Lx.Ly.xyy)(La.a)b\n",  // bb *
-            //doc: "(Lx.Ly.xyy)(La.a)\n",   // Ly. (La.a) y y *
-            //doc: "(Lx.Ly.x y y) (Ly.y) y\n",  // yy *
-            //doc: "(Lx.y)((Ly.yyy)(Lx.xxx))\n", // y *
-            //doc: "(Lx.xx)(Ly.yx)z\n", // xxz *
-            //doc: "(Lx.(Ly.(xy))y)z\n",  // zy *
-            //doc: "((Lx.xx)(Ly.y))(Ly.y)\n",  // Ly.y *
-            //doc: "(((Lx.Ly.(xy))(Ly.y))w)\n", //w *
+            //doc: "(λ x. λ y. x) a\n",   // Ly.a *
+            //doc: "(λx.x)(λz.z)(λb.b)a\n", // a *
+            //doc: "(λx.x)((λy.y)z)\n",   // z *
+            //doc: "(λz.z) (λy.y y) (λx.x a)\n",    // aa 
+            //doc: "(λz.z) (λz.z z) (λz.z y)\n",    // yy 
+            //doc: "(λx.λy.xyy)(λa.a)b\n",  // bb *
+            //doc: "(λx.λy.xyy)(λa.a)\n",   // λy. (λa.a) y y *
+            //doc: "(λx.λy.x y y) (λy.y) y\n",  // yy *
+                    //doc: "(λx.y)((λy.yyy)(λx.xxx))\n", // y * recursion
+            //doc: "(λa.a)((λy.yyy)(λx.x))\n", // λx.x *
+            //doc: "(λx.xx)(λy.yx)z\n", // xxz *
+            //doc: "(λx.(λy.(xy))y)z\n",  // zy *
+        doc: "((λx.xx)(λy.y))(λy.y)\n",  // λy.y *
+                    //doc: "(((λx.λy.(xy))(λy.y))w)\n", //w * // needs alpha conversion
             extensions: [[
                 lineNumbers(),
                 highlightActiveLineGutter(),
