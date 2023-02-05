@@ -1,21 +1,23 @@
 <script>
 import CodeEditor from "./components/CodeEditor.vue";
 import SolutionShort from "./components/SolutionShort.vue"
+import SolutionSteps from "./components/SolutionSteps.vue"
 import antlr4 from "antlr4";
 const { CommonTokenStream, InputStream } = antlr4;
 import lambdaLexer from "../interpreter/lambdaLexer.js";
 import lambdaParser from "../interpreter/lambdaParser.js";
 import myLambdaVisitor from "../interpreter/myLambdaVisitor.js";
-import { parseStringStyle } from "@vue/shared";
 
 export default {
     components: {
         CodeEditor,
-        SolutionShort
+        SolutionShort,
+        SolutionSteps
     },
     data() {
         return {
-            sol: ''
+            sol: '',
+            steps: ''
         }
     },
     methods: {
@@ -46,10 +48,15 @@ export default {
 
             parser.buildParseTrees = true;
             let tree = parser.term();
-            let solution = new myLambdaVisitor(input).visit(tree);
-            solution = solution.replaceAll('L', 'λ');
+            let [solution, steps] = new myLambdaVisitor(input).visit(tree);
+            solution = solution.replaceAll('L', '\\lambda ');
             console.log("Solution = ", solution);
-            return solution;
+            let stepsLen = steps.length;
+            for(let i = 0; i < stepsLen; i++) {
+                steps[i] = steps[i].replaceAll('L', '\\lambda ');
+            }
+            console.log("Long solution = ", steps);
+            return [solution, steps];
         },
     },
 };
@@ -63,7 +70,7 @@ export default {
             <div id="help"></div>
             <div id="code_editor">
                 <div class="btn_heading_row">
-                    <button @click="sol = printSolution()">EVALUATE</button>
+                    <button @click="[sol, steps] = printSolution()">EVALUATE</button>
                     <button>Strategy<br>call-by-value</button>
                     <button>Upload</button>
                     <button>Save</button>
@@ -82,7 +89,9 @@ export default {
                     <button>Next</button>
                     <button>View All</button>
                 </div>
-                <div id="solution_steps"></div>
+                <div id="solution_steps">
+                    <SolutionSteps :steps="steps"></SolutionSteps>
+                </div>
                 <div class="btn_heading_row">
                     <h2>3.step</h2>
                     <textarea></textarea>

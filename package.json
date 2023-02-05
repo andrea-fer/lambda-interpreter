@@ -12,6 +12,7 @@
         "@codemirror/lang-javascript": "^6.1.1",
         "antlr4": "^4.11.0",
         "codemirror": "^6.0.1",
+        "mathjax-vue3": "^1.0.1",
         "vue": "^3.2.41"
     },
     "devDependencies": {

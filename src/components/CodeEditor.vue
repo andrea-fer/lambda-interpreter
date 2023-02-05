@@ -28,8 +28,8 @@ export default {
                     //doc: "(λx.y)((λy.yyy)(λx.xxx))\n", // y * recursion
             //doc: "(λa.a)((λy.yyy)(λx.x))\n", // λx.x *
             //doc: "(λx.xx)(λy.yx)z\n", // xxz *
-            //doc: "(λx.(λy.(xy))y)z\n",  // zy *
-        doc: "((λx.xx)(λy.y))(λy.y)\n",  // λy.y *
+            doc: "(λx.(λy.(xy))y)z\n",  // zy *
+        //doc: "((λx.xx)(λy.y))(λy.y)\n",  // λy.y *
                     //doc: "(((λx.λy.(xy))(λy.y))w)\n", //w * // needs alpha conversion
             extensions: [[
                 lineNumbers(),

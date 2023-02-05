@@ -27,7 +27,7 @@ export default class myLambdaVisitor extends lambdaVisitor {
         while(solution.getChild(0) instanceof lambdaParser.ApplicationContext) {
             solution = this.visitApplication(solution.getChild(0));
             if(solution.getText() == this.terms[this.terms.length - 1]) {
-                console.log(" I SHOULD STOP : ", solution.getText(), "==", this.terms[this.terms.length - 1]);
+                console.log(" EVALUATION SHOULD STOP : ", solution.getText(), "==", this.terms[this.terms.length - 1]);
                 break;
             }
             this.terms.push(solution.getText());
@@ -39,9 +39,9 @@ export default class myLambdaVisitor extends lambdaVisitor {
             } */
         }
         //this.terms.push(solution.getText());
-        console.log(this.terms);
+        //console.log(this.terms);
         //console.log("FINAL term type: ", solution.constructor.name);
-        return solution.getText();
+        return [solution.getText(), this.terms];
 	}
 
     // Visit a parse tree produced by lambdaParser#abstraction.
