@@ -29,10 +29,49 @@ export default {
             let transaction = view.state.update({
                 changes: { from: view.state.selection.main.head, insert: "λ" },
                 selection: {
-                    anchor: view.state.doc.toString().length + 1,
+                    anchor: view.state.selection.main.head + 1,
                 },
             });
             view.dispatch(transaction);
+        },
+        printGreekLetter(event) {
+            let dictionary = {
+                "\\alpha": "α",
+                "\\beta": "β",
+                "\\gamma": "γ",
+                "\\delta": "δ",
+                "\\epsilon": "ε",
+                "\\zeta": "ζ",
+                "\\eta": "η",
+                "\\theta": "θ",
+                "\\iota": "ι",
+                "\\kappa": "κ",
+                "\\lambda": "λ",
+                "\\mu": "μ",
+                "\\nu": "ν",
+                "\\xi": "ξ",
+                "\\omicron": "ο",
+                "\\pi": "π",
+                "\\rho": "ρ",
+                "\\sigma": "σ",
+                "\\tau": "τ",
+                "\\upsilon": "υ",
+                "\\phi": "φ",
+                "\\chi": "χ",
+                "\\psi": "ψ",
+                "\\omega": "ω"
+            }
+            for(let word in dictionary) {  
+                let text = view.state.doc.toString();
+                let pos = 0;
+                let changes = [];
+                let symbol = dictionary[word];
+                for (let next; (next = text.indexOf(word, pos)) > -1;) {
+                    changes.push({from: next, to: next + word.length, insert: symbol});
+                    pos = next + 1;
+            }
+                view.dispatch({changes});
+            }
         },
         printSolution(event) {
             //console.log("Hello");
@@ -75,7 +114,8 @@ export default {
                     <button>Upload</button>
                     <button>Save</button>
                 </div>
-                <CodeEditor @keydown="printLambda"></CodeEditor>
+                <!-- <CodeEditor @keydown="printLambda"></CodeEditor> -->
+                <CodeEditor @keyup="printGreekLetter"></CodeEditor>
             </div>
             <div id="results">
                 <div class="btn_heading_row">
