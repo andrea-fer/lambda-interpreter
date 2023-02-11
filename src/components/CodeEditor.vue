@@ -14,6 +14,10 @@ import { highlightSelectionMatches, searchKeymap } from '@codemirror/search';
 import { closeBrackets, autocompletion, closeBracketsKeymap, completionKeymap } from '@codemirror/autocomplete';
 import { lintKeymap } from '@codemirror/lint';
 
+import { LambdaLanguageSupport } from "../../lang-lambda";
+
+const lambdaLanguageSupport = LambdaLanguageSupport()
+
 export default {
     mounted() {
         window.view = new EditorView({
@@ -32,6 +36,7 @@ export default {
         //doc: "((λx.xx)(λy.y))(λy.y)\n",  // λy.y *
                     //doc: "(((λx.λy.(xy))(λy.y))w)\n", //w * // needs alpha conversion
             extensions: [[
+                lambdaLanguageSupport,
                 lineNumbers(),
                 highlightActiveLineGutter(),
                 highlightSpecialChars(),

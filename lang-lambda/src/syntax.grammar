@@ -1,0 +1,37 @@
+@top Program { expression* }
+
+@skip { space | LineComment }
+
+expression {
+  Name |
+  Abstraction |
+  String |
+  Boolean |
+  Application { "(" expression* ")" }
+}
+
+Abstraction {
+  Lambda AbstractionArg "." expression
+}
+
+AbstractionArg {
+  Name
+}
+
+Lambda { "λ" }
+
+@tokens {
+  Name { $[a-zA-Z_0-9₀₁₂₃₄₅₆₇₈₉]+ }
+
+  String { '"' (!["\\] | "\\" _)* '"' }
+
+  Boolean { "#t" | "#f" }
+
+  LineComment { "//" ![\n]* }
+  
+  space { $[ \t\n\r]+ }
+
+  "(" ")" "."
+}
+
+@detectDelim

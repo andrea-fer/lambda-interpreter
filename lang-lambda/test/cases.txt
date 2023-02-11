@@ -1,0 +1,75 @@
+# Booleans
+
+#t
+#f
+
+==>
+
+Program(Boolean, Boolean)
+
+# Names
+
+one
+Two_Three
+
+==>
+
+Program(Name, Name)
+
+# Strings
+
+"hello"
+"one\"\\two"
+
+==>
+
+Program(String, String)
+
+# Applications
+
+(begin
+  (when #t
+    (print (concat "hello" " " "world")))
+  (print "DONE"))
+
+==>
+
+Program(Application(
+  Name,
+  Application(Name, Boolean, Application(
+    Name, Application(Name, String, String, String)))
+  Application(Name, String)))
+
+# LambdaExpression
+
+// Some Comment
+(λn.λf.λx.f (n f x))
+
+==>
+
+Program(LineComment,
+  Application("(",
+    Abstraction(
+      Lambda,AbstractionArg(Name),".",Abstraction(
+        Lambda,AbstractionArg(Name),".",Abstraction(
+          Lambda,AbstractionArg(Name),".",Name))),
+        Application(
+          "(",Name,Name,Name,")"
+        ),
+     ")"
+    )
+)
+
+# Unwrapped LambdaExpression
+
+// Some Comment
+λn.λf.λx.f (n f x)
+
+==>
+
+Program(LineComment,
+  Abstraction(
+    Lambda,AbstractionArg(Name),".",Abstraction(
+      Lambda,AbstractionArg(Name),".",Abstraction(
+        Lambda,AbstractionArg(Name),".",Name))),
+      Application("(",Name,Name,Name,")"))
