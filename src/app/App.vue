@@ -6,7 +6,7 @@ import antlr4 from "antlr4";
 const { CommonTokenStream, InputStream } = antlr4;
 import lambdaLexer from "../interpreter/lambdaLexer.js";
 import lambdaParser from "../interpreter/lambdaParser.js";
-import myLambdaVisitor from "../interpreter/myLambdaVisitor.js";
+import callByValueLambdaVisitor from "../interpreter/callByValueLambdaVisitor.js";
 
 export default {
     components: {
@@ -87,7 +87,7 @@ export default {
 
             parser.buildParseTrees = true;
             let tree = parser.term();
-            let [solution, steps] = new myLambdaVisitor(input).visit(tree);
+            let [solution, steps] = new callByValueLambdaVisitor(input).visit(tree);
             solution = solution.replaceAll('L', '\\lambda ');
             console.log("Solution = ", solution);
             let stepsLen = steps.length;

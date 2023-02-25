@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { EditorView } from "../../node_modules/codemirror";
+import { EditorView } from "../../../node_modules/codemirror";
 import { EditorState } from '@codemirror/state';
 import { lineNumbers, highlightActiveLineGutter, highlightSpecialChars, drawSelection, dropCursor, 
     rectangularSelection, crosshairCursor, highlightActiveLine, keymap, scrollPastEnd } from '@codemirror/view';
