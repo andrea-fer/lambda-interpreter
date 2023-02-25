@@ -1,33 +1,21 @@
-@top Program { expression* }
+@top Program { term* }
 
-@skip { space | LineComment }
+@skip { space }
 
-expression {
-  Name |
+term {
+  Variable |
   Abstraction |
-  String |
-  Boolean |
-  Application { "(" expression* ")" }
+  Application { "(" term* ")" }
 }
 
 Abstraction {
-  Lambda AbstractionArg "." expression
-}
-
-AbstractionArg {
-  Name
+  Lambda Variable "." term
 }
 
 Lambda { "λ" }
 
 @tokens {
-  Name { $[a-zA-Z_0-9₀₁₂₃₄₅₆₇₈₉]+ }
-
-  String { '"' (!["\\] | "\\" _)* '"' }
-
-  Boolean { "#t" | "#f" }
-
-  LineComment { "//" ![\n]* }
+  Variable { $[a-zA-Z_0-9]+ }
   
   space { $[ \t\n\r]+ }
 

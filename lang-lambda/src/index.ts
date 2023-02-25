@@ -1,16 +1,9 @@
-import { parser } from "./syntax.grammar";
-import {
-    LRLanguage,
-    LanguageSupport,
-    indentNodeProp,
-    foldNodeProp,
-    foldInside,
-    delimitedIndent,
-} from "@codemirror/language";
-import { completeFromList } from "@codemirror/autocomplete";
-import { styleTags, tags as t } from "@lezer/highlight";
+import {parser} from "./syntax.grammar";
+import {LRLanguage, LanguageSupport, indentNodeProp, foldNodeProp, foldInside, delimitedIndent} from "@codemirror/language";
+import {completeFromList} from "@codemirror/autocomplete";
+import {styleTags, tags as t} from "@lezer/highlight";
 
-export const lezerLambdaLanguage = LRLanguage.define({
+export const lambdaCalculusLanguage = LRLanguage.define({
     parser: parser.configure({
         props: [
             indentNodeProp.add({
@@ -20,28 +13,21 @@ export const lezerLambdaLanguage = LRLanguage.define({
                 Application: foldInside,
             }),
             styleTags({
-                Name: t.variableName,
-                Boolean: t.bool,
-                String: t.string,
-                LineComment: t.lineComment,
+                Variable: t.variableName,
                 "( )": t.paren,
                 Lambda: t.keyword,
                 ".": t.keyword,
-                AbstractionArg: t.literal,
             }),
         ],
-    }),
-    languageData: {
-        commentTokens: { line: "//" },
-    },
+    })
 });
 
-const completions = lezerLambdaLanguage.data.of({
+const completions = lambdaCalculusLanguage.data.of({
     autocomplete: completeFromList([
         { label: "\\lambda", type: "keyword" },
     ]),
 });
 
 export function LambdaLanguageSupport() {
-    return new LanguageSupport(lezerLambdaLanguage, [completions]);
+    return new LanguageSupport(lambdaCalculusLanguage, [completions]);
 }
