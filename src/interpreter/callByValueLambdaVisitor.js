@@ -16,7 +16,7 @@ export default class myLambdaVisitor extends lambdaVisitor {
 	// Visit a parse tree produced by lambdaParser#term.
 	visitTerm(ctx) {
         console.info("°°IN TERM°°");
-        //console.log("TERM IS : ", this.terms[0]);
+        console.log("TERM IS : ", this.terms[0]);
         /* if(ctx.getChild(0).getText() == '(') {
             this.visitTerm(ctx.getChild(1));
         } */
@@ -79,13 +79,13 @@ export default class myLambdaVisitor extends lambdaVisitor {
 	// Visit a parse tree produced by lambdaParser#application.
 	visitApplication(ctx) {
         let leftChild = ctx.getChild(0);
-        let rightChild = ctx.getChild(1);
+        let rightChild = ctx.getChild(1).getText() != ' ' ? ctx.getChild(1) : ctx.getChild(2);
         console.log("LEFT CHILD: ", leftChild.getText());
         console.log("RIGHT CHILD: ", rightChild.getText());
         let brackets = false;
         if(leftChild.getText() == '(') {
             leftChild = ctx.getChild(1).getChild(0);
-            rightChild = ctx.getChild(1).getChild(1);
+            rightChild = ctx.getChild(1).getChild(1).getText() != ' ' ? ctx.getChild(1).getChild(1) : ctx.getChild(1).getChild(2);
             brackets = true;
         }
         //let test = rightChild.getParent();
@@ -113,10 +113,10 @@ export default class myLambdaVisitor extends lambdaVisitor {
             console.log("NEW CTX: ", ctx.getText().replace(oldLeftChild.getText(), leftChildText)) ;
             ctx = this.makeTree(ctx.getText().replace(oldLeftChild.getText(), leftChildText)).getChild(0);
             leftChild = ctx.getChild(0);
-            rightChild = ctx.getChild(1);
+            rightChild = ctx.getChild(1).getText() != ' ' ? ctx.getChild(1) : ctx.getChild(2);
             if(leftChild.getText() == '(') {
                 leftChild = ctx.getChild(1).getChild(0);
-                rightChild = ctx.getChild(1).getChild(1);
+                rightChild = ctx.getChild(1).getChild(1).getText() != ' ' ? ctx.getChild(1).getChild(1) : ctx.getChild(1).getChild(2);
             }
             this.terms.push(this.makeTree(this.terms[this.terms.length - 1].replace(oldLeftChild.getText(), leftChild.getText())).getChild(0).getText());
             if(leftChild.getChild(0) instanceof lambdaParser.ApplicationContext) {
@@ -141,7 +141,7 @@ export default class myLambdaVisitor extends lambdaVisitor {
         //console.log("< TERM: ", leftChild.getText(), " > ", rightChild.getText());
         // if left side is not abstraction, we are not implementing substitution
         if(!(leftChild instanceof lambdaParser.AbstractionContext)) {
-            return this.makeTree(leftChild.getText().concat(rightChild.getText()));
+            return this.makeTree(leftChild.getText().concat(' ').concat(rightChild.getText()));
         }
         
         //if left child is finally abstraction, apply value from right child to body
@@ -166,10 +166,10 @@ export default class myLambdaVisitor extends lambdaVisitor {
                 console.log("NEW CTX:= ", ctx.getText().replace(oldRightChild.getText(), value));
                 ctx = this.makeTree(ctx.getText().replace(oldRightChild.getText(), value)).getChild(0);
                 leftChild = ctx.getChild(0);
-                rightChild = ctx.getChild(1);
+                rightChild = ctx.getChild(1).getText() != ' ' ? ctx.getChild(1) : ctx.getChild(2);
                 if(leftChild.getText() == '(') {
                     leftChild = ctx.getChild(1).getChild(0);
-                    rightChild = ctx.getChild(1).getChild(1);
+                    rightChild = ctx.getChild(1).getChild(1).getText() != ' ' ? ctx.getChild(1).getChild(1) : ctx.getChild(1).getChild(2);
                 }
                 this.terms.push(this.makeTree(this.terms[this.terms.length - 1].replace(oldRightChild.getText(), value)).getChild(0).getText());
             }

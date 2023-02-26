@@ -88,10 +88,12 @@ export default {
             parser.buildParseTrees = true;
             let tree = parser.term();
             let [solution, steps] = new callByValueLambdaVisitor(input).visit(tree);
+            solution = solution.replaceAll(' ', '~');
             solution = solution.replaceAll('L', '\\lambda ');
             console.log("Solution = ", solution);
             let stepsLen = steps.length;
             for(let i = 0; i < stepsLen; i++) {
+                steps[i] = steps[i].replaceAll(' ', '~');
                 steps[i] = steps[i].replaceAll('L', '\\lambda ');
             }
             console.log("Long solution = ", steps);

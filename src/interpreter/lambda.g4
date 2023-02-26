@@ -17,7 +17,7 @@ application
     ;
 
 VARIABLE
-    : [a-z] [a-zA-Z0-9]*
+    : [a-z] [a-zA-Z0-9]* [ ]?
     ;
 
 WS
