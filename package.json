@@ -6,16 +6,26 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-        "preview": "vite preview"
+        "preview": "vite preview",
+        "prepare": "rollup -c"
     },
     "dependencies": {
         "antlr4": "^4.11.0",
         "codemirror": "^6.0.1",
+        "@codemirror/autocomplete": "^6.4.0",
+        "@codemirror/language": "^6.0.0",
+        "@lezer/highlight": "^1.0.0",
+        "@lezer/lr": "^1.0.0",
         "mathjax-vue3": "^1.0.1",
         "vue": "^3.2.41"
     },
     "devDependencies": {
         "@vitejs/plugin-vue": "^3.2.0",
-        "vite": "^3.2.0"
+        "vite": "^3.2.0",
+        "@lezer/generator": "^1.0.0",
+        "rollup": "^2.60.2",
+        "rollup-plugin-dts": "^4.0.1",
+        "rollup-plugin-ts": "^3.0.2",
+        "typescript": "^4.3.4"
     }
 }

@@ -16,7 +16,7 @@ import { lintKeymap } from '@codemirror/lint';
 
 import { LambdaLanguageSupport } from "../../lang-lambda";
 
-const lambdaLanguageSupport = LambdaLanguageSupport()
+const lambdaLanguageSupport = LambdaLanguageSupport();
 
 export default {
     mounted() {

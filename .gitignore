@@ -20,3 +20,9 @@ node_modules
 *.njsproj
 *.sln
 *.sw?
+
+# Generated CodeMirror 6 language package files
+/src/lang-lambda/index.cjs
+/src/lang-lambda/index.d.cts
+/src/lang-lambda/index.d.ts
+/src/lang-lambda/index.js
