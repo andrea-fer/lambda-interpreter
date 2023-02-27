@@ -176,7 +176,9 @@ export default class myLambdaVisitor extends lambdaVisitor {
             /* if(value[0] == '(') {
                 brackets = true;
             } */
-            body = body.replaceAll(param, value);
+            const reg_text = "\\b".concat(param).concat("\\b");
+            const reg = new RegExp(reg_text, "g");
+            body = body.replaceAll(reg, value);
             /* if(!brackets) {
                 body = '('+ body+ ')';
             } */

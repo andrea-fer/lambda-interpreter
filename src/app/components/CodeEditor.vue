@@ -31,8 +31,8 @@ export default {
             //doc: "(λx.λy.x y y) (λy.y) y\n",  // yy *
                     //doc: "(λx.y)((λy.y y y)(λx.x x x))\n", // y * recursion
             //doc: "(λa.a)((λy.y y y)(λx.x))\n", // λx.x *
-        //doc: "(λx.x x)(λy.y x)z\n", // xxz *
-            doc: "(λx.(λy.(x y))y)z\n",  // zy *
+        doc: "(λx.x x)(λy.y x)z\n", // xxz *
+            //doc: "(λx.(λy.(x y))y)z\n",  // zy *
         //doc: "((λx.xx)(λy.y))(λy.y)\n",  // λy.y *
                     //doc: "(((λx.λy.(xy))(λy.y))w)\n", //w * // needs alpha conversion
             extensions: [[
