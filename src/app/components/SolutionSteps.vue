@@ -21,6 +21,5 @@ export default {
     mjx-container[jax="SVG"][display="true"] {
         display: block;
         text-align: left !important;
-        margin: 1em 1em !important;
     }
 </style>
