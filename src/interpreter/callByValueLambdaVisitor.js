@@ -114,6 +114,7 @@ export default class myLambdaVisitor extends lambdaVisitor {
             if(brackets) {
                 bodyText = '('.concat(bodyText).concat(')');
             }
+            //console.log("bodyText: ", bodyText);
             return bodyText; 
         }
         if(body instanceof lambdaParser.AbstractionContext) {
@@ -121,10 +122,12 @@ export default class myLambdaVisitor extends lambdaVisitor {
             if(brackets) {
                 bodyText = '('.concat(bodyText).concat(')');
             }
+            //console.log("bodyText: ", bodyText);
             return bodyText;
         }
 
         if(body.getChild(0) == null) {
+            //console.log("bodyText: ", body.getText());
             return body.getText();
         }
 
@@ -180,12 +183,15 @@ export default class myLambdaVisitor extends lambdaVisitor {
             leftChild = ctx.getChild(0);
             rightChild = ctx.getChild(1);
             //rightChild = ctx.getChild(1).getText() != ' ' ? ctx.getChild(1) : ctx.getChild(2);
-            if(leftChild.getText() == '(') {
+            /* if(leftChild.getText() == '(') {
                 leftChild = ctx.getChild(1).getChild(0);
                 rightChild = ctx.getChild(1).getChild(1);
                 //rightChild = ctx.getChild(1).getChild(1).getText() != ' ' ? ctx.getChild(1).getChild(1) : ctx.getChild(1).getChild(2);
-            }
-            this.terms.push(this.getBodyText(this.makeTree(this.terms[this.terms.length - 1].replace(this.getBodyText(oldLeftChild), this.getBodyText(leftChild))).getChild(0)));
+            } */
+            console.log("REPLACING: ", this.getBodyText(oldLeftChild), "WITH: ", leftChildText, " - IN: ", this.terms[this.terms.length - 1]);
+            this.terms.push(this.terms[this.terms.length - 1].replace(this.getBodyText(oldLeftChild), leftChildText));
+            console.log("leftChild: ", this.terms[this.terms.length - 1]);
+            leftChild = this.makeTree(this.terms[this.terms.length - 1]).getChild(0);
             if(leftChild.getChild(0) instanceof lambdaParser.ApplicationContext) {
                 leftChild = leftChild.getChild(0);
             }
@@ -240,7 +246,8 @@ export default class myLambdaVisitor extends lambdaVisitor {
                     rightChild = ctx.getChild(1).getChild(1);
                     //rightChild = ctx.getChild(1).getChild(1).getText() != ' ' ? ctx.getChild(1).getChild(1) : ctx.getChild(1).getChild(2);
                 }
-                this.terms.push(this.getBodyText(this.makeTree(this.terms[this.terms.length - 1].replace(this.getBodyText(oldRightChild), value)).getChild(0)));
+                this.terms.push(this.terms[this.terms.length - 1].replace(this.getBodyText(oldRightChild), value));
+                rightChild = makeTree(this.terms[this.terms.length - 1]).getChild(0);
             }
             /* if(value[0] == '(') {
                 brackets = true;

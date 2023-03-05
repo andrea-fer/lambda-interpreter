@@ -21,20 +21,20 @@ const lambdaLanguageSupport = LambdaLanguageSupport();
 export default {
     mounted() {
         window.view = new EditorView({
-            doc: "(λ x. λ y. x) a\n",   // Ly.a *
+            //doc: "(λ x. λ y. x) a\n",   // Ly.a *
             //doc: "(λx.x)(λz.z)(λb.b)a\n", // a *
             //doc: "(λx.x)((λy.y)z)\n",   // z *
             //doc: "(λz.z)(λy.y y)(λx.x a)\n",    // aa 
-            //doc: "(λz.z) (λz.z z) (λz.z y)\n",    // yy 
+        //doc: "(λz.z) (λz.z z) (λz.z y)\n",    // yy 
         //doc: "(λx.λy.x y y)(λa.a)b\n",  // bb *
             //doc: "(λx.λy.x y y)(λa.a)\n",   // λy. (λa.a) y y *
         //doc: "(λx.λy.x y y) (λy.y) y\n",  // yy *
                     //doc: "(λx.y)((λy.y y y)(λx.x x x))\n", // y * recursion
-        //doc: "(λa.a)((λy.y y y)(λx.x))\n", // λx.x *
+            //doc: "(λa.a)((λy.y y y)(λx.x))\n", // λx.x *
             //doc: "(λx.x x)(λy.y x)z\n", // xxz *
-//doc: "(λx.(λy.(x y))y)z\n",  // zy *
-//doc: "x y\n",
-        doc: "((λx.x x)(λy.y))(λy.y)\n",  // λy.y *
+            //doc: "(λx.(λy.(x y))y)z\n",  // zy *
+            //doc: "x y\n",
+            //doc: "((λx.x x)(λy.y))(λy.y)\n",  // λy.y *
                     //doc: "(((λx.λy.(xy))(λy.y))w)\n", //w * // needs alpha conversion
             extensions: [[
                 lambdaLanguageSupport,
