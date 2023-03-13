@@ -32,5 +32,14 @@ export default class lambdaListener extends antlr4.tree.ParseTreeListener {
 	}
 
 
+	// Enter a parse tree produced by lambdaParser#definition.
+	enterDefinition(ctx) {
+	}
+
+	// Exit a parse tree produced by lambdaParser#definition.
+	exitDefinition(ctx) {
+	}
+
+
 
 }

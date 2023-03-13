@@ -24,5 +24,11 @@ export default class lambdaVisitor extends antlr4.tree.ParseTreeVisitor {
 	}
 
 
+	// Visit a parse tree produced by lambdaParser#definition.
+	visitDefinition(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
 
 }

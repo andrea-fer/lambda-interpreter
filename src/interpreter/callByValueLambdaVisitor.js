@@ -7,12 +7,13 @@ import lambdaParser from "./lambdaParser.js";
 // Tree Traverser Class
 export default class myLambdaVisitor extends lambdaVisitor {
 
-    constructor(ctx) {
+    constructor(ctx, definitions) {
         super();
         this.term = this.getBodyText(ctx);
         this.terms = [];
         this.terms.push(this.term);
         this.maximumSteps = 20;
+        this.definitions = definitions;
     }
 	// Visit a parse tree produced by lambdaParser#term.
 	visitTerm(ctx) {
@@ -28,8 +29,24 @@ export default class myLambdaVisitor extends lambdaVisitor {
         /* if(ctx.getChild(0).getText() == '(') {
             this.visitTerm(ctx.getChild(1));
         } */
+        if(ctx.getChild(0) instanceof lambdaParser.DefinitionContext) {
+            /* this.visitDefinition(ctx);
+            let defs = [];
+            for(let [key, value] of this.definitions) {
+                console.log(value);
+                defs.push(value);
+            }
+            return [this.getBodyText(ctx), defs]; */
+            return this.visitDefinition(ctx);
+        }
+
+        /* for(let [key, value] of this.definitions) {
+            console.log("°", key, ":", value, "°");
+        } */
+
         let solution = ctx;
         console.log("SOLUTION: ", this.getBodyText(ctx), "type: ", solution.constructor.name);
+        
         /* console.log("SOLUTION.getChild(0).getChild(0): ", solution.getChild(0).getChild(0).constructor.name);
         console.log("SOLUTION.getChild(0).getChild(0): ", solution.getChild(0).getChild(0).getText()); */
         while(solution.getChild(0) instanceof lambdaParser.ApplicationContext) {
@@ -48,6 +65,7 @@ export default class myLambdaVisitor extends lambdaVisitor {
                 break;
             } */
         }
+
         //this.terms.push(solution.getText());
         //console.log(this.terms);
         //console.log("FINAL term type: ", solution.constructor.name);
@@ -125,6 +143,12 @@ export default class myLambdaVisitor extends lambdaVisitor {
             if(brackets) {
                 bodyText = '('.concat(bodyText).concat(')');
             }
+            //console.log("bodyText: ", bodyText);
+            return bodyText;
+        }
+
+        if(body instanceof lambdaParser.DefinitionContext) {
+            let bodyText = body.getChild(0).getText().concat(body.getChild(1).getText()).concat(this.getBodyText(body.getChild(2)));
             //console.log("bodyText: ", bodyText);
             return bodyText;
         }
@@ -294,10 +318,27 @@ export default class myLambdaVisitor extends lambdaVisitor {
             /* if(value[0] == '(') {
                 brackets = true;
             } */
+            // using regex so that no substrings are replaced
             const reg_text = "\\b".concat(param).concat("\\b");
             const reg = new RegExp(reg_text, "g");
             console.log("< Body: ", body, " > Value: ", value);
             body = body.replaceAll(reg, value);
+           /*  for(let [key, value] of this.definitions) {
+                console.log("<", key, ":", value, ">");
+            } */
+            
+            for(let [key, v] of this.definitions) {
+                if(body.includes(key)) {
+                    const key_text = "\\b".concat(key).concat("\\b");
+                    /* console.log("BRUH", body);
+                    console.log("key == body");
+                    console.log(key, "==", body); */
+                    console.log("NEW Body: (before substitution)", body);
+                    // push to terms
+                    const _key = new RegExp(key_text, "g");
+                    body = body.replaceAll(_key, v);
+                }
+            }
             /* if(!brackets) {
                 body = '('+ body+ ')';
             } */
@@ -323,4 +364,13 @@ export default class myLambdaVisitor extends lambdaVisitor {
         parser.buildParseTrees = true;
         return parser.term();
     }
+
+    // Visit a parse tree produced by lambdaParser#definition.
+	visitDefinition(ctx) {
+        ctx = ctx.getChild(0);
+        console.log(this.getBodyText(ctx.getChild(0)), " = ", this.getBodyText(ctx.getChild(2)));
+        console.log(this.getBodyText(ctx));
+        //this.definitions.set(this.getBodyText(ctx.getChild(0)), this.getBodyText(ctx.getChild(2)));
+        return [[this.getBodyText(ctx.getChild(0)), this.getBodyText(ctx.getChild(2))], null];
+	}
 }

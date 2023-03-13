@@ -75,19 +75,39 @@ export default {
         },
         printSolution(event) {
             //console.log("Hello");
+            let definitions = new Map();
             let lastLine = view.state.doc.lines;
-            let input = view.state.doc.text[lastLine - 2];
-            input = input.replaceAll('λ', 'L');
-            //var input = "Lx.Ly.x\n";
-            console.log(input);
-            let chars = new InputStream(input, true);
-            let lexer = new lambdaLexer(chars);
-            let tokens = new CommonTokenStream(lexer);
-            let parser = new lambdaParser(tokens);
+            console.log("lastLine: ", lastLine);
+            let i = 0;
+            let input = view.state.doc.text[i];
+            let solution, steps = null;
+            while(input != null) {
+                input = input.replaceAll('λ', 'L');
+                //var input = "Lx.Ly.x\n";
+                console.log(input);
+                let chars = new InputStream(input, true);
+                let lexer = new lambdaLexer(chars);
+                let tokens = new CommonTokenStream(lexer);
+                let parser = new lambdaParser(tokens);
 
-            parser.buildParseTrees = true;
-            let tree = parser.term();
-            let [solution, steps] = new callByValueLambdaVisitor(tree).visit(tree);
+                parser.buildParseTrees = true;
+                let tree = parser.term();
+                for(let [key, value] of definitions) {
+                        console.log("*", key, ":", value, "*");
+                }
+                [solution, steps] = new callByValueLambdaVisitor(tree, definitions).visit(tree);
+                if(steps == null) {
+                    definitions.set(solution[0], solution[1]);
+                    console.log("°°°°Adding to definitios");
+                    for(let [key, value] of definitions) {
+                        console.log("°", key, ":", value, "°");
+                    }
+                } else {
+                    break;
+                }
+                input = view.state.doc.text[i++];
+            }
+
             solution = solution.replaceAll(' ', '~');
             solution = solution.replaceAll('L', '\\lambda ');
             console.log("Solution = ", solution);
