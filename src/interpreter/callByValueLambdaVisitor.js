@@ -74,7 +74,8 @@ export default class myLambdaVisitor extends lambdaVisitor {
             body = body.getChild(0);
         }
         let brackets = false;
-        if(body.getChild(0) != null  && body.getChild(0).getText() == '(') {
+        // in case of double brackets, e.g. application -> '(' application ')' -> '(' application ')'
+        while(body.getChild(0) != null  && body.getChild(0).getText() == '(') {
             body = body.getChild(1);
             console.log("zatvorka");
             brackets = true;
@@ -236,12 +237,13 @@ export default class myLambdaVisitor extends lambdaVisitor {
                 let oldRightChildText = this.getBodyText(oldRightChild);
                 let oldCtx = this.terms[this.terms.length - 1];
                 let newCtx = oldCtx.replace(oldRightChildText, value);
+                console.log("newCTX= ", newCtx);
                 ctx = this.makeTree(newCtx);
                 //leftChild = ctx.getChild(0);
                 rightChild = ctx.getChild(0).getChild(1);
                 value = this.getBodyText(rightChild);
             
-                console.log("--RightChild: ", this.getBodyText(rightChild));
+                console.log("--RightChild: ", value);
                 newCtx = this.terms[this.terms.length - 1].replace(this.getBodyText(oldRightChild), value);
                 console.log("newCTX = ", this.terms[this.terms.length - 1], "replaced by: ", newCtx);
                 console.log("newCTX = ", this.getBodyText(oldRightChild), "replaced by:(val) ", value);
