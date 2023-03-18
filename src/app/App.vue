@@ -96,6 +96,7 @@ export default {
                         console.log("*", key, ":", value, "*");
                 }
                 [solution, steps] = new callByValueLambdaVisitor(tree, definitions).visit(tree);
+                // if steps == null -> term is definition
                 if(steps == null) {
                     definitions.set(solution[0], solution[1]);
                     //console.log("Does map contain ", solution[0], "?", definitions.has(solution[0]));
