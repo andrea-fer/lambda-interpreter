@@ -5,7 +5,7 @@ term
     ;
 
 abstraction
-    : 'L' VARIABLE '.' term
+    : '\\lambda' VARIABLE '.' term
     | '(' abstraction ')'
     ;
 
@@ -21,7 +21,7 @@ definition
     ;
 
 VARIABLE
-    : [a-z] [a-zA-Z0-9]*
+    : [a-zA-Z0-9] [a-zA-Z0-9]*
     ;
 
 WS

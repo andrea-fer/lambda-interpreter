@@ -30,7 +30,7 @@ const sharedContextCache = new antlr4.PredictionContextCache();
 export default class lambdaParser extends antlr4.Parser {
 
     static grammarFileName = "java-escape";
-    static literalNames = [ null, "'('", "')'", "'L'", "'.'", "'='" ];
+    static literalNames = [ null, "'('", "')'", "'\\lambda'", "'.'", "'='" ];
     static symbolicNames = [ null, null, null, null, null, null, "VARIABLE", 
                              "WS" ];
     static ruleNames = [ "term", "abstraction", "application", "definition" ];

@@ -36,6 +36,16 @@ export default class myLambdaVisitor extends lambdaVisitor {
             this.terms.push(this.getBodyText(solution));
             console.log("•(line 60)• Adding new term: ", this.terms[this.terms.length - 1]);
             console.log("SOLUTION: ", this.getBodyText(solution), "type: ", solution.constructor.name);
+            //console.log("Does map contain ", this.getBodyText(solution), "?", this.definitions.has(this.getBodyText(solution)));
+            if(this.definitions.has(this.getBodyText(solution))) {
+                let value = this.makeTree(this.definitions.get(this.getBodyText(solution)));
+                if(value.getChild(0) instanceof lambdaParser.ApplicationContext) {
+                    solution = value;
+                    this.terms.push(this.getBodyText(solution));
+                    console.log("•(line 60)• Adding new term: ", this.terms[this.terms.length - 1]);
+                    console.log("SOLUTION: ", this.getBodyText(solution), "type: ", solution.constructor.name);
+                }
+            }
         }
         return [this.getBodyText(solution), this.terms];
 	}
@@ -77,7 +87,6 @@ export default class myLambdaVisitor extends lambdaVisitor {
         // in case of double brackets, e.g. application -> '(' application ')' -> '(' application ')'
         while(body.getChild(0) != null  && body.getChild(0).getText() == '(') {
             body = body.getChild(1);
-            console.log("zatvorka");
             brackets = true;
         }
         if(body instanceof lambdaParser.ApplicationContext) {
@@ -136,7 +145,11 @@ export default class myLambdaVisitor extends lambdaVisitor {
                 const _key = new RegExp(key_text, "g");
                 leftChildText = leftChildText.replaceAll(_key, value);
                 console.log("**Left Child: (after substitution)", leftChildText);
+                let oldLeftChild = leftChild;
                 leftChild = this.makeTree(leftChildText).getChild(0);
+                let newCTX = this.terms[this.terms.length - 1].replace(this.getBodyText(oldLeftChild), leftChildText);
+                this.terms.push(newCTX);
+                ctx = this.makeTree(newCTX).getChild(0);
                 break; 
             }
         }

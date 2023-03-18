@@ -82,7 +82,7 @@ export default {
             let input = view.state.doc.text[i];
             let solution, steps = null;
             while(input != null) {
-                input = input.replaceAll('λ', 'L');
+                input = input.replaceAll('λ', '\\lambda');
                 //var input = "Lx.Ly.x\n";
                 console.log(input);
                 let chars = new InputStream(input, true);
@@ -98,6 +98,7 @@ export default {
                 [solution, steps] = new callByValueLambdaVisitor(tree, definitions).visit(tree);
                 if(steps == null) {
                     definitions.set(solution[0], solution[1]);
+                    //console.log("Does map contain ", solution[0], "?", definitions.has(solution[0]));
                     console.log("°°°°Adding to definitios");
                     for(let [key, value] of definitions) {
                         console.log("°", key, ":", value, "°");
@@ -109,12 +110,12 @@ export default {
             }
 
             solution = solution.replaceAll(' ', '~');
-            solution = solution.replaceAll('L', '\\lambda ');
+            solution = solution.replaceAll('\\lambda', '\\lambda ');
             console.log("Solution = ", solution);
             let stepsLen = steps.length;
             for(let i = 0; i < stepsLen; i++) {
                 steps[i] = steps[i].replaceAll(' ', '~');
-                steps[i] = steps[i].replaceAll('L', '\\lambda ');
+                steps[i] = steps[i].replaceAll('\\lambda', '\\lambda ');
             }
             console.log("Long solution = ", steps);
             return [solution, steps];

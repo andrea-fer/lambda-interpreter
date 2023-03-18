@@ -21,8 +21,11 @@ const lambdaLanguageSupport = LambdaLanguageSupport();
 export default {
     mounted() {
         window.view = new EditorView({
-            //doc: "not = λx.((x false) true)\ntrue = λx.λy.x\nfalse = λx.λy.y\nnot (not true)\n",
-            doc:"abc = (λ x. λ y. x) a\n(λx. x)abc\n",
+            //doc: "0 = λs.λz.z\n1 = λs.z.s z\n2 = λs.λz.s(s z)\n3 = λs.λz.s(s(s z))\nadd = λm.λn.λs.λz.m s(n s z)\nadd 0 1\n",
+            //doc: "true = λx.λy.x\nfalse = λx.λy.y\ntest = λb.λc.λa.b c a\nand = λb.λc.b c false\nor = λb.λc.b true(c true false)\nnot = λb.b false true\nand true false\n",
+            //doc: "true = λx.λy.x\nfalse = λx.λy.y\ntest = λb.λc.λa.b c a\ntest true v u\n",
+            doc: "not = λx.((x false) true)\ntrue = λx.λy.x\nfalse = λx.λy.y\nnot (not true)\n",
+            //doc:"abc = (λ x. λ y. x) a\n(λx. x)abc\n",
             //doc: "abcd = (λ x. λ y. x) a\n",   // Ly.a *
             //doc: "(λ x. λ y. x) a\n",   // Ly.a *
             //doc: "(λx.x)(λz.z)(λb.b)a\n", // a *
