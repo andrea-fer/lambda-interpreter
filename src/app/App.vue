@@ -2,6 +2,8 @@
 import CodeEditor from "./components/CodeEditor.vue";
 import SolutionShort from "./components/SolutionShort.vue"
 import SolutionSteps from "./components/SolutionSteps.vue"
+import DropDown from "./components/DropDown.vue";
+import DropDownItem from "./components/DropDownItem.vue";
 import antlr4 from "antlr4";
 const { CommonTokenStream, InputStream } = antlr4;
 import lambdaLexer from "../interpreter/lambdaLexer.js";
@@ -12,12 +14,18 @@ export default {
     components: {
         CodeEditor,
         SolutionShort,
-        SolutionSteps
+        SolutionSteps,
+        DropDown,
+        DropDownItem,
     },
     data() {
         return {
             sol: '',
-            steps: ''
+            steps: '',
+            strategies: [
+                'Call by value',
+                'Call by name',
+            ]
         }
     },
     methods: {
@@ -126,15 +134,23 @@ export default {
 </script>
 
 <template>
-    <header>
-        <h1>LAMBDA CALCULUS INTERPRETER</h1>
-    </header>
+    <div id="content">
+        <header>
+            <h1>LAMBDA CALCULUS INTERPRETER</h1>
+        </header>
         <div id="layout">
             <div id="help"></div>
             <div id="code_editor">
                 <div class="btn_heading_row">
                     <button @click="[sol, steps] = printSolution()">EVALUATE</button>
-                    <button>Strategy<br>call-by-value</button>
+                    <!-- <button>Strategy<br>call-by-value</button> -->
+                    <DropDown title="Strategy">
+                        <div>
+                            <DropDownItem v-for="item in strategies" :key="item">
+                                {{ item }}
+                            </DropDownItem>
+                        </div>
+                    </DropDown>
                     <button>Upload</button>
                     <button>Save</button>
                 </div>
@@ -163,7 +179,10 @@ export default {
                 </div>
             </div>
         </div>
-    <footer><p>2023</p></footer>
+    </div>
+    <footer>
+        <p>2023</p>
+    </footer>
 </template>
 
 <style scoped></style>

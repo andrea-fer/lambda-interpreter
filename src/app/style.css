@@ -51,10 +51,15 @@ button:focus-visible {
     display: flex;
     flex-direction: column;
     height: 100vh;
+    position: relative;
+}
+
+#content {
+    height: 95vh;
 }
 
 header {
-    height: 9%;
+    height: 8%;
     display: flex;
     align-items: center;
 }
@@ -65,8 +70,7 @@ header h1 {
 #layout {
     display: flex;
     align-content: stretch;
-    height: 85%;
-    max-height: 85%;
+    height: 92%;
 }
 
 #help {
@@ -98,6 +102,7 @@ header h1 {
     background-color: #A8A4BA;
     height: 10%;
     align-items: center;
+    z-index: 1;
 }
 .btn_heading_row>button {
     flex: 1;
@@ -118,6 +123,10 @@ header h1 {
 #solution_steps {
     height: 50%;
 }
+#steps {
+    height: 100%;
+    overflow: scroll;
+}
 #results textarea {
     resize: vertical; 
     height: 100%;
@@ -128,12 +137,15 @@ header h1 {
 }
 
 footer {
-    height: 6%;
+    height: 5vh;
     background-color: #031926;
     color: #EAEAEA;
     display: flex;
     align-items: center;
     justify-content: center;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 }
 
 /* tablet resolution */
@@ -148,7 +160,7 @@ footer {
 }
 
 /* phone resolution */
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 800px) {
     #help {
         display: none;
     }

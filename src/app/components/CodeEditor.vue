@@ -22,7 +22,7 @@ export default {
     mounted() {
         window.view = new EditorView({
     // Church numerals 
-            //doc: "0 = λs.λz.z\n1 = λs.z.s z\n2 = λs.λz.s(s z)\n3 = λs.λz.s(s(s z))\nadd = λm.λn.λs.λz.m s(n s z)\ntimes = λm.λn.m(add n)0\nsucc = λn.λs.λz.s(n s z)\niszero = λm.m(λx.false)true\ntimes 0 1\n",
+    //doc: "0 = λs.λz.z\n1 = λs.z.s z\n2 = λs.λz.s(s z)\n3 = λs.λz.s(s(s z))\nadd = λm.λn.λs.λz.m s(n s z)\ntimes = λm.λn.m(add n)0\nsucc = λn.λs.λz.s(n s z)\niszero = λm.m(λx.false)true\ntimes 0 1\n",
             //doc: "0 = λs.λz.z\n1 = λs.z.s z\n2 = λs.λz.s(s z)\n3 = λs.λz.s(s(s z))\nadd = λm.λn.λs.λz.m s(n s z)\ntimes = λm.λn.m(add n)0\nsucc = λn.λs.λz.s(n s z)\niszero = λm.m(λx.false)true\nsucc (succ 0)\n",
             //doc: "0 = λs.λz.z\n1 = λs.z.s z\n2 = λs.λz.s(s z)\n3 = λs.λz.s(s(s z))\nadd = λm.λn.λs.λz.m s(n s z)\ntimes = λm.λn.m(add n)0\nsucc = λn.λs.λz.s(n s z)\niszero = λm.m(λx.false)true\nadd 1 (succ 1)\n",
             //doc: "0 = λs.λz.z\n1 = λs.z.s z\n2 = λs.λz.s(s z)\n3 = λs.λz.s(s(s z))\nadd = λm.λn.λs.λz.m s(n s z)\ntimes = λm.λn.m(add n)0\nsucc = λn.λs.λz.s(n s z)\niszero = λm.m(λx.false)true\nadd 1 1\n",
@@ -35,13 +35,13 @@ export default {
             //doc: "true = λx.λy.x\nfalse = λx.λy.y\ntest = λb.λc.λa.b c a\nand = λb.λc.b c false\nor = λb.λc.b true(c true false)\nnot = λb.b false true\nor true false\n",
             //doc: "true = λx.λy.x\nfalse = λx.λy.y\ntest = λb.λc.λa.b c a\nand = λb.λc.b c false\nor = λb.λc.b true(c true false)\nnot = λb.b false true\ntest true v u\n",
             //doc: "true = λx.λy.x\nfalse = λx.λy.y\ntest = λb.λc.λa.b c a\nand = λb.λc.b c false\nor = λb.λc.b true(c true false)\nnot = λb.b false true\ntest false v u\n",
-    doc: "true = λx.λy.x\nfalse = λx.λy.y\ntest = λb.λc.λa.b c a\nand = λb.λc.b c false\nor = λb.λc.b true(c true false)\nnot = λb.b false true\nnot (not true)\n",
+        doc: "true = λx.λy.x\nfalse = λx.λy.y\ntest = λb.λc.λa.b c a\nand = λb.λc.b c false\nor = λb.λc.b true(c true false)\nnot = λb.b false true\nnot (not true)\n",
     //doc: "true = λx.λy.x\nfalse = λx.λy.y\ntest = λb.λc.λa.b c a\nand = λb.λc.b c false\nor = λb.λc.b true(c true false)\nnot = λb.b false true\nand false (not true)\n",
 
     // Simpler examples
             //doc:"abc = (λ x. λ y. x) a\n(λx. x)abc\n",
     //doc: "abcd = (λ x. λ y. x) a\n",   // Ly.a *                      // only definition
-            //ňdoc: "(λ x. λ y. x) a\n",   // Ly.a *
+            //doc: "(λ x. λ y. x) a\n",   // Ly.a *
             //doc: "(λx.x)(λz.z)(λb.b)a\n", // a *
             //doc: "(λx.x)((λy.y)z)\n",   // z *
             //doc: "(λz.z)(λy.y y)(λx.x a)\n",    // aa 
