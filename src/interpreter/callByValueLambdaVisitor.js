@@ -54,6 +54,13 @@ export default class myLambdaVisitor extends lambdaVisitor {
                     console.log("SOLUTION: ", this.getBodyText(solution), "type: ", solution.constructor.name);
                 }
             }
+
+            if(solution instanceof lambdaParser.AbstractionContext) {
+                console.log()
+                console.log("is abstraction");
+                console.log()
+                this.visitAbstraction(solution);
+            }
             /* let leftChild = solution.getChild(0);
             if(leftChild.getText() == '(') {
                 leftChild = solution.getChild(1).getChild(0);
@@ -90,6 +97,14 @@ export default class myLambdaVisitor extends lambdaVisitor {
             console.log("*>* bodyScope type: ", bodyScope.constructor.name, ", (bodyScope= ", this.getBodyText(bodyScope));
 
             body = this.getBodyText(bodyScope);
+
+            /* if(bodyScope instanceof lambdaParser.AbstractionContext) {
+                for(let [key, value] of this.definitions) {
+                    if(body.includes(key)) {
+                        body = this.getBodyText(this.visit(bodyScope));
+                    }
+                }
+            }    */
             
             console.log("> BODY: ", body);
         }

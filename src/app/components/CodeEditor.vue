@@ -35,7 +35,7 @@ export default {
             //doc: "true = λx.λy.x\nfalse = λx.λy.y\ntest = λb.λc.λa.b c a\nand = λb.λc.b c false\nor = λb.λc.b true(c true false)\nnot = λb.b false true\nor true false\n",
             //doc: "true = λx.λy.x\nfalse = λx.λy.y\ntest = λb.λc.λa.b c a\nand = λb.λc.b c false\nor = λb.λc.b true(c true false)\nnot = λb.b false true\ntest true v u\n",
             //doc: "true = λx.λy.x\nfalse = λx.λy.y\ntest = λb.λc.λa.b c a\nand = λb.λc.b c false\nor = λb.λc.b true(c true false)\nnot = λb.b false true\ntest false v u\n",
-        doc: "true = λx.λy.x\nfalse = λx.λy.y\ntest = λb.λc.λa.b c a\nand = λb.λc.b c false\nor = λb.λc.b true(c true false)\nnot = λb.b false true\nnot (not true)\n",
+        //doc: "true = λx.λy.x\nfalse = λx.λy.y\ntest = λb.λc.λa.b c a\nand = λb.λc.b c false\nor = λb.λc.b true(c true false)\nnot = λb.b false true\nnot (not true)\n",
     //doc: "true = λx.λy.x\nfalse = λx.λy.y\ntest = λb.λc.λa.b c a\nand = λb.λc.b c false\nor = λb.λc.b true(c true false)\nnot = λb.b false true\nand false (not true)\n",
 
     // Simpler examples

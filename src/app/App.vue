@@ -86,10 +86,10 @@ export default {
             let definitions = new Map();
             let lastLine = view.state.doc.lines;
             console.log("lastLine: ", lastLine);
+            let input, solution, steps = null;
             let i = 0;
-            let input = view.state.doc.text[i];
-            let solution, steps = null;
-            while(input != null) {
+            do {
+                input = view.state.doc.text[i++];
                 input = input.replaceAll('λ', '\\lambda');
                 //var input = "Lx.Ly.x\n";
                 console.log(input);
@@ -115,9 +115,14 @@ export default {
                 } else {
                     break;
                 }
-                input = view.state.doc.text[i++];
+            } while(input != null);
+    
+            for(let [key, value] of definitions) {
+                if(solution == value || solution.substring(1, solution.length - 1) == value) {
+                    solution = key;
+                    steps.push(solution);
+                }
             }
-
             solution = solution.replaceAll(' ', '~');
             solution = solution.replaceAll('\\lambda', '\\lambda ');
             console.log("Solution = ", solution);
@@ -129,6 +134,58 @@ export default {
             console.log("Long solution = ", steps);
             return [solution, steps];
         },
+        saveTextAsFile(fileName) {
+            let input, textToWrite = "";
+            input = view.state.doc.text[0];
+            let i = 1;
+            while(input != null && input != '') {
+                input = input.replaceAll('λ', '\\lambda ');
+                textToWrite = textToWrite + input + '\n';
+                input = view.state.doc.text[i++];
+            };
+            let textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
+            let downloadLink = document.createElement("a");
+            downloadLink.download = fileName;
+            downloadLink.innerHTML = "Download File";
+            if(window.webkitURL != null) {
+                downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+            } else {
+                downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+                downloadLink.onclick = destroyClickedElement;
+                downloadLink.style.display = "none";
+                document.body.appendChild(downloadLink);
+            }
+
+            downloadLink.click();
+        },
+        importTextFromFile() {
+            const [file] = document.querySelector("input[type=file]").files;
+            const reader = new FileReader();
+
+            reader.addEventListener(
+                "load",
+                () => {
+                    let transaction = view.state.update({
+                        changes: { from: 0, to: view.state.doc.length, insert: ""},
+                    });
+                    view.dispatch(transaction);
+
+                    transaction = view.state.update({
+                        changes: { from: 0, insert: reader.result},
+                        selection: {
+                            anchor: view.state.doc.length + 1,
+                        },
+                    });
+                    view.dispatch(transaction);
+                    this.printGreekLetter();
+                },
+                false
+            );
+
+            if(file) {
+                reader.readAsText(file);
+            }
+        }
     },
 };
 </script>
@@ -151,10 +208,12 @@ export default {
                             </DropDownItem>
                         </div>
                     </DropDown>
-                    <button>Upload</button>
-                    <button>Save</button>
+                    <button>
+                    <label for="upload-file">Upload</label>
+                        <input type="file" @change="importTextFromFile()" accept=".txt" id="upload-file"/>
+                    </button>
+                    <button @click="saveTextAsFile('lambda_kalkul')">Save</button>
                 </div>
-                <!-- <CodeEditor @keydown="printLambda"></CodeEditor> -->
                 <CodeEditor @keyup="printGreekLetter"></CodeEditor>
             </div>
             <div id="results">
