@@ -1,9 +1,9 @@
 <template>
     <div id="steps">
             <span>
-                <div id="line" v-for="(step, index) in steps" :key="index">
-                    {{ index + 1 + '.step'}}
-                    <math-jax :latex="step" :block="true"></math-jax>
+                <div id="line" v-for="index in nsteps" :key="index">
+                    {{index + '.step'}}
+                    <math-jax :latex="steps[index - 1]" :block="true"></math-jax>
                 </div>
             </span>
     </div>
@@ -15,6 +15,10 @@ export default {
         steps: {
             type: Array[String],
             default: '',
+        },
+        nsteps: {
+            type: Number,
+            default: 0,
         }
     }
 }

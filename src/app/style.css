@@ -107,6 +107,12 @@ header h1 {
     overflow: auto;
 }
 
+#code_input {
+    background-color: #EAEAEA;
+    flex: 1;
+    height: 90%;
+}
+
 .btn_heading_row {
     display: flex;
     flex-direction: row;

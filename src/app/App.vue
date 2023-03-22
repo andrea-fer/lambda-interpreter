@@ -2,6 +2,7 @@
 import CodeEditor from "./components/CodeEditor.vue";
 import SolutionShort from "./components/SolutionShort.vue"
 import SolutionSteps from "./components/SolutionSteps.vue"
+import CodeInput from "./components/CodeInput.vue"
 import DropDown from "./components/DropDown.vue";
 import DropDownItem from "./components/DropDownItem.vue";
 import antlr4 from "antlr4";
@@ -9,12 +10,14 @@ const { CommonTokenStream, InputStream } = antlr4;
 import lambdaLexer from "../interpreter/lambdaLexer.js";
 import lambdaParser from "../interpreter/lambdaParser.js";
 import callByValueLambdaVisitor from "../interpreter/callByValueLambdaVisitor.js";
+import CodeInputVue from './components/CodeInput.vue';
 
 export default {
     components: {
         CodeEditor,
         SolutionShort,
         SolutionSteps,
+        CodeInput,
         DropDown,
         DropDownItem,
     },
@@ -25,7 +28,8 @@ export default {
             strategies: [
                 'Call by value',
                 'Call by name',
-            ]
+            ],
+            nsteps: 0
         }
     },
     methods: {
@@ -139,7 +143,7 @@ export default {
             input = view.state.doc.text[0];
             let i = 1;
             while(input != null && input != '') {
-                input = input.replaceAll('λ', '\\lambda ');
+                input = input.replaceAll('λ', '\\lambda');
                 textToWrite = textToWrite + input + '\n';
                 input = view.state.doc.text[i++];
             };
@@ -185,6 +189,12 @@ export default {
             if(file) {
                 reader.readAsText(file);
             }
+        },
+        incrementVisibleLineNumber(nsteps, steps) {
+            if(nsteps < steps.length) {
+                nsteps++;
+            }            
+            return nsteps;
         }
     },
 };
@@ -199,7 +209,7 @@ export default {
             <div id="help"></div>
             <div id="code_editor">
                 <div class="btn_heading_row">
-                    <button @click="[sol, steps] = printSolution()">EVALUATE</button>
+                    <button @click="[sol, steps] = printSolution(), nsteps = 1">EVALUATE</button>
                     <!-- <button>Strategy<br>call-by-value</button> -->
                     <DropDown title="Strategy">
                         <div>
@@ -225,14 +235,15 @@ export default {
                 </div>
                 <div class="btn_heading_row">
                     <h2>Step-by-step</h2>
-                    <button>Next</button>
-                    <button>View All</button>
+                    <button @click="nsteps = incrementVisibleLineNumber(nsteps, steps)">Next</button>
+                    <button @click="nsteps = steps.length">View All</button>
                 </div>
                 <div id="solution_steps">
-                    <SolutionSteps :steps="steps"></SolutionSteps>
+                    <SolutionSteps :steps="steps" :nsteps="nsteps"></SolutionSteps>
                 </div>
                 <div class="btn_heading_row">
-                    <h2>3.step</h2>
+                    <h2>{{nsteps < steps.length ? (nsteps + 1 + '.step') : ''}}</h2>
+                    <!-- <CodeInput></CodeInput> -->
                     <textarea></textarea>
                     <button>Try</button>
                 </div>
