@@ -1,6 +1,7 @@
 <template>
     <div id="sol">
-        <math-jax :latex="solution" :block="true"></math-jax>
+        <div v-katex="'$' + solution + '$'"></div>
+        <!-- <math-jax :latex="solution" :block="true"></math-jax> -->
     </div>
 </template>
 
