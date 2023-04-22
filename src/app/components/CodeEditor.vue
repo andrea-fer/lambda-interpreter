@@ -1,11 +1,12 @@
 <template>
-    <div id="editor"></div>
+<div id="editor_definitions">
+    <div :ref="editorRef"></div>
+</div>
 </template>
 
 <script>
-import { EditorView } from "../../../node_modules/codemirror";
 import { EditorState } from '@codemirror/state';
-import { lineNumbers, highlightActiveLineGutter, highlightSpecialChars, drawSelection, dropCursor, 
+import { EditorView, lineNumbers, highlightActiveLineGutter, highlightSpecialChars, drawSelection, dropCursor, 
     rectangularSelection, crosshairCursor, highlightActiveLine, keymap, scrollPastEnd } from '@codemirror/view';
 import { foldGutter, indentOnInput, syntaxHighlighting, defaultHighlightStyle, 
     bracketMatching, foldKeymap } from '@codemirror/language';
@@ -13,21 +14,26 @@ import { history, defaultKeymap, historyKeymap } from '@codemirror/commands';
 import { highlightSelectionMatches, searchKeymap } from '@codemirror/search';
 import { closeBrackets, autocompletion, closeBracketsKeymap, completionKeymap } from '@codemirror/autocomplete';
 import { lintKeymap } from '@codemirror/lint';
-
 import { LambdaLanguageSupport } from "../../lang-lambda";
 
 const lambdaLanguageSupport = LambdaLanguageSupport();
 
 export default {
+    data() {
+        return {
+            editorRef: 'editor_definitions',
+            view: null
+        };
+    },
     mounted() {
-        window.view = new EditorView({
-    // Church numerals 
+        const state = EditorState.create({
+// Church numerals 
     //doc: "0 = λs.λz.z\n1 = λs.z.s z\n2 = λs.λz.s(s z)\n3 = λs.λz.s(s(s z))\nadd = λm.λn.λs.λz.m s(n s z)\ntimes = λm.λn.m(add n)0\nsucc = λn.λs.λz.s(n s z)\niszero = λm.m(λx.false)true\ntimes 0 1\n",
             //doc: "0 = λs.λz.z\n1 = λs.z.s z\n2 = λs.λz.s(s z)\n3 = λs.λz.s(s(s z))\nadd = λm.λn.λs.λz.m s(n s z)\ntimes = λm.λn.m(add n)0\nsucc = λn.λs.λz.s(n s z)\niszero = λm.m(λx.false)true\nsucc (succ 0)\n",
             //doc: "0 = λs.λz.z\n1 = λs.z.s z\n2 = λs.λz.s(s z)\n3 = λs.λz.s(s(s z))\nadd = λm.λn.λs.λz.m s(n s z)\ntimes = λm.λn.m(add n)0\nsucc = λn.λs.λz.s(n s z)\niszero = λm.m(λx.false)true\nadd 1 (succ 1)\n",
             //doc: "0 = λs.λz.z\n1 = λs.z.s z\n2 = λs.λz.s(s z)\n3 = λs.λz.s(s(s z))\nadd = λm.λn.λs.λz.m s(n s z)\ntimes = λm.λn.m(add n)0\nsucc = λn.λs.λz.s(n s z)\niszero = λm.m(λx.false)true\nadd 1 1\n",
             //doc: "0 = λs.λz.z\n1 = λs.z.s z\n2 = λs.λz.s(s z)\n3 = λs.λz.s(s(s z))\nadd = λm.λn.λs.λz.m s(n s z)\ntimes = λm.λn.m(add n)0\nsucc = λn.λs.λz.s(n s z)\niszero = λm.m(λx.false)true\nadd 0 1\n",
-    
+
     // Church booleans
             doc: "true = λx.λy.x\nfalse = λx.λy.y\ntest = λb.λc.λa.b c a\nand = λb.λc.b c false\nor = λb.λc.b true(c true false)\nnot = λb.b false true\nnot true\n",
             //doc: "true = λx.λy.x\nfalse = λx.λy.y\ntest = λb.λc.λa.b c a\nand = λb.λc.b c false\nor = λb.λc.b true(c true false)\nnot = λb.b false true\nand true true\n",
@@ -88,10 +94,37 @@ export default {
                     ...lintKeymap
                 ]),
             ]],
-            parent: document.querySelector("#editor"),
         });
+        
+        this.view = new EditorView({
+            state,
+            parent: document.querySelector("#editor_definitions"),
+      });
+  },
+    beforeUnmount() {
+        this.view.destroy();
     },
 };
 </script>
 
-<style></style>
+<style>
+#editor_definitions {
+    height: 100%;
+}
+
+.cm-gutters {
+    /*min-height: 0 !important;*/
+    /* max-height: auto !important; */
+}
+
+.cm-content {
+    padding-bottom: 0 !important;
+}
+
+.cm-editor { 
+    height: 100%;
+}
+.cm-scroller { 
+    overflow: auto;
+}
+</style>

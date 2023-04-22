@@ -1,11 +1,12 @@
 <template>
-    <div id="code_input" @change = {handleChange}></div>
+    <div class="code_input" :id="editorRef" @change = {handleChange}>
+        <div :ref="editorRef"></div>
+    </div>
 </template>
 
 <script>
-import { EditorView } from "../../../node_modules/codemirror";
 import { EditorState } from '@codemirror/state';
-import { lineNumbers, highlightActiveLineGutter, highlightSpecialChars, drawSelection, dropCursor, 
+import { EditorView, lineNumbers, highlightActiveLineGutter, highlightSpecialChars, drawSelection, dropCursor, 
     rectangularSelection, crosshairCursor, highlightActiveLine, keymap, scrollPastEnd } from '@codemirror/view';
 import { foldGutter, indentOnInput, syntaxHighlighting, defaultHighlightStyle, 
     bracketMatching, foldKeymap } from '@codemirror/language';
@@ -13,20 +14,26 @@ import { history, defaultKeymap, historyKeymap } from '@codemirror/commands';
 import { highlightSelectionMatches, searchKeymap } from '@codemirror/search';
 import { closeBrackets, autocompletion, closeBracketsKeymap, completionKeymap } from '@codemirror/autocomplete';
 import { lintKeymap } from '@codemirror/lint';
-
 import { LambdaLanguageSupport } from "../../lang-lambda";
 
 const lambdaLanguageSupport = LambdaLanguageSupport();
 
 export default {
+    data() {
+        return {
+            editorRef: `editor-${Math.floor(Math.random() * 100000)}`,
+            view: null
+        }
+    },
     mounted() {
-        window.view = new EditorView({
+        const state = EditorState.create({
             doc: "",
             extensions: [[
                 lambdaLanguageSupport,
                 EditorState.transactionFilter.of(tr => {
                     return tr.newDoc.lines > 1 ? [] : [tr]
                 }),
+                lineNumbers(),
                 highlightActiveLineGutter(),
                 highlightSpecialChars(),
                 history(),
@@ -53,13 +60,26 @@ export default {
                     ...lintKeymap
                 ]),
             ]],
-            parent: document.querySelector("#code_input"),
+        });
+
+        this.view = new EditorView({
+            state,
+            parent: document.querySelector(`#${this.editorRef}`),
         });
     },
+    beforeUnmount() {
+        this.view.destroy();
+    }
 };
 
 </script>
 
 <style>
+
+.code_input {
+    background-color: #EAEAEA;
+    flex: 1;
+    height: 90%;
+}
 
 </style>

@@ -29,24 +29,19 @@ export default {
                 'Call by value',
                 'Call by name',
             ],
-            nsteps: 0
+            nsteps: 0,
         }
     },
     methods: {
-        printLambda(event) {
-            if (event.key !== "\\") {
-                return;
-            }
-            event.preventDefault();
-            let transaction = view.state.update({
-                changes: { from: view.state.selection.main.head, insert: "λ" },
-                selection: {
-                    anchor: view.state.selection.main.head + 1,
-                },
-            });
-            view.dispatch(transaction);
+        logDocs() {
+            const doc1 = this.$refs.editor_definitions.view.state.doc;
+            const doc2 = this.$refs.editor_guess.view.state.doc;
+            const doc3 = this.$refs.editor_redex.view.state.doc;
+            console.log("Doc 1:", doc1.toString());
+            console.log("Doc 2:", doc2.toString());
+            console.log("Doc 3:", doc3.toString());
         },
-        printGreekLetter(event) {
+        printGreekLetter(event, editorView) {
             let dictionary = {
                 "\\alpha": "α",
                 "\\beta": "β",
@@ -73,17 +68,18 @@ export default {
                 "\\psi": "ψ",
                 "\\omega": "ω"
             }
+            
+            let changes = [];
             for(let word in dictionary) {  
-                let text = view.state.doc.toString();
+                let text = editorView.state.doc.toString();
                 let pos = 0;
-                let changes = [];
                 let symbol = dictionary[word];
                 for (let next; (next = text.indexOf(word, pos)) > -1;) {
                     changes.push({from: next, to: next + word.length, insert: symbol});
                     pos = next + 1;
+                }
             }
-                view.dispatch({changes});
-            }
+            editorView.dispatch({changes});
         },
         printSolution(event) {
             //console.log("Hello");
@@ -138,14 +134,14 @@ export default {
             console.log("Long solution = ", steps);
             return [solution, steps];
         },
-        saveTextAsFile(fileName) {
+        saveTextAsFile(fileName, editorView) {
             let input, textToWrite = "";
-            input = view.state.doc.text[0];
+            input = editorView.state.doc.text[0];
             let i = 1;
             while(input != null && input != '') {
                 input = input.replaceAll('λ', '\\lambda');
                 textToWrite = textToWrite + input + '\n';
-                input = view.state.doc.text[i++];
+                input = editorView.state.doc.text[i++];
             };
             let textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
             let downloadLink = document.createElement("a");
@@ -162,33 +158,32 @@ export default {
 
             downloadLink.click();
         },
-        importTextFromFile() {
-            const [file] = document.querySelector("input[type=file]").files;
+        importTextFromFile(editorView, input_id) {
+            const [file] = document.querySelector(`#${input_id}[type=file]`).files;
             const reader = new FileReader();
+            if(file) {
+                reader.readAsText(file);
+            }
 
             reader.addEventListener(
                 "load",
                 () => {
-                    let transaction = view.state.update({
-                        changes: { from: 0, to: view.state.doc.length, insert: ""},
-                    });
-                    view.dispatch(transaction);
-
-                    transaction = view.state.update({
-                        changes: { from: 0, insert: reader.result},
-                        selection: {
-                            anchor: view.state.doc.length + 1,
-                        },
-                    });
-                    view.dispatch(transaction);
-                    this.printGreekLetter();
+                    let fileContent = reader.result;
+                    console.log(fileContent);
+                    if(input_id === "upload-file-redex"){
+                        if(fileContent.includes("\n")) {
+                            fileContent = fileContent.substring(0, fileContent.indexOf("\n"));
+                        }
+                    }
+                    let changes = [
+                        { from: 0, to: editorView.state.doc.length, insert: "" },
+                        { from: 0, insert: fileContent }
+                    ];
+                    editorView.dispatch({changes});
+                    this.printGreekLetter(null, editorView);
                 },
                 false
             );
-
-            if(file) {
-                reader.readAsText(file);
-            }
         },
         incrementVisibleLineNumber(nsteps, steps) {
             if(nsteps < steps.length) {
@@ -209,7 +204,8 @@ export default {
             <div id="help"></div>
             <div id="code_editor">
                 <div class="btn_heading_row">
-                    <button @click="[sol, steps] = printSolution(), nsteps = 1">EVALUATE</button>
+                    <!-- <button @click="[sol, steps] = printSolution(), nsteps = 1">EVALUATE</button> -->
+                    <button @click="logDocs">Log Docs</button>
                     <!-- <button>Strategy<br>call-by-value</button> -->
                     <DropDown title="Strategy">
                         <div>
@@ -219,12 +215,20 @@ export default {
                         </div>
                     </DropDown>
                     <button>
-                    <label for="upload-file">Upload</label>
-                        <input type="file" @change="importTextFromFile()" accept=".txt" id="upload-file"/>
+                        <label for="upload-file-redex">Upload Redex</label>
+                        <input type="file" @change="importTextFromFile(this.$refs.editor_redex.view, 'upload-file-redex')" accept=".txt" id="upload-file-redex"/>
                     </button>
-                    <button @click="saveTextAsFile('lambda_kalkul')">Save</button>
+                    <button @click="saveTextAsFile('lambda_kalkul_redex', this.$refs.editor_redex.view)">Save Redex</button>
                 </div>
-                <CodeEditor @keyup="printGreekLetter"></CodeEditor>
+                <CodeInput ref="editor_redex" @keyup="printGreekLetter($event, this.$refs.editor_redex.view)"></CodeInput>
+                <div class="btn_heading_row">
+                    <button>
+                        <label for="upload-file-definitions">Upload Definitions</label>
+                        <input type="file" @change="importTextFromFile(this.$refs.editor_definitions.view, 'upload-file-definitions')" accept=".txt" id="upload-file-definitions"/>
+                    </button>
+                    <button @click="saveTextAsFile('lambda_kalkul_definitions', this.$refs.editor_definitions.view)">Save Definitions</button>
+                </div>
+                <CodeEditor ref="editor_definitions" @keyup="printGreekLetter($event, this.$refs.editor_definitions.view)"></CodeEditor>
             </div>
             <div id="results">
                 <div class="btn_heading_row">
@@ -243,8 +247,8 @@ export default {
                 </div>
                 <div class="btn_heading_row">
                     <h2>{{nsteps < steps.length ? (nsteps + 1 + '.step') : ''}}</h2>
-                    <!-- <CodeInput></CodeInput> -->
-                    <textarea></textarea>
+                    <CodeInput ref="editor_guess" @keyup="printGreekLetter($event, this.$refs.editor_guess.view)"></CodeInput>
+                    <!-- <textarea></textarea> -->
                     <button>Try</button>
                 </div>
             </div>
