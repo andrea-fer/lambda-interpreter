@@ -51,7 +51,7 @@ export default {
             //doc: "(λx.x)(λz.z)(λb.b)a\n", // a *
             //doc: "(λx.x)((λy.y)z)\n",   // z *
             //doc: "(λz.z)(λy.y y)(λx.x a)\n",    // aa 
-            doc: "(λz.z) (λz.z z) (λz.z y)\n",    // yy 
+            //doc: "(λz.z) (λz.z z) (λz.z y)\n",    // yy 
             //doc: "(λx.λy.x y y)(λa.a)b\n",  // bb *
             //doc: "(λx.λy.x y y)(λa.a)\n",   // λy. (λa.a) y y *
             //doc: "(λx.λy.x y y) (λy.y) y\n",  // yy *

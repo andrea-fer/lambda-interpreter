@@ -92,6 +92,9 @@ export default {
             do {
                 input = this.$refs.editor_definitions.view.state.doc.text[i++];
                 if(input == null || input.length == 0) {
+                    console.log(input)
+                    console.log("input is null ", input == null)
+                    console.log("input len ", input.length)
                     console.log("break")
                     break;
                 }
@@ -157,8 +160,11 @@ export default {
                 console.log("Long solution = ", steps);
                 return [solution, steps];
             }
-
-            return ["", ""];
+            console.log(input)
+            console.log("input is null ", input == null)
+            console.log("input len ", input.length)
+            console.log("exit func")
+            return ["", null];
         },
         saveTextAsFile(fileName, editorView) {
             let input, textToWrite = "";
@@ -197,6 +203,7 @@ export default {
                     let fileContent = reader.result;
                     console.log(fileContent);
                     if(input_id === "upload-file-redex"){
+                        // if user tries to load multiline file, accept only first line
                         if(fileContent.includes("\n")) {
                             fileContent = fileContent.substring(0, fileContent.indexOf("\n"));
                         }
@@ -230,7 +237,7 @@ export default {
             <div id="help"></div>
             <div id="code_editor">
                 <div class="btn_heading_row">
-                    <button @click="[sol, steps] = printSolution(), nsteps = 1">EVALUATE</button>
+                    <button @click="[sol, steps] = printSolution(), nsteps = steps ? 1 : 0">EVALUATE</button>
                     <!-- <button @click="logDocs">Log Docs</button> -->
                     <!-- <button>Strategy<br>call-by-value</button> -->
                     <DropDown title="Strategy">
@@ -265,14 +272,14 @@ export default {
                 </div>
                 <div class="btn_heading_row">
                     <h2>Step-by-step</h2>
-                    <button @click="nsteps = incrementVisibleLineNumber(nsteps, steps)">Next</button>
-                    <button @click="nsteps = steps.length">View All</button>
+                    <button @click="nsteps = steps ? incrementVisibleLineNumber(nsteps, steps) : null">Next</button>
+                    <button @click="nsteps = steps ? steps.length : 0">View All</button>
                 </div>
                 <div id="solution_steps">
                     <SolutionSteps :steps="steps" :nsteps="nsteps"></SolutionSteps>
                 </div>
                 <div class="btn_heading_row">
-                    <h2>{{nsteps < steps.length ? (nsteps + 1 + '.step') : ''}}</h2>
+                    <h2>{{ (steps && nsteps < steps.length) ? (nsteps + 1 + '.step') : '' }}</h2>
                     <CodeInput ref="editor_guess" @keyup="printGreekLetter($event, this.$refs.editor_guess.view)"></CodeInput>
                     <!-- <textarea></textarea> -->
                     <button>Try</button>

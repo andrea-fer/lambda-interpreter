@@ -13,10 +13,10 @@ export default {};
 <style scoped>
     .line {
         display: block;
-        z-index: 2;
-        height: 5rem;
+        padding: 1.2rem 0.07rem;
         background-color: #CBC5EA;
         width: 100%;
         color: black;
+        text-align: center;
     }
 </style>

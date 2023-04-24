@@ -32,12 +32,19 @@ export default {
         padding: 0 !important;
     }
     .hidden {
-         margin: 0;
+        margin: 0;
+        z-index: 3;
+        position: relative;
+        width: 100%;
     }
 
     .visible {
         cursor: pointer;
-        padding: 0.6em 1.2em;
-        margin: 0;
+        width:  100%;
+        height: 100%;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 </style>
