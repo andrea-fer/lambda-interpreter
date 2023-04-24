@@ -84,15 +84,20 @@ export default {
         printSolution(event) {
             //console.log("Hello");
             let definitions = new Map();
-            let lastLine = view.state.doc.lines;
-            console.log("lastLine: ", lastLine);
+            /* let lastLine = view.state.doc.lines;
+            console.log("lastLine: ", lastLine); */
             let input, solution, steps = null;
             let i = 0;
+            // parse input from editor_definitions
             do {
-                input = view.state.doc.text[i++];
+                input = this.$refs.editor_definitions.view.state.doc.text[i++];
+                if(input == null || input.length == 0) {
+                    console.log("break")
+                    break;
+                }
+                console.log(input.length);
                 input = input.replaceAll('λ', '\\lambda');
                 //var input = "Lx.Ly.x\n";
-                console.log(input);
                 let chars = new InputStream(input, true);
                 let lexer = new lambdaLexer(chars);
                 let tokens = new CommonTokenStream(lexer);
@@ -100,9 +105,9 @@ export default {
 
                 parser.buildParseTrees = true;
                 let tree = parser.term();
-                for(let [key, value] of definitions) {
+                /* for(let [key, value] of definitions) {
                         console.log("*", key, ":", value, "*");
-                }
+                } */
                 [solution, steps] = new callByValueLambdaVisitor(tree, definitions).visit(tree);
                 // if steps == null -> term is definition
                 if(steps == null) {
@@ -116,23 +121,44 @@ export default {
                     break;
                 }
             } while(input != null);
-    
-            for(let [key, value] of definitions) {
-                if(solution == value || solution.substring(1, solution.length - 1) == value) {
-                    solution = key;
-                    steps.push(solution);
+
+            // parse input from editor_redex
+            input = this.$refs.editor_redex.view.state.doc.text[0];
+            if(input != null && input.length > 0) {
+                input = input.replaceAll('λ', '\\lambda');
+                //var input = "Lx.Ly.x\n";
+                console.log(input);
+                let chars = new InputStream(input, true);
+                let lexer = new lambdaLexer(chars);
+                let tokens = new CommonTokenStream(lexer);
+                let parser = new lambdaParser(tokens);
+
+                parser.buildParseTrees = true;
+                let tree = parser.term();
+                /* for(let [key, value] of definitions) {
+                        console.log("*", key, ":", value, "*");
+                } */
+                [solution, steps] = new callByValueLambdaVisitor(tree, definitions).visit(tree);
+                solution = solution.replaceAll(' ', '~');
+                solution = solution.replaceAll('\\lambda', '\\lambda ');
+                console.log("Solution = ", solution);
+                let stepsLen = steps.length;
+                for(let i = 0; i < stepsLen; i++) {
+                    steps[i] = steps[i].replaceAll(' ', '~');
+                    steps[i] = steps[i].replaceAll('\\lambda', '\\lambda ');
                 }
+                
+                for(let [key, value] of definitions) {
+                    if(solution == value || solution.substring(1, solution.length - 1) == value) {
+                        solution = key;
+                        steps.push(solution);
+                    }
+                }
+                console.log("Long solution = ", steps);
+                return [solution, steps];
             }
-            solution = solution.replaceAll(' ', '~');
-            solution = solution.replaceAll('\\lambda', '\\lambda ');
-            console.log("Solution = ", solution);
-            let stepsLen = steps.length;
-            for(let i = 0; i < stepsLen; i++) {
-                steps[i] = steps[i].replaceAll(' ', '~');
-                steps[i] = steps[i].replaceAll('\\lambda', '\\lambda ');
-            }
-            console.log("Long solution = ", steps);
-            return [solution, steps];
+
+            return ["", ""];
         },
         saveTextAsFile(fileName, editorView) {
             let input, textToWrite = "";
@@ -204,8 +230,8 @@ export default {
             <div id="help"></div>
             <div id="code_editor">
                 <div class="btn_heading_row">
-                    <!-- <button @click="[sol, steps] = printSolution(), nsteps = 1">EVALUATE</button> -->
-                    <button @click="logDocs">Log Docs</button>
+                    <button @click="[sol, steps] = printSolution(), nsteps = 1">EVALUATE</button>
+                    <!-- <button @click="logDocs">Log Docs</button> -->
                     <!-- <button>Strategy<br>call-by-value</button> -->
                     <DropDown title="Strategy">
                         <div>

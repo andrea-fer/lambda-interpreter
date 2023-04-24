@@ -32,9 +32,4 @@ export default {
         align-items: center;
         padding-left: 1em;
     }
-
-    mjx-container[jax="SVG"][display="true"] {
-        display: block;
-        text-align: left !important;
-    }
 </style>

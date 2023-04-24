@@ -16,11 +16,4 @@ export default {
 }
 </script>
 
-<style>
-    mjx-container[jax="SVG"][display="true"] {
-        display: block;
-        text-align: left !important;
-        margin: 0 !important;
-        padding: 1em !important;
-    }
-</style>
+<style></style>
