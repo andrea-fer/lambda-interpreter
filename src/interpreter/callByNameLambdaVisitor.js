@@ -5,7 +5,7 @@ import lambdaVisitor from "./lambdaVisitor.js";
 import lambdaParser from "./lambdaParser.js";
 
 // Tree Traverser Class
-export default class callByValueLambdaVisitor extends lambdaVisitor {
+export default class callByNameLambdaVisitor extends lambdaVisitor {
 
     constructor(ctx, definitions) {
         super();
@@ -17,7 +17,7 @@ export default class callByValueLambdaVisitor extends lambdaVisitor {
     }
 	// Visit a parse tree produced by lambdaParser#term.
 	visitTerm(ctx) {
-        console.log("-------------------Call By Value----------------")
+        console.log("-------------------Call By Name----------------")
         console.log("°°TERM IS : ", this.getBodyText(ctx));
         if(ctx.getChild(0) instanceof lambdaParser.DefinitionContext) {
             return this.visitDefinition(ctx);

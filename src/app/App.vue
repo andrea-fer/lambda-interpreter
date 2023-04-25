@@ -4,13 +4,12 @@ import SolutionShort from "./components/SolutionShort.vue"
 import SolutionSteps from "./components/SolutionSteps.vue"
 import CodeInput from "./components/CodeInput.vue"
 import DropDown from "./components/DropDown.vue";
-import DropDownItem from "./components/DropDownItem.vue";
 import antlr4 from "antlr4";
 const { CommonTokenStream, InputStream } = antlr4;
 import lambdaLexer from "../interpreter/lambdaLexer.js";
 import lambdaParser from "../interpreter/lambdaParser.js";
 import callByValueLambdaVisitor from "../interpreter/callByValueLambdaVisitor.js";
-import CodeInputVue from './components/CodeInput.vue';
+import callByNameLambdaVisitor from "../interpreter/callByNameLambdaVisitor.js";
 
 export default {
     components: {
@@ -19,16 +18,12 @@ export default {
         SolutionSteps,
         CodeInput,
         DropDown,
-        DropDownItem,
     },
     data() {
         return {
             sol: '',
             steps: '',
-            strategies: [
-                'Call by value',
-                'Call by name',
-            ],
+            strategy: {id: 1, name: 'Call by Value'},
             nsteps: 0,
         }
     },
@@ -84,6 +79,18 @@ export default {
         printSolution(event) {
             //console.log("Hello");
             let definitions = new Map();
+            // select visitor
+            let visitor;
+            switch(this.strategy.id) {
+                case 1:
+                    visitor = callByValueLambdaVisitor;
+                    break;
+                case 2:
+                    visitor = callByNameLambdaVisitor;
+                    break;
+                default:
+                    return ["", null];
+            }
             /* let lastLine = view.state.doc.lines;
             console.log("lastLine: ", lastLine); */
             let input, solution, steps = null;
@@ -111,7 +118,7 @@ export default {
                 /* for(let [key, value] of definitions) {
                         console.log("*", key, ":", value, "*");
                 } */
-                [solution, steps] = new callByValueLambdaVisitor(tree, definitions).visit(tree);
+                [solution, steps] = new visitor(tree, definitions).visit(tree);
                 // if steps == null -> term is definition
                 if(steps == null) {
                     definitions.set(solution[0], solution[1]);
@@ -141,7 +148,7 @@ export default {
                 /* for(let [key, value] of definitions) {
                         console.log("*", key, ":", value, "*");
                 } */
-                [solution, steps] = new callByValueLambdaVisitor(tree, definitions).visit(tree);
+                [solution, steps] = new visitor(tree, definitions).visit(tree);
                 solution = solution.replaceAll(' ', '~');
                 solution = solution.replaceAll('\\lambda', '\\lambda ');
                 console.log("Solution = ", solution);
@@ -232,6 +239,7 @@ export default {
     <div id="content">
         <header>
             <h1>LAMBDA CALCULUS INTERPRETER</h1>
+            <!-- <p>Strategy = {{ strategy.name }}</p> -->
         </header>
         <div id="layout">
             <div id="help"></div>
@@ -240,13 +248,7 @@ export default {
                     <button @click="[sol, steps] = printSolution(), nsteps = steps ? 1 : 0">EVALUATE</button>
                     <!-- <button @click="logDocs">Log Docs</button> -->
                     <!-- <button>Strategy<br>call-by-value</button> -->
-                    <DropDown title="Strategy">
-                        <div>
-                            <DropDownItem v-for="item in strategies" :key="item">
-                                {{ item }}
-                            </DropDownItem>
-                        </div>
-                    </DropDown>
+                    <DropDown @option-selected="strategy = $event" title="Strategy"></DropDown>
                     <button>
                         <label for="upload-file-redex">Upload Redex</label>
                         <input type="file" @change="importTextFromFile(this.$refs.editor_redex.view, 'upload-file-redex')" accept=".txt" id="upload-file-redex"/>

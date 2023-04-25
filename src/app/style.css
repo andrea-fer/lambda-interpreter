@@ -31,7 +31,7 @@ a:hover {
 
 button {
     border: 1px solid transparent;
-    padding: 0.6em 1.2em;
+    /* padding: 0.6em 1.2em; */
     font-size: 1em;
     font-weight: 500;
     font-family: inherit;
@@ -47,9 +47,13 @@ button:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;
 }
 
-label {
-   cursor: pointer;
-   /* Style as you please, it will become the visible UI component. */
+button label {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    cursor: pointer;
 }
 
 #upload-file-redex, #upload-file-definitions {
@@ -105,9 +109,9 @@ header h1 {
     display: flex;
     flex-direction: row;
     background-color: #A8A4BA;
-    height: 10%;
+    /* height: 50px; */
     align-items: center;
-    z-index: 1;
+    z-index: auto;
 }
 .btn_heading_row>button {
     flex: 1;
@@ -162,6 +166,9 @@ footer {
         width: 50%;
         flex: 1;
     }
+    .btn_heading_row {
+        height: 2rem;
+    }
 }
 
 /* phone resolution */
@@ -174,7 +181,7 @@ footer {
         flex: 1;
     }
     .btn_heading_row {
-        height: 15%;
+        height: 2rem;
     }
     #editor {
         height: 85%;
