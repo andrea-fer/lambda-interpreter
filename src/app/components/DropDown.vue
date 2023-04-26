@@ -1,6 +1,9 @@
 <template>
     <button class="dropdown">
-        <div class="visible" v-html="title" @click="show = !show"></div>
+        <div class="visible" @click="show = !show">
+            <p>Strategy</p>
+            <p>{{ selected.name }}</p>
+        </div>
         <ul class="hidden" v-if="show">
             <li v-for="option in options" :key="option.id" @click="select(option)">
                 {{ option.name }}
@@ -22,7 +25,7 @@ export default {
                 {id: 1, name: 'Call by Value'},
                 {id: 2, name: 'Call by Name'},
             ],
-            selected: null,
+            selected: {id: 1, name: 'Call by Value'},
         };
     },
     methods: {
@@ -39,6 +42,7 @@ export default {
 
     .dropdown {
         padding: 0 !important;
+        justify-content: start;
     }
     .hidden {
         margin: 0;
@@ -47,12 +51,13 @@ export default {
         top: 0;
         padding: 0;
         width: 100%;
-        box-shadow: 3px 3px 3px rgb(105, 105, 105);
+        box-shadow: 3px 3px 3px rgba(105, 105, 105, 0.4);
         background-color: #CBC5EA;
     }
 
     .hidden li {
         list-style-type: none;
+        padding: 0.6em 0;
     }
 
     .hidden li:hover {
@@ -65,9 +70,10 @@ export default {
         z-index: 2;
         position: relative;
         /* height: 100%; */
-        height: 2rem;
+        height: 3rem;
         text-align: center;
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
     }

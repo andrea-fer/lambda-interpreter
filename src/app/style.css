@@ -31,7 +31,7 @@ a:hover {
 
 button {
     border: 1px solid transparent;
-    /* padding: 0.6em 1.2em; */
+    padding: 0.6em 1.2em;
     font-size: 1em;
     font-weight: 500;
     font-family: inherit;
@@ -105,17 +105,35 @@ header h1 {
     height: 90%;
 }
 
+.cm-gutters {
+    padding: 0 2px !important;
+}
+
+.cm-gutters .cm-lineNumbers {
+    width: 22px !important;
+}
+
+.cm-gutter-element {
+    text-align: right;
+}
+
 .btn_heading_row {
     display: flex;
     flex-direction: row;
     background-color: #A8A4BA;
     /* height: 50px; */
+    height: 3rem;
     align-items: center;
     z-index: auto;
 }
 .btn_heading_row>button {
     flex: 1;
     height: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 .btn_heading_row>h2 {
     padding: 0 5%;
@@ -130,19 +148,19 @@ header h1 {
     height: 20%;
 }
 #solution_steps {
-    height: 50%;
+    height: 30%;
 }
 #steps {
     height: 100%;
     overflow: scroll;
 }
-#results textarea {
-    resize: vertical; 
-    height: 100%;
-    max-height: 100%;
-    width: 28vw;
-    line-height: 5em;
-    font-size: 16px;
+
+.guess_message {
+    padding: 1em 1.2em;
+}
+
+#solution_short, #solution_steps {
+    padding: 0.6em 1.2em;
 }
 
 footer {
@@ -167,7 +185,7 @@ footer {
         flex: 1;
     }
     .btn_heading_row {
-        height: 2rem;
+        height: 3rem;
     }
 }
 
@@ -181,7 +199,7 @@ footer {
         flex: 1;
     }
     .btn_heading_row {
-        height: 2rem;
+        height: 3rem;
     }
     #editor {
         height: 85%;
@@ -190,7 +208,7 @@ footer {
         height: 15%;
     }
     #solution_steps {
-        height: 40%;
+        height: 20%;
     }
     #results textarea {
         line-height: 3em;
