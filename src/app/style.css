@@ -117,6 +117,18 @@ header h1 {
     text-align: right;
 }
 
+.cm-scroller {
+    line-height: 2 !important;
+}
+
+.cm-line {
+    padding: 0;
+}
+
+.cm-content {
+    padding: 0 !important;
+}
+
 .btn_heading_row {
     display: flex;
     flex-direction: row;
@@ -155,11 +167,12 @@ header h1 {
     overflow: scroll;
 }
 
-.guess_message {
-    padding: 1em 1.2em;
+.guess_sol_message, .guess_message {
+    height: 2em;
+    padding-left: 0.7em;
 }
 
-#solution_short, #solution_steps {
+#solution_short {
     padding: 0.6em 1.2em;
 }
 

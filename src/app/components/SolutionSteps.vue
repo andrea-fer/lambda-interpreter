@@ -2,7 +2,7 @@
     <div id="steps">
             <span>
                 <div id="line" v-for="index in nsteps" :key="index">
-                    {{index + '.step'}}
+                    <p>{{index + '.step'}}</p>
                     <!-- {{ steps[index - 1] }} -->
                     <div v-katex="'$' + steps[index - 1] + '$'"></div>
                     <!-- <math-jax :latex="steps[index - 1]" :block="true"></math-jax> -->
@@ -31,6 +31,17 @@ export default {
         display: flex;
         flex-direction: row;
         align-items: center;
-        padding-left: 1em;
     }
+
+    #line p {
+        padding: 0.6em 1.2em;
+        background-color: rgba(193, 193, 193, 0.5);
+        border-radius: 5px;
+
+    }
+
+    #line div {
+        padding: 0.6em 1.2em;
+    }
+
 </style>

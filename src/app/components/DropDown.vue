@@ -71,6 +71,7 @@ export default {
         position: relative;
         /* height: 100%; */
         height: 3rem;
+        padding: 0.3em 0;
         text-align: center;
         display: flex;
         flex-direction: column;

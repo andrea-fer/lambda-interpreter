@@ -7,7 +7,7 @@
 <script>
 import { EditorState } from '@codemirror/state';
 import { EditorView, lineNumbers, highlightActiveLineGutter, highlightSpecialChars, drawSelection, dropCursor, 
-    rectangularSelection, crosshairCursor, highlightActiveLine, keymap, scrollPastEnd } from '@codemirror/view';
+    rectangularSelection, crosshairCursor, highlightActiveLine, keymap} from '@codemirror/view';
 import { foldGutter, indentOnInput, syntaxHighlighting, defaultHighlightStyle, 
     bracketMatching, foldKeymap } from '@codemirror/language';
 import { history, defaultKeymap, historyKeymap } from '@codemirror/commands';
@@ -28,7 +28,8 @@ export default {
     mounted() {
         const state = EditorState.create({
             //doc: "",
-            doc: "(λz.z) (λz.z z) (λz.z y)",    // yy 
+            //doc: "(λz.z) (λz.z z) (λz.z y)",    // yy 
+            doc: "((a))",
             extensions: [[
                 lambdaLanguageSupport,
                 EditorState.transactionFilter.of(tr => {
