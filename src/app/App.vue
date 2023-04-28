@@ -11,6 +11,7 @@ import lambdaParser from "../interpreter/lambdaParser.js";
 import callByValueLambdaVisitor from "../interpreter/callByValueLambdaVisitor.js";
 import callByNameLambdaVisitor from "../interpreter/callByNameLambdaVisitor.js";
 import compareLambdaTreesVisitor from "../interpreter/compareLambdaTreesVisitor.js";
+import lambdaErrorListener from "../interpreter/lambdaErrorListener.js";
 
 export default {
     components: {
@@ -85,9 +86,15 @@ export default {
         },
         printSolution(event) {
             //console.log("Hello");
-            this.formatGuessText("", "black");
-            this.formatGuessText("", "black");
+            /* reset member variables */
+            document.querySelector("#show_hide_btn").disabled = false;
+            this.sol = '';
+            this.steps = '';
+            this.nsteps = 0;
+            this.guessAllowed = false;
             this.showSolution = false;
+            this.formatGuessText(".guess_message", "", "black");
+            this.formatGuessText(".guess_message", "", "black");
             let definitions = new Map();
             // select visitor
             let visitor;
@@ -99,6 +106,7 @@ export default {
                     visitor = callByNameLambdaVisitor;
                     break;
                 default:
+                    document.querySelector("#show_hide_btn").disabled = true;
                     return ["", null];
             }
             /* let lastLine = view.state.doc.lines;
@@ -122,7 +130,15 @@ export default {
                 let lexer = new lambdaLexer(chars);
                 let tokens = new CommonTokenStream(lexer);
                 let parser = new lambdaParser(tokens);
-
+                try {
+                    let parser = new lambdaParser(tokens);
+                    parser.removeErrorListeners();
+                    parser.addErrorListener(new lambdaErrorListener());
+                } catch(e) {
+                    console.error(e);
+                    document.querySelector("#show_hide_btn").disabled = true;
+                    return ["", null];
+                }
                 parser.buildParseTrees = true;
                 let tree = parser.term();
                 /* for(let [key, value] of definitions) {
@@ -152,6 +168,8 @@ export default {
                 let lexer = new lambdaLexer(chars);
                 let tokens = new CommonTokenStream(lexer);
                 let parser = new lambdaParser(tokens);
+                parser.removeErrorListeners();
+                parser.addErrorListener(new lambdaErrorListener());
 
                 parser.buildParseTrees = true;
                 let tree = parser.term();
@@ -175,8 +193,8 @@ export default {
                     }
                 }
                 this.guessAllowed = true;
-                this.formatGuessSolText("Try to guess the normal form of the term.", "black");
-                this.formatGuessText("Try to guess the next step of reduction.", "black");
+                this.formatGuessText(".guess_sol_message", "Try to guess the normal form of the term.", "black");
+                this.formatGuessText(".guess_message", "Try to guess the next step of reduction.", "black");
                 console.log("Long solution = ", steps);
                 return [solution, steps];
             }
@@ -184,6 +202,7 @@ export default {
             /* console.log("input is null ", input == null)
             console.log("input len ", input.length)
             console.log("exit func") */
+            document.querySelector("#show_hide_btn").disabled = true;
             return ["", null];
         },
         saveTextAsFile(fileName, editorView) {
@@ -246,63 +265,59 @@ export default {
                 nsteps--;
                 this.guessAllowed = true;
                 if(!this.showSolution) {
-                    this.formatGuessSolText("Try to guess the normal form of the term.", "black");
+                    this.formatGuessText(".guess_sol_message", "Try to guess the normal form of the term.", "black");
                 }
-                this.formatGuessText("Try to guess the next step of reduction.", "black");
+                this.formatGuessText(".guess_message", "Try to guess the next step of reduction.", "black");
             }            
             if(nsteps <= 0) {
                 this.guessAllowed = false;
-                this.formatGuessSolText("", "black");
-                this.formatGuessText("", "black");
+                this.formatGuessText(".guess_sol_message", "", "black");
+                this.formatGuessText(".guess_message", "", "black");
             }
             return nsteps;
         },
         incrementVisibleLineNumber(nsteps, steps) {
             if(nsteps < steps.length) {
                 if(!this.showSolution) {
-                    this.formatGuessSolText("Try to guess the normal form of the term.", "black");
+                    this.formatGuessText(".guess_sol_message", "Try to guess the normal form of the term.", "black");
                 }
-                this.formatGuessText("Try to guess the next step of reduction.", "black");
+                this.formatGuessText(".guess_message", "Try to guess the next step of reduction.", "black");
                 nsteps++;
             }            
             if(nsteps >= steps.length) {
                 this.guessAllowed = false;
-                this.formatGuessSolText("", "black");
-                this.formatGuessText("", "black");
+                this.formatGuessText(".guess_sol_message", "", "black");
+                this.formatGuessText(".guess_message", "", "black");
             }
             return nsteps;
         },
-        compareGuessSol() {
-            let guess = this.$refs.editor_guess_sol.view.state.doc.toString();
-            /* if(guess == null || guess.length <= 0) {
-                this.formatGuessSolText("Invalid input!", "red");
-                return;
-            }
-            
-            if(this.nsteps >= this.steps.length) {
-                console.log("off by one");
-                return;
-            } */
-            //let correct = this.steps[this.steps.length - 1];
-            //let correct = "((a))";
-            //let correct = "((\\lambda x.x))";
-            //let correct = "((\\lambda x.x)(\\lambda x.x))";
-            let correct = "(\\lambda z.z) (\\lambda z.z z) (\\lambda z.z y)";
+        compareGuess(element, correct, guess) {
+            /* build correct term tree */
+            //let correct = "(\\lambda z.z) (\\lambda z.z z) (\\lambda z.z y)";
             //let correct = "(\\lambda x.x) ((\\lambda x.x a) (\\lambda x.x a) (\\lambda x.x a))";
-            
+            if(correct == null || correct.length <= 0) {
+                return;
+            }            
             correct = correct.replaceAll('~', ' ');
-            guess = guess.replaceAll('λ', '\\lambda ');
+            correct = correct.replaceAll('λ', '\\lambda ');
             
             console.log("Correct Solution: ", correct);
-            console.log("Guess: ", guess);
-
+            
             let chars = new InputStream(correct, true);
             let lexer = new lambdaLexer(chars);
             let tokens = new CommonTokenStream(lexer);
             let parser = new lambdaParser(tokens);
-
+            
             parser.buildParseTrees = true;
             let tree_correct = parser.term();
+            
+            /* build guess term tree */
+            if(guess == null || guess.length <= 0) {
+                this.formatGuessText(element, "Invalid input!", "red");
+                return;
+            }
+            console.log("Guess: ", guess);
+            guess = guess.replaceAll('λ', '\\lambda ');
 
             chars = new InputStream(guess, true);
             lexer = new lambdaLexer(chars);
@@ -311,66 +326,38 @@ export default {
 
             parser.buildParseTrees = true;
             let tree_guess = parser.term();
-            
-           /*  console.log(tree_correct)
-            console.log(tree_guess) */
 
             let compareVisitor = new compareLambdaTreesVisitor(tree_correct, tree_guess);
             let comparison = compareVisitor.visitTerm(tree_correct, tree_guess);
 
-            if(comparison == true) {
+            if(comparison) {
                 console.log("Comparison: ", comparison);
                 console.log(correct, " = ", guess);
                 console.log("tree_correct = tree_guess");
-                this.formatGuessSolText("Correct!", "green");
-                this.showSolution = true;
-                /* this.formatGuessText("", "black");           
+                if(element === ".guess_sol_message") {
+                    this.showSolution = true;
+                } else if(element === ".guess_message") {
+                    this.nsteps = this.steps ? this.incrementVisibleLineNumber(this.nsteps, this.steps) : this.nsteps;
+                }
+                this.formatGuessText(element, "Correct!", "green");
+                /* this.formatGuessText(".guess_message", "", "black");           
                 this.guessAllowed = false; */
             } else {
                 console.log("Comparison: ", comparison);
                 console.log(correct, " != ", guess);
                 console.log("tree_correct != tree_guess");
-                this.formatGuessSolText("Wrong!", "red");
+                this.formatGuessText(element, "Wrong!", "red");
             }
         },
-        compareGuess() {
-            let guess = this.$refs.editor_guess.view.state.doc.toString();
-            if(guess == null || guess.length <= 0) {
-                this.formatGuessText("Invalid input!", "red");
-                return;
-            }
-            
-            if(this.nsteps >= this.steps.length) {
-                console.log("off by one");
-                return;
-            }
-            let correct = this.steps[this.nsteps];
-            console.log("Correct Step: ", correct);
-            console.log("Guess: ", guess);
-
-            guess = guess.replaceAll(' ', '~');
-            guess = guess.replaceAll('λ', '\\lambda ');
-
-            if(correct == guess) {
-                this.formatGuessText("Correct!", "green");
-                if(this.nsteps < this.steps.length) {
-                    this.nsteps++;
-                }            
-                if(this.nsteps >= this.steps.length) {
-                    this.guessAllowed = false;
-                }
-                    
+        formatGuessText(element, message, color) {
+            if(element === ".guess_sol_message") {
+                this.guessSolMessage = message;
+            } else if(element === ".guess_message") {
+                this.guessMessage = message;
             } else {
-                this.formatGuessText("Wrong!", "red");
+                return;
             }
-        },
-        formatGuessSolText(message, color) {
-            this.guessSolMessage = message;
-            document.querySelector(".guess_sol_message").style.color = color;
-        },
-        formatGuessText(message, color) {
-            this.guessMessage = message;
-            document.querySelector(".guess_message").style.color = color;
+            document.querySelector(element).style.color = color;
         },
     },
 };
@@ -409,7 +396,7 @@ export default {
             <div id="results">
                 <div class="btn_heading_row">
                     <h2>SOLUTION</h2>
-                    <button @click="showSolution = !showSolution; if(showSolution) formatGuessSolText('', 'black'); else formatGuessSolText('Try to guess the normal form of the term.', 'black');">
+                    <button id="show_hide_btn" @click="showSolution = !showSolution; if(showSolution) formatGuessText('.guess_sol_message', '', 'black'); else formatGuessText('.guess_sol_message', 'Try to guess the normal form of the term.', 'black');">
                         <p v-if="showSolution">Hide</p>
                         <p v-if="!showSolution">Show</p>
                     </button>
@@ -422,14 +409,14 @@ export default {
                 </div>
                 <div class="btn_heading_row">
                     <CodeInput ref="editor_guess_sol" @keyup="printGreekLetter($event, this.$refs.editor_guess_sol.view)"></CodeInput>
-                    <button @click="this.compareGuessSol">Test</button>
-                    <!-- <button :disabled="this.showSolution || this.nsteps == this.steps.length" @click="this.compareGuessSol">Try</button> -->
+                    <!-- <button @click="this.compareGuess(this.sol, this.$refs.editor_guess_sol.view.doc.toString())">Test</button> -->
+                    <button :disabled="this.showSolution || this.nsteps == this.steps.length" @click="this.compareGuess('.guess_sol_message', this.sol, this.$refs.editor_guess_sol.view.state.doc.toString())">Try</button>
                 </div>
                 <div class="btn_heading_row">
                     <h2>Step-by-step</h2>
                     <button @click="nsteps = steps ? decrementVisibleLineNumber(nsteps, steps) : null">Previous</button>
                     <button @click="nsteps = steps ? incrementVisibleLineNumber(nsteps, steps) : null">Next</button>
-                    <button @click="nsteps = steps ? steps.length : 0; this.guessAllowed = false; this.formatGuessSolText('', 'black'); this.formatGuessText('', 'black')">View All</button>
+                    <button @click="nsteps = steps ? steps.length : 0; this.guessAllowed = false; this.formatGuessText('.guess_sol_message', '', 'black'); this.formatGuessText('.guess_message', '', 'black')">View All</button>
                 </div>
                 <div id="solution_steps">
                     <SolutionSteps :steps="steps" :nsteps="nsteps"></SolutionSteps>
@@ -440,7 +427,7 @@ export default {
                 <div class="btn_heading_row">
                     <h2>{{ (steps && nsteps < steps.length) ? (nsteps + 1 + '.step') : '' }}</h2>
                     <CodeInput ref="editor_guess" @keyup="printGreekLetter($event, this.$refs.editor_guess.view)"></CodeInput>
-                    <button :disabled="!this.guessAllowed" @click="this.compareGuess">Try</button>
+                    <button :disabled="!this.guessAllowed" @click="this.compareGuess('.guess_message',this.steps[nsteps], this.$refs.editor_guess.view.state.doc.toString())">Try</button>
                 </div>
             </div>
         </div>
