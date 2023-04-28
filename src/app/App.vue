@@ -285,7 +285,10 @@ export default {
             } */
             //let correct = this.steps[this.steps.length - 1];
             //let correct = "((a))";
-            let correct = "((\\lambda x.x))";
+            //let correct = "((\\lambda x.x))";
+            //let correct = "((\\lambda x.x)(\\lambda x.x))";
+            let correct = "(\\lambda z.z) (\\lambda z.z z) (\\lambda z.z y)";
+            //let correct = "(\\lambda x.x) ((\\lambda x.x a) (\\lambda x.x a) (\\lambda x.x a))";
             
             correct = correct.replaceAll('~', ' ');
             guess = guess.replaceAll('λ', '\\lambda ');
@@ -309,8 +312,8 @@ export default {
             parser.buildParseTrees = true;
             let tree_guess = parser.term();
             
-            console.log(tree_correct)
-            console.log(tree_guess)
+           /*  console.log(tree_correct)
+            console.log(tree_guess) */
 
             let compareVisitor = new compareLambdaTreesVisitor(tree_correct, tree_guess);
             let comparison = compareVisitor.visitTerm(tree_correct, tree_guess);

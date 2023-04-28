@@ -28,8 +28,10 @@ export default {
     mounted() {
         const state = EditorState.create({
             //doc: "",
-            //doc: "(λz.z) (λz.z z) (λz.z y)",    // yy 
-            doc: "((a))",
+            doc: "(λz.z) (λz.z z) (λz.z y)",    // yy 
+            //doc: "(λx.x)((λy.y y y)(λx.x a))",
+            //doc: "((a))",
+            //doc: "((λx.x))",
             extensions: [[
                 lambdaLanguageSupport,
                 EditorState.transactionFilter.of(tr => {

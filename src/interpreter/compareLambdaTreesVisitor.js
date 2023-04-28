@@ -61,9 +61,11 @@ export default class compareLambdaTreesVisitor extends lambdaVisitor {
 	visitTerm(ctx1, ctx2) {
         console.log("-----------------comparing-----------------")
         if(ctx1 == null || ctx2 == null) {
+            console.log("--line 64")
             return false;
         }
         if(!(ctx1 instanceof lambdaParser.TermContext) || !(ctx2 instanceof lambdaParser.TermContext)) {
+            console.log("--line 68")
             return false;
         }
         while(ctx1.getChild(0) != null && ctx1.getChild(0).getText() == '(' 
@@ -78,24 +80,41 @@ export default class compareLambdaTreesVisitor extends lambdaVisitor {
         }
         if(ctx1.getChild(0).getChild(0) == null && ctx2.getChild(0).getChild(0) == null) { 
             if(this.getBodyText(ctx1) == this.getBodyText(ctx2)) {
+                console.log("--line 83")
                 console.log(this.getBodyText(ctx1), ' == ', this.getBodyText(ctx2))
                 return true;
             }
         }
+        this.ctx1 = ctx1.getChild(0) != null ? ctx1.getChild(0) : ctx1;
+        this.ctx2 = ctx2.getChild(0) != null ? ctx2.getChild(0) : ctx2;
         /* console.log(this.getBodyText(ctx1), ' != ', this.getBodyText(ctx2))
 	    return false; */
         let comparison = this.visitChildren(ctx1, ctx2);
-        console.log("Is it really the same? ", comparison[0]);
-        return comparison;
+        console.log("Is it really the same? ", comparison);
+        return comparison[0];
 	}
 
 
 	// Visit a parse tree produced by lambdaParser#abstraction.
 	visitAbstraction(ctx1, ctx2) {
+        ctx1 = this.ctx1;
+        ctx2 = this.ctx2;
+        if(ctx1 != null) {
+            console.log(ctx1);
+            console.log(this.getBodyText(ctx1));
+        } else {console.log("ctx1 is null")}
+        if(ctx2 != null) {
+            console.log(ctx2);
+            console.log(this.getBodyText(ctx2));
+        } else {console.log("ctx2 is null")}
         if(ctx1 == null || ctx2 == null) {
+            console.log("--line 111")
             return false;
         }
+        /* console.log(ctx1.constructor.name)
+        console.log(ctx2.constructor.name) */
         if(!(ctx1 instanceof lambdaParser.AbstractionContext) || !(ctx2 instanceof lambdaParser.AbstractionContext)) {
+            console.log("--line 116")
             return false;
         }
         while(ctx1.getChild(0) != null && ctx1.getChild(0).getText() == '(' 
@@ -109,9 +128,13 @@ export default class compareLambdaTreesVisitor extends lambdaVisitor {
             ctx2 = ctx2.getChild(1);
         }
         if(this.getBodyText(ctx1) == this.getBodyText(ctx2)) {
+            console.log("--line 131")
             console.log(this.getBodyText(ctx1), ' == ', this.getBodyText(ctx2))
+            this.ctx1 = ctx1;
+            this.ctx2 = ctx2;
             return true;
         }
+        console.log("--line 135")
         console.log(this.getBodyText(ctx1), ' != ', this.getBodyText(ctx2))
 	    return false;
 	}
@@ -119,9 +142,14 @@ export default class compareLambdaTreesVisitor extends lambdaVisitor {
 
 	// Visit a parse tree produced by lambdaParser#application.
 	visitApplication(ctx1, ctx2) {
+        ctx1 = this.ctx1;
+        ctx2 = this.ctx2;
 	    if(ctx1 == null || ctx2 == null) {
+            console.log("--line 146")
             return false;
         }
+        /* console.log(ctx1.constructor.name)
+        console.log(ctx2.constructor.name) */
         if(!(ctx1 instanceof lambdaParser.ApplicationContext) || !(ctx2 instanceof lambdaParser.ApplicationContext)) {
             return false;
         }
@@ -135,10 +163,34 @@ export default class compareLambdaTreesVisitor extends lambdaVisitor {
             && ctx2.getChild(1) instanceof lambdaParser.ApplicationContext) {
             ctx2 = ctx2.getChild(1);
         }
+        if(ctx1.getChild(0) != null && ctx1.getChild(0) instanceof lambdaParser.ApplicationContext
+            && ctx1.getChild(1) != null && ctx1.getChild(1) instanceof lambdaParser.TermContext) {
+                ctx1 = ctx1.getChild(0);
+            while(ctx1.getChild(0) != null && ctx1.getChild(0).getText() == '(' 
+                && ctx1.getChild(2) != null && ctx1.getChild(2).getText() == ')' 
+                && ctx1.getChild(1) instanceof lambdaParser.ApplicationContext) {
+                ctx1 = ctx1.getChild(1);
+            }
+        }
+
+        if(ctx2.getChild(0) != null && ctx2.getChild(0) instanceof lambdaParser.ApplicationContext
+            && ctx2.getChild(1) != null && ctx2.getChild(1) instanceof lambdaParser.TermContext) {
+                ctx2 = ctx2.getChild(0);
+            while(ctx2.getChild(0) != null && ctx2.getChild(0).getText() == '(' 
+                && ctx2.getChild(2) != null && ctx2.getChild(2).getText() == ')' 
+                && ctx2.getChild(1) instanceof lambdaParser.ApplicationContext) {
+                ctx2 = ctx2.getChild(1);
+            }
+        }
+
         if(this.getBodyText(ctx1) == this.getBodyText(ctx2)) {
+            console.log("--line 163")
             console.log(this.getBodyText(ctx1), ' == ', this.getBodyText(ctx2))
+            this.ctx1 = ctx1;
+            this.ctx2 = ctx2;
             return true;
         }
+        console.log("--line 167")
         console.log(this.getBodyText(ctx1), ' != ', this.getBodyText(ctx2))
 	    return false;
 	}
@@ -148,7 +200,5 @@ export default class compareLambdaTreesVisitor extends lambdaVisitor {
 	visitDefinition(ctx1, ctx2) {
 	    return false;
 	}
-
-
 
 }
