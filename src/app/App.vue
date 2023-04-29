@@ -6,12 +6,12 @@ import CodeInput from "./components/CodeInput.vue"
 import DropDown from "./components/DropDown.vue";
 import antlr4 from "antlr4";
 const { CommonTokenStream, InputStream } = antlr4;
-import lambdaLexer from "../interpreter/lambdaLexer.js";
-import lambdaParser from "../interpreter/lambdaParser.js";
-import callByValueLambdaVisitor from "../interpreter/callByValueLambdaVisitor.js";
-import callByNameLambdaVisitor from "../interpreter/callByNameLambdaVisitor.js";
-import compareLambdaTreesVisitor from "../interpreter/compareLambdaTreesVisitor.js";
-import lambdaErrorListener from "../interpreter/lambdaErrorListener.js";
+import LambdaLexer from "../interpreter/LambdaLexer.js";
+import LambdaParser from "../interpreter/LambdaParser.js";
+import CallByValueLambdaVisitor from "../interpreter/CallByValueLambdaVisitor.js";
+import CallByNameLambdaVisitor from "../interpreter/CallByNameLambdaVisitor.js";
+import CompareLambdaTreesVisitor from "../interpreter/CompareLambdaTreesVisitor.js";
+import LambdaErrorListener from "../interpreter/LambdaErrorListener.js";
 
 export default {
     components: {
@@ -99,10 +99,10 @@ export default {
             let visitor;
             switch(this.strategy.id) {
                 case 1:
-                    visitor = callByValueLambdaVisitor;
+                    visitor = CallByValueLambdaVisitor;
                     break;
                 case 2:
-                    visitor = callByNameLambdaVisitor;
+                    visitor = CallByNameLambdaVisitor;
                     break;
                 default:
                     return ["", null];
@@ -127,25 +127,26 @@ export default {
                 let chars = new InputStream(input, true);
                 let lexer;
                 try {
-                    lexer = new lambdaLexer(chars);
+                    lexer = new LambdaLexer(chars);
                     lexer.removeErrorListeners();
-                    lexer.addErrorListener(new lambdaErrorListener());
+                    lexer.addErrorListener(new LambdaErrorListener());
                 } catch(e) {
-                    console.error(e);
+                    console.info(e);
                     return ["", null];
                 }
                 let tokens = new CommonTokenStream(lexer);
                 let parser;
+                let tree;
                 try {
-                    parser = new lambdaParser(tokens);
+                    parser = new LambdaParser(tokens);
                     parser.removeErrorListeners();
-                    parser.addErrorListener(new lambdaErrorListener());
+                    parser.addErrorListener(new LambdaErrorListener());
+                    parser.buildParseTrees = true;
+                    tree = parser.redex();
                 } catch(e) {
                     console.error(e);
                     return ["", null];
                 }
-                parser.buildParseTrees = true;
-                let tree = parser.term();
                 /* for(let [key, value] of definitions) {
                         console.log("*", key, ":", value, "*");
                 } */
@@ -172,30 +173,32 @@ export default {
                 let chars = new InputStream(input, true);
                 let lexer;
                 try {
-                    lexer = new lambdaLexer(chars);
+                    lexer = new LambdaLexer(chars);
                     lexer.removeErrorListeners();
-                    lexer.addErrorListener(new lambdaErrorListener());
+                    lexer.addErrorListener(new LambdaErrorListener());
                 } catch(e) {
                     console.error(e);
                     return ["", null];
                 }
                 let tokens = new CommonTokenStream(lexer);
                 let parser;
+                let tree;
                 try {
-                    parser = new lambdaParser(tokens);
+                    parser = new LambdaParser(tokens);
                     parser.removeErrorListeners();
-                    parser.addErrorListener(new lambdaErrorListener());
+                    parser.addErrorListener(new LambdaErrorListener());
+                    parser.buildParseTrees = true;
+                    tree = parser.redex();
+                    console.log("Tree : ", tree.getText());
                 } catch(e) {
-                    console.error(e);
+                    console.info(e);
                     return ["", null];
                 }
 
-                parser.buildParseTrees = true;
-                let tree = parser.term();
                 /* for(let [key, value] of definitions) {
                         console.log("*", key, ":", value, "*");
                 } */
-                [solution, steps] = new visitor(tree, definitions).visit(tree);
+                [solution, steps] = new visitor(tree, definitions).visitRedex(tree);
                 solution = solution.replaceAll(' ', '~');
                 solution = solution.replaceAll('\\lambda', '\\lambda ');
                 console.log("Solution = ", solution);
@@ -324,26 +327,27 @@ export default {
             let chars = new InputStream(correct, true);
             let lexer;
             try {
-                lexer = new lambdaLexer(chars);
+                lexer = new LambdaLexer(chars);
                 lexer.removeErrorListeners();
-                lexer.addErrorListener(new lambdaErrorListener());
+                lexer.addErrorListener(new LambdaErrorListener());
             } catch(e) {
-                console.error(e);
+                console.info(e);
                 return ["", null];
             }
             let tokens = new CommonTokenStream(lexer);
             let parser;
+            let tree_correct;
             try {
-                parser = new lambdaParser(tokens);
+                parser = new LambdaParser(tokens);
                 parser.removeErrorListeners();
-                parser.addErrorListener(new lambdaErrorListener());
+                parser.addErrorListener(new LambdaErrorListener());
+                parser.buildParseTrees = true;
+                tree_correct = parser.redex();
             } catch(e) {
-                console.error(e);
+                console.info(e);
                 return ["", null];
             }
             
-            parser.buildParseTrees = true;
-            let tree_correct = parser.term();
             
             /* build guess term tree */
             if(guess == null || guess.length <= 0) {
@@ -355,27 +359,28 @@ export default {
 
             chars = new InputStream(guess, true);
             try {
-                lexer = new lambdaLexer(chars);
+                lexer = new LambdaLexer(chars);
                 lexer.removeErrorListeners();
-                lexer.addErrorListener(new lambdaErrorListener());
+                lexer.addErrorListener(new LambdaErrorListener());
             } catch(e) {
-                console.error(e);
+                console.info(e);
                 return ["", null];
             }
             tokens = new CommonTokenStream(lexer);
+            let tree_guess;
             try {
-                parser = new lambdaParser(tokens);
+                parser = new LambdaParser(tokens);
                 parser.removeErrorListeners();
-                parser.addErrorListener(new lambdaErrorListener());
+                parser.addErrorListener(new LambdaErrorListener());
+                parser.buildParseTrees = true;
+                tree_guess = parser.redex();
             } catch(e) {
-                console.error(e);
+                console.info(e);
                 return ["", null];
             }
 
-            parser.buildParseTrees = true;
-            let tree_guess = parser.term();
 
-            let compareVisitor = new compareLambdaTreesVisitor(tree_correct, tree_guess);
+            let compareVisitor = new CompareLambdaTreesVisitor(tree_correct, tree_guess);
             let comparison = compareVisitor.visitTerm(tree_correct, tree_guess);
 
             if(comparison) {
@@ -458,7 +463,7 @@ export default {
                 <div class="btn_heading_row">
                     <CodeInput ref="editor_guess_sol" @keyup="printGreekLetter($event, this.$refs.editor_guess_sol.view)"></CodeInput>
                     <!-- <button @click="this.compareGuess(this.sol, this.$refs.editor_guess_sol.view.doc.toString())">Test</button> -->
-                    <button :disabled="this.showSolution || this.nsteps == this.steps.length" @click="this.compareGuess('.guess_sol_message', this.sol, this.$refs.editor_guess_sol.view.state.doc.toString())">Try</button>
+                    <button :disabled="this.showSolution || (this.steps && this.nsteps == this.steps.length)" @click="this.compareGuess('.guess_sol_message', this.sol, this.$refs.editor_guess_sol.view.state.doc.toString())">Try</button>
                 </div>
                 <div class="btn_heading_row">
                     <h2>Step-by-step</h2>
