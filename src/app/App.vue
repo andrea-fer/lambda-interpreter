@@ -87,7 +87,6 @@ export default {
         printSolution(event) {
             //console.log("Hello");
             /* reset member variables */
-            document.querySelector("#show_hide_btn").disabled = false;
             this.sol = '';
             this.steps = '';
             this.nsteps = 0;
@@ -106,7 +105,6 @@ export default {
                     visitor = callByNameLambdaVisitor;
                     break;
                 default:
-                    document.querySelector("#show_hide_btn").disabled = true;
                     return ["", null];
             }
             /* let lastLine = view.state.doc.lines;
@@ -127,16 +125,23 @@ export default {
                 input = input.replaceAll('λ', '\\lambda');
                 //var input = "Lx.Ly.x\n";
                 let chars = new InputStream(input, true);
-                let lexer = new lambdaLexer(chars);
-                let tokens = new CommonTokenStream(lexer);
-                let parser = new lambdaParser(tokens);
+                let lexer;
                 try {
-                    let parser = new lambdaParser(tokens);
+                    lexer = new lambdaLexer(chars);
+                    lexer.removeErrorListeners();
+                    lexer.addErrorListener(new lambdaErrorListener());
+                } catch(e) {
+                    console.error(e);
+                    return ["", null];
+                }
+                let tokens = new CommonTokenStream(lexer);
+                let parser;
+                try {
+                    parser = new lambdaParser(tokens);
                     parser.removeErrorListeners();
                     parser.addErrorListener(new lambdaErrorListener());
                 } catch(e) {
                     console.error(e);
-                    document.querySelector("#show_hide_btn").disabled = true;
                     return ["", null];
                 }
                 parser.buildParseTrees = true;
@@ -165,11 +170,25 @@ export default {
                 //var input = "Lx.Ly.x\n";
                 console.log(input);
                 let chars = new InputStream(input, true);
-                let lexer = new lambdaLexer(chars);
+                let lexer;
+                try {
+                    lexer = new lambdaLexer(chars);
+                    lexer.removeErrorListeners();
+                    lexer.addErrorListener(new lambdaErrorListener());
+                } catch(e) {
+                    console.error(e);
+                    return ["", null];
+                }
                 let tokens = new CommonTokenStream(lexer);
-                let parser = new lambdaParser(tokens);
-                parser.removeErrorListeners();
-                parser.addErrorListener(new lambdaErrorListener());
+                let parser;
+                try {
+                    parser = new lambdaParser(tokens);
+                    parser.removeErrorListeners();
+                    parser.addErrorListener(new lambdaErrorListener());
+                } catch(e) {
+                    console.error(e);
+                    return ["", null];
+                }
 
                 parser.buildParseTrees = true;
                 let tree = parser.term();
@@ -202,7 +221,6 @@ export default {
             /* console.log("input is null ", input == null)
             console.log("input len ", input.length)
             console.log("exit func") */
-            document.querySelector("#show_hide_btn").disabled = true;
             return ["", null];
         },
         saveTextAsFile(fileName, editorView) {
@@ -304,9 +322,25 @@ export default {
             console.log("Correct Solution: ", correct);
             
             let chars = new InputStream(correct, true);
-            let lexer = new lambdaLexer(chars);
+            let lexer;
+            try {
+                lexer = new lambdaLexer(chars);
+                lexer.removeErrorListeners();
+                lexer.addErrorListener(new lambdaErrorListener());
+            } catch(e) {
+                console.error(e);
+                return ["", null];
+            }
             let tokens = new CommonTokenStream(lexer);
-            let parser = new lambdaParser(tokens);
+            let parser;
+            try {
+                parser = new lambdaParser(tokens);
+                parser.removeErrorListeners();
+                parser.addErrorListener(new lambdaErrorListener());
+            } catch(e) {
+                console.error(e);
+                return ["", null];
+            }
             
             parser.buildParseTrees = true;
             let tree_correct = parser.term();
@@ -320,9 +354,23 @@ export default {
             guess = guess.replaceAll('λ', '\\lambda ');
 
             chars = new InputStream(guess, true);
-            lexer = new lambdaLexer(chars);
+            try {
+                lexer = new lambdaLexer(chars);
+                lexer.removeErrorListeners();
+                lexer.addErrorListener(new lambdaErrorListener());
+            } catch(e) {
+                console.error(e);
+                return ["", null];
+            }
             tokens = new CommonTokenStream(lexer);
-            parser = new lambdaParser(tokens);
+            try {
+                parser = new lambdaParser(tokens);
+                parser.removeErrorListeners();
+                parser.addErrorListener(new lambdaErrorListener());
+            } catch(e) {
+                console.error(e);
+                return ["", null];
+            }
 
             parser.buildParseTrees = true;
             let tree_guess = parser.term();
@@ -396,7 +444,7 @@ export default {
             <div id="results">
                 <div class="btn_heading_row">
                     <h2>SOLUTION</h2>
-                    <button id="show_hide_btn" @click="showSolution = !showSolution; if(showSolution) formatGuessText('.guess_sol_message', '', 'black'); else formatGuessText('.guess_sol_message', 'Try to guess the normal form of the term.', 'black');">
+                    <button :disabled="!this.sol" @click="showSolution = !showSolution; if(showSolution) formatGuessText('.guess_sol_message', '', 'black'); else formatGuessText('.guess_sol_message', 'Try to guess the normal form of the term.', 'black');">
                         <p v-if="showSolution">Hide</p>
                         <p v-if="!showSolution">Show</p>
                     </button>
