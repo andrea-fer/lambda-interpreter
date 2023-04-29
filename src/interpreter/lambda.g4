@@ -1,4 +1,8 @@
-grammar lambda;
+grammar Lambda;
+
+redex
+    : term EOF
+    ;
 
 term
     : VARIABLE | abstraction | application | '(' term ')' | definition

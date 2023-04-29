@@ -1,11 +1,11 @@
 import antlr4 from "antlr4";
 const { CommonTokenStream, InputStream } = antlr4;
-import lambdaLexer from "./lambdaLexer.js";
-import lambdaVisitor from "./lambdaVisitor.js";
-import lambdaParser from "./lambdaParser.js";
+import LambdaLexer from "./LambdaLexer.js";
+import LambdaVisitor from "./LambdaVisitor.js";
+import LambdaParser from "./LambdaParser.js";
 
 // Tree Traverser Class
-export default class callByValueLambdaVisitor extends lambdaVisitor {
+export default class CallByValueLambdaVisitor extends LambdaVisitor {
 
     constructor(ctx, definitions) {
         super();
@@ -15,18 +15,27 @@ export default class callByValueLambdaVisitor extends lambdaVisitor {
         this.maximumSteps = 20;
         this.definitions = definitions;
     }
-	// Visit a parse tree produced by lambdaParser#term.
+    // Visit a parse tree produced by LambdaParser#redex.
+	visitRedex(ctx) {
+        console.log("*****Redex is: ", ctx.getText());
+        console.log("Redex type is: ", ctx.constructor.name);
+        console.log("-------------------");
+        ctx = ctx.getChild(0);
+	    return this.visitTerm(ctx);
+	}
+
+	// Visit a parse tree produced by LambdaParser#term.
 	visitTerm(ctx) {
         console.log("-------------------Call By Value----------------")
         console.log("°°TERM IS : ", this.getBodyText(ctx));
-        if(ctx.getChild(0) instanceof lambdaParser.DefinitionContext) {
+        if(ctx.getChild(0) instanceof LambdaParser.DefinitionContext) {
             return this.visitDefinition(ctx);
         }
 
         let solution = ctx;
         console.log("SOLUTION: ", this.getBodyText(ctx), "type: ", solution.constructor.name);
         
-        while(solution.getChild(0) instanceof lambdaParser.ApplicationContext) {
+        while(solution.getChild(0) instanceof LambdaParser.ApplicationContext) {
             console.log("Solution parent: ", this.getBodyText(solution), ", type: ", solution.constructor.name);
             solution = this.visitApplication(solution.getChild(0));
             // removing unnecessary brackets
@@ -48,7 +57,7 @@ export default class callByValueLambdaVisitor extends lambdaVisitor {
             //console.log("Does map contain ", this.getBodyText(solution), "?", this.definitions.has(this.getBodyText(solution)));
             if(this.definitions.has(this.getBodyText(solution))) {
                 let value = this.makeTree(this.definitions.get(this.getBodyText(solution)));
-                if(value.getChild(0) instanceof lambdaParser.ApplicationContext) {
+                if(value.getChild(0) instanceof LambdaParser.ApplicationContext) {
                     solution = value;
                     this.terms.push(this.getBodyText(solution));
                     console.log("•(line 60)• Adding new term: ", this.terms[this.terms.length - 1]);
@@ -56,7 +65,7 @@ export default class callByValueLambdaVisitor extends lambdaVisitor {
                 }
             }
 
-            if(solution instanceof lambdaParser.AbstractionContext) {
+            if(solution instanceof LambdaParser.AbstractionContext) {
                 console.log()
                 console.log("is abstraction");
                 console.log()
@@ -69,7 +78,7 @@ export default class callByValueLambdaVisitor extends lambdaVisitor {
             console.log("°°°°°Term leftChild: ", this.getBodyText(leftChild));
             if(leftChild != null && this.definitions.has(this.getBodyText(leftChild))) {
                 let value = this.makeTree(this.definitions.get(this.getBodyText(leftChild)));
-                if(value.getChild(0) instanceof lambdaParser.ApplicationContext) {
+                if(value.getChild(0) instanceof LambdaParser.ApplicationContext) {
                     solution = value;
                     this.terms.push(this.getBodyText(solution));
                     console.log("•(line 60)• Adding new term: ", this.terms[this.terms.length - 1]);
@@ -80,7 +89,7 @@ export default class callByValueLambdaVisitor extends lambdaVisitor {
         return [this.getBodyText(solution), this.terms];
 	}
 
-    // Visit a parse tree produced by lambdaParser#abstraction.
+    // Visit a parse tree produced by LambdaParser#abstraction.
 	visitAbstraction(ctx) {
         if(ctx.getText() == '(') {
             ctx = ctx.getChild(1).getChild(0);
@@ -99,7 +108,7 @@ export default class callByValueLambdaVisitor extends lambdaVisitor {
 
             body = this.getBodyText(bodyScope);
 
-            /* if(bodyScope instanceof lambdaParser.AbstractionContext) {
+            /* if(bodyScope instanceof LambdaParser.AbstractionContext) {
                 for(let [key, value] of this.definitions) {
                     if(body.includes(key)) {
                         body = this.getBodyText(this.visit(bodyScope));
@@ -114,49 +123,7 @@ export default class callByValueLambdaVisitor extends lambdaVisitor {
         //return this.visitChildren(ctx);
 	}
 
-    getBodyText(body) {
-        if(body == null) {
-            return;
-        }
-        if(body instanceof lambdaParser.TermContext) {
-            body = body.getChild(0);
-        }
-        let brackets = false;
-        // in case of double brackets, e.g. application -> '(' application ')' -> '(' application ')'
-        while(body.getChild(0) != null  && body.getChild(0).getText() == '(') {
-            body = body.getChild(1);
-            brackets = true;
-        }
-        if(body instanceof lambdaParser.ApplicationContext) {
-            let child_0 = this.getBodyText(body.getChild(0));
-            let child_1 = this.getBodyText(body.getChild(1));
-            let bodyText = child_0.concat(' ').concat(child_1);
-            if(brackets) {
-                bodyText = '('.concat(bodyText).concat(')');
-            }
-            return bodyText; 
-        }
-        if(body instanceof lambdaParser.AbstractionContext) {
-            let bodyText = body.getChild(0).getText().concat(body.getChild(1).getText()).concat(body.getChild(2).getText()).concat(this.getBodyText(body.getChild(3)));
-            if(brackets) {
-                bodyText = '('.concat(bodyText).concat(')');
-            }
-            return bodyText;
-        }
-
-        if(body instanceof lambdaParser.DefinitionContext) {
-            let bodyText = body.getChild(0).getText().concat(body.getChild(1).getText()).concat(this.getBodyText(body.getChild(2)));
-            return bodyText;
-        }
-
-        if(body.getChild(0) == null) {
-            return body.getText();
-        }
-
-        return this.getBodyText(body.getChild(0));
-    }
-
-	// Visit a parse tree produced by lambdaParser#application.
+	// Visit a parse tree produced by LambdaParser#application.
 	visitApplication(ctx) {
         let leftChild = ctx.getChild(0);
         let rightChild = ctx.getChild(1);
@@ -179,7 +146,7 @@ export default class callByValueLambdaVisitor extends lambdaVisitor {
         let leftChildText = this.getBodyText(leftChild);
         console.log("**Left Child: (before substitution)", leftChildText);
         
-        if(!(leftChild instanceof lambdaParser.AbstractionContext) && !(leftChild.getChild(0) instanceof lambdaParser.ApplicationContext)) {
+        if(!(leftChild instanceof LambdaParser.AbstractionContext) && !(leftChild.getChild(0) instanceof LambdaParser.ApplicationContext)) {
             console.log()
             let left = leftChildText;
             if(leftChild.getChild(1) != null) {
@@ -187,7 +154,7 @@ export default class callByValueLambdaVisitor extends lambdaVisitor {
             }
             for(let [key, value] of this.definitions) {
                 if(left.includes(key)) {
-                    if(this.makeTree(value).getChild(0) instanceof lambdaParser.AbstractionContext) {
+                    if(this.makeTree(value).getChild(0) instanceof LambdaParser.AbstractionContext) {
                         value = '(' + value + ')';
                         console.log("**Left Child: (added brackets)", value);
                     }
@@ -205,9 +172,9 @@ export default class callByValueLambdaVisitor extends lambdaVisitor {
             }
             console.log()
         }
-        while(leftChild instanceof lambdaParser.ApplicationContext 
-            && ((leftChild.getChild(0) instanceof lambdaParser.ApplicationContext && (leftChild.getChild(0).getChild(0) != null))
-            || leftChild.getChild(0) instanceof lambdaParser.AbstractionContext)) {
+        while(leftChild instanceof LambdaParser.ApplicationContext 
+            && ((leftChild.getChild(0) instanceof LambdaParser.ApplicationContext && (leftChild.getChild(0).getChild(0) != null))
+            || leftChild.getChild(0) instanceof LambdaParser.AbstractionContext)) {
             let oldLeftChild = leftChild;
             console.log(this.getBodyText(oldLeftChild), " = ", this.getBodyText(leftChild));
             console.log("<UPDATING OLD CHILD...");
@@ -217,7 +184,7 @@ export default class callByValueLambdaVisitor extends lambdaVisitor {
             console.log("CHANGING THIS TERM: ", this.terms[this.terms.length - 1]);
             console.log("REPLACING: ", this.getBodyText(oldLeftChild), "WITH: ", this.getBodyText(leftChild));
             let leftChildText = this.getBodyText(leftChild); 
-            if(leftChild instanceof lambdaParser.AbstractionContext && leftChild.getChild(0).getText() != '(') {
+            if(leftChild instanceof LambdaParser.AbstractionContext && leftChild.getChild(0).getText() != '(') {
                 leftChildText = "(" + leftChildText + ")";
             }
             brackets = (leftChild.getChild(0).getText() == '(');
@@ -232,7 +199,7 @@ export default class callByValueLambdaVisitor extends lambdaVisitor {
             leftChild = ctx.getChild(0);
             rightChild = ctx.getChild(1);
             //rightChild = ctx.getChild(1).getText() != ' ' ? ctx.getChild(1) : ctx.getChild(2);
-            if((leftChild instanceof lambdaParser.ApplicationContext) && (leftChild.getChild(0).getText() == '(')) {
+            if((leftChild instanceof LambdaParser.ApplicationContext) && (leftChild.getChild(0).getText() == '(')) {
                     console.log("leftChild = ", this.getBodyText(leftChild), ", rightChild = ", this.getBodyText(rightChild));
                     console.log("leftChild = ", leftChild.constructor.name, ", rightChild = ", rightChild.constructor.name);
                 console.log("<< removing ()");
@@ -252,25 +219,25 @@ export default class callByValueLambdaVisitor extends lambdaVisitor {
             leftChild = this.makeTree(this.terms[this.terms.length - 1]).getChild(0).getChild(0);
             rightChild = this.makeTree(this.terms[this.terms.length - 1]).getChild(0).getChild(1);
             console.log("leftChild = ", this.getBodyText(leftChild), ", rightChild = ", this.getBodyText(rightChild));
-            if(leftChild.getChild(0) instanceof lambdaParser.ApplicationContext) {
+            if(leftChild.getChild(0) instanceof LambdaParser.ApplicationContext) {
                 leftChild = leftChild.getChild(0);
             }
             //let newChild = leftChild.getChild(0);
-            if(leftChild instanceof lambdaParser.AbstractionContext) {
+            if(leftChild instanceof LambdaParser.AbstractionContext) {
                 //console.log("CTX: ", ctx.getText(), "+ TREE = ", leftChild.getText());
             }
         }
         let [param, body] = [null, null];
        
         // if left side is not abstraction, we are not implementing substitution
-        if(!(leftChild instanceof lambdaParser.AbstractionContext)) {
+        if(!(leftChild instanceof LambdaParser.AbstractionContext)) {
             console.log("Left side is not Abstraction");
             let newCTX = this.getBodyText(leftChild).concat(' ').concat(this.getBodyText(rightChild));
             return this.makeTree(newCTX);
         }
         
         //if left child is finally abstraction, apply value from right child to body
-        //if(leftChild instanceof lambdaParser.AbstractionContext) {
+        //if(leftChild instanceof LambdaParser.AbstractionContext) {
             let abstraction = leftChild;
             if(this.getBodyText(abstraction.getChild(0)) == '(') {
                 abstraction = abstraction.getChild(1);
@@ -281,7 +248,7 @@ export default class callByValueLambdaVisitor extends lambdaVisitor {
             let value = this.getBodyText(rightChild);
             console.log("*** before: (leftChild): ", this.getBodyText(leftChild), ", ", leftChild.constructor.name);
             console.log("*** before: (rightChild): ", this.getBodyText(rightChild.getChild(0)), ", ", rightChild.getChild(0).constructor.name);
-            while(rightChild.getChild(0) instanceof lambdaParser.ApplicationContext) {
+            while(rightChild.getChild(0) instanceof LambdaParser.ApplicationContext) {
                 // if the leftChild is Variable, don't apply reduction
                 if(rightChild.getChild(0).getChild(0).getText() == '(' && rightChild.getChild(0).getChild(1).getChild(0).getChild(0) == null
                     || rightChild.getChild(0).getChild(0).getText() != '(' && rightChild.getChild(0).getChild(0).getChild(0) == null) {
@@ -298,7 +265,7 @@ export default class callByValueLambdaVisitor extends lambdaVisitor {
                 console.log("--oldRightChild: ", this.getBodyText(oldRightChild));
                 rightChild = this.visitApplication(rightChild.getChild(0));
                 value = this.getBodyText(rightChild);
-                if(oldRightChild instanceof lambdaParser.ApplicationContext && !(oldRightChild.getChild(0) instanceof lambdaParser.TermContext) 
+                if(oldRightChild instanceof LambdaParser.ApplicationContext && !(oldRightChild.getChild(0) instanceof LambdaParser.TermContext) 
                 && oldRightChild.getChild(0).getText() == '(' && oldRightChild.getChild(2).getText() == ')' && this.makeTree(value).getChild(0).getChild(0) != null) {
                     console.log(this.getBodyText(oldRightChild), "-", oldRightChild.constructor.name);
                     value = '(' + value + ')';
@@ -339,7 +306,7 @@ export default class callByValueLambdaVisitor extends lambdaVisitor {
             console.log("NEW Body: ", body);
             let tree = this.makeTree(body);
             console.log("tree: ", body);
-            if(tree.getChild(0) instanceof lambdaParser.AbstractionContext) {
+            if(tree.getChild(0) instanceof LambdaParser.AbstractionContext) {
                 tree = tree.getChild(0);
             }
            
@@ -347,18 +314,7 @@ export default class callByValueLambdaVisitor extends lambdaVisitor {
         //}
 	}
 
-    // helper function for creating a subtree
-    makeTree(input) {
-        let chars = new InputStream(input, true);
-        let lexer = new lambdaLexer(chars);
-        let tokens = new CommonTokenStream(lexer);
-        let parser = new lambdaParser(tokens);
-
-        parser.buildParseTrees = true;
-        return parser.term();
-    }
-
-    // Visit a parse tree produced by lambdaParser#definition.
+    // Visit a parse tree produced by LambdaParser#definition.
 	visitDefinition(ctx) {
         ctx = ctx.getChild(0);
         console.log(this.getBodyText(ctx.getChild(0)), " = ", this.getBodyText(ctx.getChild(2)));
@@ -368,4 +324,58 @@ export default class callByValueLambdaVisitor extends lambdaVisitor {
         //console.log()
         return [[this.getBodyText(ctx.getChild(0)), this.getBodyText(ctx.getChild(2))], null];
 	}
+
+    // helper function for creating a subtree
+    makeTree(input) {
+        let chars = new InputStream(input, true);
+        let lexer = new LambdaLexer(chars);
+        let tokens = new CommonTokenStream(lexer);
+        let parser = new LambdaParser(tokens);
+
+        parser.buildParseTrees = true;
+        return parser.term();
+    }
+
+    // helper function for getting text from parse tree, without ignoring crutial whitespaces
+    getBodyText(body) {
+        if(body == null) {
+            return;
+        }
+        if(body instanceof LambdaParser.TermContext && body.getChild(0) != null && body.getChild(0).getText() != '(') {
+            body = body.getChild(0);
+        }
+        let brackets = false;
+        // in case of double brackets, e.g. application -> '(' application ')' -> '(' application ')'
+        while(body.getChild(0) != null  && body.getChild(0).getText() == '(') {
+            body = body.getChild(1);
+            brackets = true;
+        }
+        if(body instanceof LambdaParser.ApplicationContext) {
+            let child_0 = this.getBodyText(body.getChild(0));
+            let child_1 = this.getBodyText(body.getChild(1));
+            let bodyText = child_0.concat(' ').concat(child_1);
+            if(brackets) {
+                bodyText = '('.concat(bodyText).concat(')');
+            }
+            return bodyText; 
+        }
+        if(body instanceof LambdaParser.AbstractionContext) {
+            let bodyText = body.getChild(0).getText().concat(body.getChild(1).getText()).concat(body.getChild(2).getText()).concat(this.getBodyText(body.getChild(3)));
+            if(brackets) {
+                bodyText = '('.concat(bodyText).concat(')');
+            }
+            return bodyText;
+        }
+
+        if(body instanceof LambdaParser.DefinitionContext) {
+            let bodyText = body.getChild(0).getText().concat(body.getChild(1).getText()).concat(this.getBodyText(body.getChild(2)));
+            return bodyText;
+        }
+
+        if(body.getChild(0) == null) {
+            return body.getText();
+        }
+
+        return this.getBodyText(body.getChild(0));
+    }
 }

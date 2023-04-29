@@ -1,11 +1,11 @@
 import antlr4 from "antlr4";
 const { CommonTokenStream, InputStream } = antlr4;
-import lambdaLexer from "./lambdaLexer.js";
-import lambdaVisitor from "./lambdaVisitor.js";
-import lambdaParser from "./lambdaParser.js";
+import LambdaLexer from "./LambdaLexer.js";
+import LambdaVisitor from "./LambdaVisitor.js";
+import LambdaParser from "./LambdaParser.js";
 
 // Tree Traverser Class
-export default class myLambdaVisitor extends lambdaVisitor {
+export default class MyLambdaVisitor extends LambdaVisitor {
 
     constructor(ctx, definitions) {
         super();
@@ -15,7 +15,14 @@ export default class myLambdaVisitor extends lambdaVisitor {
         this.maximumSteps = 20;
         this.definitions = definitions;
     }
-	// Visit a parse tree produced by lambdaParser#term.
+
+    // Visit a parse tree produced by LambdaParser#redex.
+	visitRedex(ctx) {
+        ctx = ctx.getChild(0);
+	    return this.visitTerm(ctx);
+	}
+
+	// Visit a parse tree produced by LambdaParser#term.
 	visitTerm(ctx) {
         console.info("°°IN TERM°°");
         console.log("TERM IS : ", this.getBodyText(ctx));
@@ -29,7 +36,7 @@ export default class myLambdaVisitor extends lambdaVisitor {
         /* if(ctx.getChild(0).getText() == '(') {
             this.visitTerm(ctx.getChild(1));
         } */
-        if(ctx.getChild(0) instanceof lambdaParser.DefinitionContext) {
+        if(ctx.getChild(0) instanceof LambdaParser.DefinitionContext) {
             /* this.visitDefinition(ctx);
             let defs = [];
             for(let [key, value] of this.definitions) {
@@ -49,7 +56,7 @@ export default class myLambdaVisitor extends lambdaVisitor {
         
         /* console.log("SOLUTION.getChild(0).getChild(0): ", solution.getChild(0).getChild(0).constructor.name);
         console.log("SOLUTION.getChild(0).getChild(0): ", solution.getChild(0).getChild(0).getText()); */
-        while(solution.getChild(0) instanceof lambdaParser.ApplicationContext) {
+        while(solution.getChild(0) instanceof LambdaParser.ApplicationContext) {
             console.log("Solution parent: ", this.getBodyText(solution), ", type: ", solution.constructor.name);
             solution = this.visitApplication(solution.getChild(0));
             if(this.getBodyText(solution) == this.terms[this.terms.length - 1]) {
@@ -61,7 +68,7 @@ export default class myLambdaVisitor extends lambdaVisitor {
             console.log("SOLUTION: ", this.getBodyText(solution), "type: ", solution.constructor.name);
             /* console.log("SOLUTION.getChild(0).getChild(0): ", solution.getChild(0).getChild(0).constructor.name);
             console.log("SOLUTION.getChild(0).getChild(0): ", solution.getChild(0).getChild(0).getText()); */
-            /* if(solution.getChild(0).getChild(0) != null && !(solution.getChild(0).getChild(0) instanceof lambdaParser.AbstractionContext)) {
+            /* if(solution.getChild(0).getChild(0) != null && !(solution.getChild(0).getChild(0) instanceof LambdaParser.AbstractionContext)) {
                 break;
             } */
             /* let solutionText = this.getBodyText(solution);
@@ -85,7 +92,7 @@ export default class myLambdaVisitor extends lambdaVisitor {
         return [this.getBodyText(solution), this.terms];
 	}
 
-    // Visit a parse tree produced by lambdaParser#abstraction.
+    // Visit a parse tree produced by LambdaParser#abstraction.
 	visitAbstraction(ctx) {
         if(ctx.getText() == '(') {
             ctx = ctx.getChild(1).getChild(0);
@@ -104,16 +111,16 @@ export default class myLambdaVisitor extends lambdaVisitor {
             if(bodyScope == '(') {
                 bodyScope = ctx.getChild(3).getChild(1);
             }
-            //if(bodyScope instanceof lambdaParser.AbstractionContext) {
+            //if(bodyScope instanceof LambdaParser.AbstractionContext) {
                 //console.log("Child parameter: ", this.visit(ctx.getChild(3).getChild(0))[0]);
                 //let b = bodyScope.getChild(3).getText();
                 //console.info("Child body: ", b);
                 //bodyScope = bodyScope.getChild(3).getChild(0);
             //}
             console.log("*>* bodyScope type: ", bodyScope.constructor.name, ", (bodyScope= ", this.getBodyText(bodyScope));
-            /* if(bodyScope instanceof lambdaParser.ApplicationContext) {
+            /* if(bodyScope instanceof LambdaParser.ApplicationContext) {
                 body = bodyScope.getChild(0).getText().concat(' ').concat(bodyScope.getChild(1).getText());
-            } else if(bodyScope.getChild(0) && bodyScope instanceof lambdaParser.TermContext && bodyScope.getChild(0) instanceof ApplicationContext) {
+            } else if(bodyScope.getChild(0) && bodyScope instanceof LambdaParser.TermContext && bodyScope.getChild(0) instanceof ApplicationContext) {
                 body = bodyScope.getChild(0).getChild(0).getText().concat(' ').concat(bodyScope.getChild(0).getChild(1).getText());
             }
             else  {
@@ -133,7 +140,7 @@ export default class myLambdaVisitor extends lambdaVisitor {
         if(body == null) {
             return;
         }
-        if(body instanceof lambdaParser.TermContext) {
+        if(body instanceof LambdaParser.TermContext) {
             body = body.getChild(0);
         }
         let brackets = false;
@@ -141,7 +148,7 @@ export default class myLambdaVisitor extends lambdaVisitor {
             body = body.getChild(1);
             brackets = true;
         }
-        if(body instanceof lambdaParser.ApplicationContext) {
+        if(body instanceof LambdaParser.ApplicationContext) {
             let child_0 = this.getBodyText(body.getChild(0));
             let child_1 = this.getBodyText(body.getChild(1));
             let bodyText = child_0.concat(' ').concat(child_1);
@@ -151,7 +158,7 @@ export default class myLambdaVisitor extends lambdaVisitor {
             //console.log("bodyText: ", bodyText);
             return bodyText; 
         }
-        if(body instanceof lambdaParser.AbstractionContext) {
+        if(body instanceof LambdaParser.AbstractionContext) {
             let bodyText = body.getChild(0).getText().concat(body.getChild(1).getText()).concat(body.getChild(2).getText()).concat(this.getBodyText(body.getChild(3)));
             if(brackets) {
                 bodyText = '('.concat(bodyText).concat(')');
@@ -160,7 +167,7 @@ export default class myLambdaVisitor extends lambdaVisitor {
             return bodyText;
         }
 
-        if(body instanceof lambdaParser.DefinitionContext) {
+        if(body instanceof LambdaParser.DefinitionContext) {
             let bodyText = body.getChild(0).getText().concat(body.getChild(1).getText()).concat(this.getBodyText(body.getChild(2)));
             //console.log("bodyText: ", bodyText);
             return bodyText;
@@ -178,7 +185,7 @@ export default class myLambdaVisitor extends lambdaVisitor {
         } */
     }
 
-	// Visit a parse tree produced by lambdaParser#application.
+	// Visit a parse tree produced by LambdaParser#application.
 	visitApplication(ctx) {
         let leftChild = ctx.getChild(0);
         let rightChild = ctx.getChild(1);
@@ -215,8 +222,8 @@ export default class myLambdaVisitor extends lambdaVisitor {
                 break; 
             }
         }
-        while(leftChild instanceof lambdaParser.ApplicationContext 
-            && (leftChild.getChild(0) instanceof lambdaParser.ApplicationContext || leftChild.getChild(0) instanceof lambdaParser.AbstractionContext)) {
+        while(leftChild instanceof LambdaParser.ApplicationContext 
+            && (leftChild.getChild(0) instanceof LambdaParser.ApplicationContext || leftChild.getChild(0) instanceof LambdaParser.AbstractionContext)) {
             let oldLeftChild = leftChild;
             console.log(this.getBodyText(oldLeftChild), " = ", this.getBodyText(leftChild));
             console.log("<UPDATING OLD CHILD...");
@@ -226,7 +233,7 @@ export default class myLambdaVisitor extends lambdaVisitor {
             console.log("CHANGING THIS TERM: ", this.terms[this.terms.length - 1]);
             console.log("REPLACING: ", this.getBodyText(oldLeftChild), "WITH: ", this.getBodyText(leftChild));
             let leftChildText = this.getBodyText(leftChild); 
-            if(leftChild instanceof lambdaParser.AbstractionContext && leftChild.getChild(0).getText() != '(') {
+            if(leftChild instanceof LambdaParser.AbstractionContext && leftChild.getChild(0).getText() != '(') {
                 leftChildText = "(" + leftChildText + ")";
 
             }
@@ -242,7 +249,7 @@ export default class myLambdaVisitor extends lambdaVisitor {
             leftChild = ctx.getChild(0);
             rightChild = ctx.getChild(1);
             //rightChild = ctx.getChild(1).getText() != ' ' ? ctx.getChild(1) : ctx.getChild(2);
-            if((leftChild instanceof lambdaParser.ApplicationContext) && (leftChild.getChild(0).getText() == '(')
+            if((leftChild instanceof LambdaParser.ApplicationContext) && (leftChild.getChild(0).getText() == '(')
                 && (leftChild.getChild(1).getChild(0).getChild(0) == null)) {
                     console.log("leftChild = ", this.getBodyText(leftChild), ", rightChild = ", this.getBodyText(rightChild));
                     console.log("leftChild = ", leftChild.constructor.name, ", rightChild = ", rightChild.constructor.name);
@@ -263,15 +270,15 @@ export default class myLambdaVisitor extends lambdaVisitor {
             leftChild = this.makeTree(this.terms[this.terms.length - 1]).getChild(0).getChild(0);
             rightChild = this.makeTree(this.terms[this.terms.length - 1]).getChild(0).getChild(1);
             //console.log("leftChild = ", this.getBodyText(leftChild), ", rightChild = ", this.getBodyText(rightChild));
-            if(leftChild.getChild(0) instanceof lambdaParser.ApplicationContext) {
+            if(leftChild.getChild(0) instanceof LambdaParser.ApplicationContext) {
                 leftChild = leftChild.getChild(0);
             }
             //let newChild = leftChild.getChild(0);
-            if(leftChild instanceof lambdaParser.AbstractionContext) {
+            if(leftChild instanceof LambdaParser.AbstractionContext) {
                 //console.log("CTX: ", ctx.getText(), "+ TREE = ", leftChild.getText());
             }
         }
-        /* if(leftChild instanceof lambdaParser.TermContext) {
+        /* if(leftChild instanceof LambdaParser.TermContext) {
             console.log("CTX: ", ctx.getText(), "+ TREE = ", leftChild.toStringTree());
             console.log("TREE 0 = ", leftChild.getChild(0).getChild(0).getText());
             console.log("TREE 1 = ", leftChild.getChild(0).getChild(1).getText());
@@ -284,13 +291,13 @@ export default class myLambdaVisitor extends lambdaVisitor {
         //console.log("LEFT CHILD TYPE: ", leftChild.constructor.name);
         //console.log("< TERM: ", leftChild.getText(), " > ", rightChild.getText());
         // if left side is not abstraction, we are not implementing substitution
-        if(!(leftChild instanceof lambdaParser.AbstractionContext)) {
+        if(!(leftChild instanceof LambdaParser.AbstractionContext)) {
             let newCTX = this.getBodyText(leftChild).concat(' ').concat(this.getBodyText(rightChild));
             return this.makeTree(newCTX);
         }
         
         //if left child is finally abstraction, apply value from right child to body
-        //if(leftChild instanceof lambdaParser.AbstractionContext) {
+        //if(leftChild instanceof LambdaParser.AbstractionContext) {
             let abstraction = leftChild;
             //console.log("** LEFT CHILD = ", abstraction.getText());
             if(this.getBodyText(abstraction.getChild(0)) == '(') {
@@ -302,14 +309,14 @@ export default class myLambdaVisitor extends lambdaVisitor {
             let value = this.getBodyText(rightChild);
             console.log("*** before: (leftChild): ", this.getBodyText(leftChild), ", ", leftChild.constructor.name);
             console.log("*** before: (rightChild): ", this.getBodyText(rightChild.getChild(0)), ", ", rightChild.getChild(0).constructor.name);
-            while(rightChild.getChild(0) instanceof lambdaParser.ApplicationContext && this.maximumSteps > 0) {
+            while(rightChild.getChild(0) instanceof LambdaParser.ApplicationContext && this.maximumSteps > 0) {
                 this.maximumSteps--;
                 console.log("~~ evaluating right child: ", this.getBodyText(rightChild));
                 let oldRightChild = rightChild.getChild(0);
                 console.log("--oldRightChild: ", this.getBodyText(oldRightChild));
                 rightChild = this.visitApplication(rightChild.getChild(0));
                 value = this.getBodyText(rightChild);
-                if(oldRightChild instanceof lambdaParser.ApplicationContext && !(oldRightChild.getChild(0) instanceof lambdaParser.TermContext) 
+                if(oldRightChild instanceof LambdaParser.ApplicationContext && !(oldRightChild.getChild(0) instanceof LambdaParser.TermContext) 
                 && oldRightChild.getChild(0).getText() == '(' && this.makeTree(value).getChild(0).getChild(0) != null) {
                     console.log(this.getBodyText(oldRightChild), "-", oldRightChild.constructor.name);
                     value = '(' + value + ')';
@@ -356,7 +363,7 @@ export default class myLambdaVisitor extends lambdaVisitor {
             } */
             console.log("NEW Body: ", body);
             let tree = this.makeTree(body);
-            if(tree.getChild(0) instanceof lambdaParser.AbstractionContext) {
+            if(tree.getChild(0) instanceof LambdaParser.AbstractionContext) {
                 tree = tree.getChild(0);
             }
             //console.log(">TREE PARENT: ", tree.constructor.name);
@@ -369,15 +376,15 @@ export default class myLambdaVisitor extends lambdaVisitor {
     // helper function for creating a subtree
     makeTree(input) {
         let chars = new InputStream(input, true);
-        let lexer = new lambdaLexer(chars);
+        let lexer = new LambdaLexer(chars);
         let tokens = new CommonTokenStream(lexer);
-        let parser = new lambdaParser(tokens);
+        let parser = new LambdaParser(tokens);
 
         parser.buildParseTrees = true;
         return parser.term();
     }
 
-    // Visit a parse tree produced by lambdaParser#definition.
+    // Visit a parse tree produced by LambdaParser#definition.
 	visitDefinition(ctx) {
         ctx = ctx.getChild(0);
         console.log(this.getBodyText(ctx.getChild(0)), " = ", this.getBodyText(ctx.getChild(2)));

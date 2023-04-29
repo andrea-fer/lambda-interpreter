@@ -22,9 +22,9 @@ const atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
 
 const decisionsToDFA = atn.decisionToState.map( (ds, index) => new antlr4.dfa.DFA(ds, index) );
 
-export default class lambdaLexer extends antlr4.Lexer {
+export default class LambdaLexer extends antlr4.Lexer {
 
-    static grammarFileName = "lambda.g4";
+    static grammarFileName = "Lambda.g4";
     static channelNames = [ "DEFAULT_TOKEN_CHANNEL", "HIDDEN" ];
 	static modeNames = [ "DEFAULT_MODE" ];
 	static literalNames = [ null, "'('", "')'", "'\\lambda'", "'.'", "'='" ];
@@ -43,14 +43,14 @@ export default class lambdaLexer extends antlr4.Lexer {
     }
 }
 
-lambdaLexer.EOF = antlr4.Token.EOF;
-lambdaLexer.T__0 = 1;
-lambdaLexer.T__1 = 2;
-lambdaLexer.T__2 = 3;
-lambdaLexer.T__3 = 4;
-lambdaLexer.T__4 = 5;
-lambdaLexer.VARIABLE = 6;
-lambdaLexer.WS = 7;
+LambdaLexer.EOF = antlr4.Token.EOF;
+LambdaLexer.T__0 = 1;
+LambdaLexer.T__1 = 2;
+LambdaLexer.T__2 = 3;
+LambdaLexer.T__3 = 4;
+LambdaLexer.T__4 = 5;
+LambdaLexer.VARIABLE = 6;
+LambdaLexer.WS = 7;
 
 
 

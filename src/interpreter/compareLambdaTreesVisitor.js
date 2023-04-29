@@ -1,13 +1,12 @@
 // Generated from java-escape by ANTLR 4.11.1
 // jshint ignore: start
 import antlr4 from 'antlr4';
-import lambdaLexer from "./lambdaLexer.js";
-import lambdaVisitor from "./lambdaVisitor.js";
-import lambdaParser from "./lambdaParser.js";
+import LambdaVisitor from "./LambdaVisitor.js";
+import LambdaParser from "./LambdaParser.js";
 
 // This class defines a complete visitor for comparing two parse trees semantically
 
-export default class compareLambdaTreesVisitor extends lambdaVisitor {
+export default class CompareLambdaTreesVisitor extends LambdaVisitor {
 
     constructor(ctx1, ctx2) {
         super();
@@ -19,7 +18,7 @@ export default class compareLambdaTreesVisitor extends lambdaVisitor {
         if(body == null) {
             return;
         }
-        if(body instanceof lambdaParser.TermContext) {
+        if(body instanceof LambdaParser.TermContext) {
             body = body.getChild(0);
         }
         let brackets = false;
@@ -28,7 +27,7 @@ export default class compareLambdaTreesVisitor extends lambdaVisitor {
             body = body.getChild(1);
             brackets = true;
         }
-        if(body instanceof lambdaParser.ApplicationContext) {
+        if(body instanceof LambdaParser.ApplicationContext) {
             let child_0 = this.getBodyText(body.getChild(0));
             let child_1 = this.getBodyText(body.getChild(1));
             let bodyText = child_0.concat(' ').concat(child_1);
@@ -37,7 +36,7 @@ export default class compareLambdaTreesVisitor extends lambdaVisitor {
             }
             return bodyText; 
         }
-        if(body instanceof lambdaParser.AbstractionContext) {
+        if(body instanceof LambdaParser.AbstractionContext) {
             let bodyText = body.getChild(0).getText().concat(body.getChild(1).getText()).concat(body.getChild(2).getText()).concat(this.getBodyText(body.getChild(3)));
             if(brackets) {
                 bodyText = '('.concat(bodyText).concat(')');
@@ -45,7 +44,7 @@ export default class compareLambdaTreesVisitor extends lambdaVisitor {
             return bodyText;
         }
 
-        if(body instanceof lambdaParser.DefinitionContext) {
+        if(body instanceof LambdaParser.DefinitionContext) {
             let bodyText = body.getChild(0).getText().concat(body.getChild(1).getText()).concat(this.getBodyText(body.getChild(2)));
             return bodyText;
         }
@@ -57,25 +56,31 @@ export default class compareLambdaTreesVisitor extends lambdaVisitor {
         return this.getBodyText(body.getChild(0));
     }
 
-	// Visit a parse tree produced by lambdaParser#term.
+    // Visit a parse tree produced by LambdaParser#redex.
+	visitRedex(ctx) {
+        ctx = ctx.getChild(0);
+	    return this.visitTerm(ctx);
+	}
+
+	// Visit a parse tree produced by LambdaParser#term.
 	visitTerm(ctx1, ctx2) {
         console.log("-----------------comparing-----------------")
         if(ctx1 == null || ctx2 == null) {
             console.log("--line 64")
             return false;
         }
-        if(!(ctx1 instanceof lambdaParser.TermContext) || !(ctx2 instanceof lambdaParser.TermContext)) {
+        if(!(ctx1 instanceof LambdaParser.TermContext) || !(ctx2 instanceof LambdaParser.TermContext)) {
             console.log("--line 68")
             return false;
         }
         while(ctx1.getChild(0) != null && ctx1.getChild(0).getText() == '(' 
             && ctx1.getChild(2) != null && ctx1.getChild(2).getText() == ')' 
-            && ctx1.getChild(1) instanceof lambdaParser.TermContext) {
+            && ctx1.getChild(1) instanceof LambdaParser.TermContext) {
             ctx1 = ctx1.getChild(1);
         }
         while(ctx2.getChild(0) != null && ctx2.getChild(0).getText() == '(' 
             && ctx2.getChild(2) != null && ctx2.getChild(2).getText() == ')' 
-            && ctx2.getChild(1) instanceof lambdaParser.TermContext) {
+            && ctx2.getChild(1) instanceof LambdaParser.TermContext) {
             ctx2 = ctx2.getChild(1);
         }
         if(ctx1.getChild(0).getChild(0) == null && ctx2.getChild(0).getChild(0) == null) { 
@@ -95,7 +100,7 @@ export default class compareLambdaTreesVisitor extends lambdaVisitor {
 	}
 
 
-	// Visit a parse tree produced by lambdaParser#abstraction.
+	// Visit a parse tree produced by LambdaParser#abstraction.
 	visitAbstraction(ctx1, ctx2) {
         ctx1 = this.ctx1;
         ctx2 = this.ctx2;
@@ -113,18 +118,18 @@ export default class compareLambdaTreesVisitor extends lambdaVisitor {
         }
         /* console.log(ctx1.constructor.name)
         console.log(ctx2.constructor.name) */
-        if(!(ctx1 instanceof lambdaParser.AbstractionContext) || !(ctx2 instanceof lambdaParser.AbstractionContext)) {
+        if(!(ctx1 instanceof LambdaParser.AbstractionContext) || !(ctx2 instanceof LambdaParser.AbstractionContext)) {
             console.log("--line 116")
             return false;
         }
         while(ctx1.getChild(0) != null && ctx1.getChild(0).getText() == '(' 
             && ctx1.getChild(2) != null && ctx1.getChild(2).getText() == ')' 
-            && ctx1.getChild(1) instanceof lambdaParser.AbstractionContext) {
+            && ctx1.getChild(1) instanceof LambdaParser.AbstractionContext) {
             ctx1 = ctx1.getChild(1);
         }
         while(ctx2.getChild(0) != null && ctx2.getChild(0).getText() == '(' 
             && ctx2.getChild(2) != null && ctx2.getChild(2).getText() == ')' 
-            && ctx2.getChild(1) instanceof lambdaParser.AbstractionContext) {
+            && ctx2.getChild(1) instanceof LambdaParser.AbstractionContext) {
             ctx2 = ctx2.getChild(1);
         }
         if(this.getBodyText(ctx1) == this.getBodyText(ctx2)) {
@@ -140,7 +145,7 @@ export default class compareLambdaTreesVisitor extends lambdaVisitor {
 	}
 
 
-	// Visit a parse tree produced by lambdaParser#application.
+	// Visit a parse tree produced by LambdaParser#application.
 	visitApplication(ctx1, ctx2) {
         ctx1 = this.ctx1;
         ctx2 = this.ctx2;
@@ -150,35 +155,35 @@ export default class compareLambdaTreesVisitor extends lambdaVisitor {
         }
         /* console.log(ctx1.constructor.name)
         console.log(ctx2.constructor.name) */
-        if(!(ctx1 instanceof lambdaParser.ApplicationContext) || !(ctx2 instanceof lambdaParser.ApplicationContext)) {
+        if(!(ctx1 instanceof LambdaParser.ApplicationContext) || !(ctx2 instanceof LambdaParser.ApplicationContext)) {
             return false;
         }
         while(ctx1.getChild(0) != null && ctx1.getChild(0).getText() == '(' 
             && ctx1.getChild(2) != null && ctx1.getChild(2).getText() == ')' 
-            && ctx1.getChild(1) instanceof lambdaParser.ApplicationContext) {
+            && ctx1.getChild(1) instanceof LambdaParser.ApplicationContext) {
             ctx1 = ctx1.getChild(1);
         }
         while(ctx2.getChild(0) != null && ctx2.getChild(0).getText() == '(' 
             && ctx2.getChild(2) != null && ctx2.getChild(2).getText() == ')' 
-            && ctx2.getChild(1) instanceof lambdaParser.ApplicationContext) {
+            && ctx2.getChild(1) instanceof LambdaParser.ApplicationContext) {
             ctx2 = ctx2.getChild(1);
         }
-        if(ctx1.getChild(0) != null && ctx1.getChild(0) instanceof lambdaParser.ApplicationContext
-            && ctx1.getChild(1) != null && ctx1.getChild(1) instanceof lambdaParser.TermContext) {
+        if(ctx1.getChild(0) != null && ctx1.getChild(0) instanceof LambdaParser.ApplicationContext
+            && ctx1.getChild(1) != null && ctx1.getChild(1) instanceof LambdaParser.TermContext) {
                 ctx1 = ctx1.getChild(0);
             while(ctx1.getChild(0) != null && ctx1.getChild(0).getText() == '(' 
                 && ctx1.getChild(2) != null && ctx1.getChild(2).getText() == ')' 
-                && ctx1.getChild(1) instanceof lambdaParser.ApplicationContext) {
+                && ctx1.getChild(1) instanceof LambdaParser.ApplicationContext) {
                 ctx1 = ctx1.getChild(1);
             }
         }
 
-        if(ctx2.getChild(0) != null && ctx2.getChild(0) instanceof lambdaParser.ApplicationContext
-            && ctx2.getChild(1) != null && ctx2.getChild(1) instanceof lambdaParser.TermContext) {
+        if(ctx2.getChild(0) != null && ctx2.getChild(0) instanceof LambdaParser.ApplicationContext
+            && ctx2.getChild(1) != null && ctx2.getChild(1) instanceof LambdaParser.TermContext) {
                 ctx2 = ctx2.getChild(0);
             while(ctx2.getChild(0) != null && ctx2.getChild(0).getText() == '(' 
                 && ctx2.getChild(2) != null && ctx2.getChild(2).getText() == ')' 
-                && ctx2.getChild(1) instanceof lambdaParser.ApplicationContext) {
+                && ctx2.getChild(1) instanceof LambdaParser.ApplicationContext) {
                 ctx2 = ctx2.getChild(1);
             }
         }
@@ -196,7 +201,7 @@ export default class compareLambdaTreesVisitor extends lambdaVisitor {
 	}
 
 
-	// Visit a parse tree produced by lambdaParser#definition.
+	// Visit a parse tree produced by LambdaParser#definition.
 	visitDefinition(ctx1, ctx2) {
 	    return false;
 	}

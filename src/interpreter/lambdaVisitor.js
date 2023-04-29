@@ -2,29 +2,35 @@
 // jshint ignore: start
 import antlr4 from 'antlr4';
 
-// This class defines a complete generic visitor for a parse tree produced by lambdaParser.
+// This class defines a complete generic visitor for a parse tree produced by LambdaParser.
 
-export default class lambdaVisitor extends antlr4.tree.ParseTreeVisitor {
+export default class LambdaVisitor extends antlr4.tree.ParseTreeVisitor {
 
-	// Visit a parse tree produced by lambdaParser#term.
+	// Visit a parse tree produced by LambdaParser#redex.
+	visitRedex(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LambdaParser#term.
 	visitTerm(ctx) {
 	  return this.visitChildren(ctx);
 	}
 
 
-	// Visit a parse tree produced by lambdaParser#abstraction.
+	// Visit a parse tree produced by LambdaParser#abstraction.
 	visitAbstraction(ctx) {
 	  return this.visitChildren(ctx);
 	}
 
 
-	// Visit a parse tree produced by lambdaParser#application.
+	// Visit a parse tree produced by LambdaParser#application.
 	visitApplication(ctx) {
 	  return this.visitChildren(ctx);
 	}
 
 
-	// Visit a parse tree produced by lambdaParser#definition.
+	// Visit a parse tree produced by LambdaParser#definition.
 	visitDefinition(ctx) {
 	  return this.visitChildren(ctx);
 	}
