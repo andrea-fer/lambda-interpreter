@@ -57,9 +57,12 @@ export default class CompareLambdaTreesVisitor extends LambdaVisitor {
     }
 
     // Visit a parse tree produced by LambdaParser#redex.
-	visitRedex(ctx) {
-        ctx = ctx.getChild(0);
-	    return this.visitTerm(ctx);
+	visitRedex(ctx1, ctx2) {
+        ctx1 = ctx1.getChild(0);
+        ctx2 = ctx2.getChild(0);
+        this.ctx1 = ctx1;
+        this.ctx2 = ctx2;
+	    return this.visitTerm(ctx1, ctx2);
 	}
 
 	// Visit a parse tree produced by LambdaParser#term.

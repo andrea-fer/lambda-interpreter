@@ -36,8 +36,7 @@ export default {
     #line p {
         padding: 0.6em 1.2em;
         background-color: rgba(193, 193, 193, 0.5);
-        border-radius: 5px;
-
+        /* border-radius: 5px; */
     }
 
     #line div {

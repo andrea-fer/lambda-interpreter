@@ -381,7 +381,7 @@ export default {
 
 
             let compareVisitor = new CompareLambdaTreesVisitor(tree_correct, tree_guess);
-            let comparison = compareVisitor.visitTerm(tree_correct, tree_guess);
+            let comparison = compareVisitor.visitRedex(tree_correct, tree_guess);
 
             if(comparison) {
                 console.log("Comparison: ", comparison);
@@ -426,7 +426,7 @@ export default {
             <div id="help"></div>
             <div id="code_editor">
                 <div class="btn_heading_row">
-                    <button @click="[sol, steps] = printSolution(), nsteps = steps ? 1 : 0">EVALUATE</button>
+                    <button id="evaluate_btn" @click="[sol, steps] = printSolution(), nsteps = steps ? 1 : 0"><span>EVALUATE </span></button>
                     <!-- <button @click="logDocs">Log Docs</button> -->
                     <!-- <button>Strategy<br>call-by-value</button> -->
                     <DropDown @option-selected="strategy = $event"></DropDown>
@@ -461,15 +461,15 @@ export default {
                     <p>{{ this.guessSolMessage }}</p>
                 </div>
                 <div class="btn_heading_row">
-                    <CodeInput ref="editor_guess_sol" @keyup="printGreekLetter($event, this.$refs.editor_guess_sol.view)"></CodeInput>
+                    <CodeInput class="editor_sol_guess" ref="editor_guess_sol" @keyup="printGreekLetter($event, this.$refs.editor_guess_sol.view)"></CodeInput>
                     <!-- <button @click="this.compareGuess(this.sol, this.$refs.editor_guess_sol.view.doc.toString())">Test</button> -->
                     <button :disabled="this.showSolution || (this.steps && this.nsteps == this.steps.length)" @click="this.compareGuess('.guess_sol_message', this.sol, this.$refs.editor_guess_sol.view.state.doc.toString())">Try</button>
                 </div>
                 <div class="btn_heading_row">
                     <h2>Step-by-step</h2>
-                    <button @click="nsteps = steps ? decrementVisibleLineNumber(nsteps, steps) : null">Previous</button>
-                    <button @click="nsteps = steps ? incrementVisibleLineNumber(nsteps, steps) : null">Next</button>
-                    <button @click="nsteps = steps ? steps.length : 0; this.guessAllowed = false; this.formatGuessText('.guess_sol_message', '', 'black'); this.formatGuessText('.guess_message', '', 'black')">View All</button>
+                    <button :disabled="!this.steps || nsteps <= 1" @click="nsteps = steps ? decrementVisibleLineNumber(nsteps, steps) : null">Previous</button>
+                    <button :disabled="!this.steps || nsteps >= steps.length" @click="nsteps = steps ? incrementVisibleLineNumber(nsteps, steps) : null">Next</button>
+                    <button :disabled="!this.steps || nsteps >= steps.length" @click="nsteps = steps ? steps.length : 0; this.guessAllowed = false; this.formatGuessText('.guess_sol_message', '', 'black'); this.formatGuessText('.guess_message', '', 'black')">View All</button>
                 </div>
                 <div id="solution_steps">
                     <SolutionSteps :steps="steps" :nsteps="nsteps"></SolutionSteps>
@@ -478,8 +478,8 @@ export default {
                     <p>{{ this.guessMessage }}</p>
                 </div>
                 <div class="btn_heading_row">
-                    <h2>{{ (steps && nsteps < steps.length) ? (nsteps + 1 + '.step') : '' }}</h2>
-                    <CodeInput ref="editor_guess" @keyup="printGreekLetter($event, this.$refs.editor_guess.view)"></CodeInput>
+                    <h2 id="step_count">{{ (steps && nsteps < steps.length) ? (nsteps + 1 + '.step') : '' }}</h2>
+                    <CodeInput class="editor_step_guess" ref="editor_guess" @keyup="printGreekLetter($event, this.$refs.editor_guess.view)"></CodeInput>
                     <button :disabled="!this.guessAllowed" @click="this.compareGuess('.guess_message',this.steps[nsteps], this.$refs.editor_guess.view.state.doc.toString())">Try</button>
                 </div>
             </div>

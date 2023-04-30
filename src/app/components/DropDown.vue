@@ -1,8 +1,13 @@
 <template>
     <button class="dropdown">
         <div class="visible" @click="show = !show">
-            <p>Strategy</p>
-            <p>{{ selected.name }}</p>
+            <span>
+                <p>Strategy:</p>
+                <p>{{ selected.name }}</p>
+            </span>
+            <span>
+                <p>&#9660;</p>
+            </span>
         </div>
         <ul class="hidden" v-if="show">
             <li v-for="option in options" :key="option.id" @click="select(option)">
@@ -70,8 +75,15 @@ export default {
         z-index: 2;
         position: relative;
         /* height: 100%; */
-        height: 3rem;
+        height: 3.1rem;
         padding: 0.3em 0;
+        text-align: center;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+    .visible span {
         text-align: center;
         display: flex;
         flex-direction: column;

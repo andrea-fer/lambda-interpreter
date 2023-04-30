@@ -109,7 +109,7 @@ export default {
 
 <style>
 #editor_definitions {
-    height: 100%;
+    height: 79%;
 }
 
 /* .cm-gutters {
@@ -125,6 +125,8 @@ export default {
     height: 100%;
 }
 .cm-scroller { 
+    max-height: 100%;
+    height: 100%;
     overflow: auto;
 }
 </style>

@@ -6,7 +6,7 @@
 
 <script>
 import { EditorState } from '@codemirror/state';
-import { EditorView, lineNumbers, highlightActiveLineGutter, highlightSpecialChars, drawSelection, dropCursor, 
+import { EditorView, lineNumbers, highlightSpecialChars, drawSelection, dropCursor, 
     rectangularSelection, crosshairCursor, highlightActiveLine, keymap} from '@codemirror/view';
 import { foldGutter, indentOnInput, syntaxHighlighting, defaultHighlightStyle, 
     bracketMatching, foldKeymap } from '@codemirror/language';
@@ -28,24 +28,24 @@ export default {
     mounted() {
         const state = EditorState.create({
             //doc: "",
-            //doc: "(λ x. λ y. x) a\n",   // Ly.a *
-            //doc: "(λx.x)(λz.z)(λb.b)a\n", // a *
-            //doc: "(λx.x)((λy.y)z)\n",   // z *
-            //doc: "(λz.z)(λy.y y)(λx.x a)\n",    // aa 
-            //doc: "(λz.z) (λz.z z) (λz.z y)\n",    // yy 
-            //doc: "(λx.λy.x y y)(λa.a)b\n",  // bb *
-            //doc: "(λx.λy.x y y)(λa.a)\n",   // λy. (λa.a) y y *
-            //doc: "(λx.λy.x y y) (λy.y) y\n",  // yy *
-    //doc: "(λx.y)((λy.y y y)(λx.x x x))\n",                            // y * recursion
-            //doc: "(λa.a)((λy.y y y)(λx.x))\n", // λx.x *
-            //doc: "(λx.x x)(λy.y x)z\n", // xxz *
-            //doc: "(λx.(λy.(x y))y)z\n",  // zy *
-            //doc: "x y\n",
-            //doc: "((λx.x x)(λy.y))(λy.y)\n",  // λy.y *
-            //doc: "(λx.y)((λy.y y y)(λx.x a))\n", // y *
-            //doc: "(λx.x)((λy.y y y)(λx.x a))\n", // a a (λx.x a) *
-    //doc: "(((λx.λy.(xy))(λy.y))w)\n", //w *                           // needs alpha conversion
-            doc: "((a))",
+            //doc: "(λ x. λ y. x) a",   // Ly.a *
+            doc: "(λx.x)(λz.z)(λb.b)a", // a *
+            //doc: "(λx.x)((λy.y)z)",   // z *
+            //doc: "(λz.z)(λy.y y)(λx.x a)",    // aa 
+            //doc: "(λz.z) (λz.z z) (λz.z y)",    // yy 
+            //doc: "(λx.λy.x y y)(λa.a)b",  // bb *
+            //doc: "(λx.λy.x y y)(λa.a)",   // λy. (λa.a) y y *
+            //doc: "(λx.λy.x y y) (λy.y) y",  // yy *
+    //doc: "(λx.y)((λy.y y y)(λx.x x x))",                            // y * recursion
+            //doc: "(λa.a)((λy.y y y)(λx.x))", // λx.x *
+            //doc: "(λx.x x)(λy.y x)z", // xxz *
+            //doc: "(λx.(λy.(x y))y)z",  // zy *
+            //doc: "x y",
+            //doc: "((λx.x x)(λy.y))(λy.y)",  // λy.y *
+            //doc: "(λx.y)((λy.y y y)(λx.x a))", // y *
+            //doc: "(λx.x)((λy.y y y)(λx.x a))", // a a (λx.x a) *
+    //doc: "(((λx.λy.(xy))(λy.y))w)", //w *                           // needs alpha conversion
+            //doc: "((a))",
             //doc: "((λx.x))",
             extensions: [[
                 lambdaLanguageSupport,
@@ -53,7 +53,6 @@ export default {
                     return tr.newDoc.lines > 1 ? [] : [tr]
                 }),
                 lineNumbers(),
-                highlightActiveLineGutter(),
                 highlightSpecialChars(),
                 history(),
                 foldGutter(),
@@ -98,7 +97,15 @@ export default {
 .code_input {
     background-color: #EAEAEA;
     flex: 1;
-    height: 90%;
+    height: 100%;
+}
+
+.editor_sol_guess .cm-content, .editor_step_guess .cm-content {
+    padding-top: 0.5em !important;
+}
+
+.code_input .cm-gutters .cm-lineNumbers .cm-gutterElement {
+    display: none;
 }
 
 </style>
