@@ -426,18 +426,6 @@ export default {
             <div id="help"></div>
             <div id="code_editor">
                 <div class="btn_heading_row">
-                    <button id="evaluate_btn" @click="[sol, steps] = printSolution(), nsteps = steps ? 1 : 0"><span>EVALUATE </span></button>
-                    <!-- <button @click="logDocs">Log Docs</button> -->
-                    <!-- <button>Strategy<br>call-by-value</button> -->
-                    <DropDown @option-selected="strategy = $event"></DropDown>
-                    <button>
-                        <label for="upload-file-redex">Upload Redex</label>
-                        <input type="file" @change="importTextFromFile(this.$refs.editor_redex.view, 'upload-file-redex')" accept=".txt" id="upload-file-redex"/>
-                    </button>
-                    <button @click="saveTextAsFile('lambda_kalkul_redex', this.$refs.editor_redex.view)">Save Redex</button>
-                </div>
-                <CodeInput class="editor_redex" ref="editor_redex" @keyup="printGreekLetter($event, this.$refs.editor_redex.view)"></CodeInput>
-                <div class="btn_heading_row">
                     <button>
                         <label for="upload-file-definitions">Upload Definitions</label>
                         <input type="file" @change="importTextFromFile(this.$refs.editor_definitions.view, 'upload-file-definitions')" accept=".txt" id="upload-file-definitions"/>
@@ -445,6 +433,20 @@ export default {
                     <button @click="saveTextAsFile('lambda_kalkul_definitions', this.$refs.editor_definitions.view)">Save Definitions</button>
                 </div>
                 <CodeEditor ref="editor_definitions" @keyup="printGreekLetter($event, this.$refs.editor_definitions.view)"></CodeEditor>
+                <div class="btn_heading_row">
+                    <DropDown @option-selected="strategy = $event"></DropDown>
+                    <button id="evaluate_btn" @click="[sol, steps] = printSolution(), nsteps = steps ? 1 : 0"><span>EVALUATE </span></button>
+                    <!-- <button @click="logDocs">Log Docs</button> -->
+                    <!-- <button>Strategy<br>call-by-value</button> -->
+                </div>
+                <CodeInput class="editor_redex" ref="editor_redex" @keyup="printGreekLetter($event, this.$refs.editor_redex.view)"></CodeInput>
+                <div class="btn_heading_row">
+                    <button>
+                        <label for="upload-file-redex">Upload Redex</label>
+                        <input type="file" @change="importTextFromFile(this.$refs.editor_redex.view, 'upload-file-redex')" accept=".txt" id="upload-file-redex"/>
+                    </button>
+                    <button @click="saveTextAsFile('lambda_kalkul_redex', this.$refs.editor_redex.view)">Save Redex</button>
+                </div>
             </div>
             <div id="results">
                 <div class="btn_heading_row">

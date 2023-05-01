@@ -144,11 +144,11 @@ header h1 {
     border-right: 1px solid #A8A4BA;
 }
 
-#editor-definitions {
+#editor_definitions {
     background-color: #EAEAEA;
     flex: 1;
-    height: 74%;
-    max-height: 74%;
+    height: 72%;
+    max-height: 72%;
 }
 
 .editor_sol_guess {
@@ -318,7 +318,7 @@ footer {
         height: 10%;
     }
     #solution_steps {
-        height: 42%;
+        height: 46%;
     }
     #results textarea {
         line-height: 3em;
