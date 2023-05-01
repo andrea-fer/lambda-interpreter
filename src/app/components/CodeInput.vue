@@ -100,12 +100,17 @@ export default {
     height: 100%;
 }
 
-.editor_sol_guess .cm-content, .editor_step_guess .cm-content {
+.code_input .cm-content {
     padding-top: 0.5em !important;
 }
 
 .code_input .cm-gutters .cm-lineNumbers .cm-gutterElement {
     display: none;
+}
+
+.editor_redex {
+    height: 3em;
+    max-height: 3em;
 }
 
 </style>
