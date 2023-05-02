@@ -1,5 +1,5 @@
 <template>
-<div id="editor_definitions">
+<div id="editor-definitions">
     <div :ref="editorRef"></div>
 </div>
 </template>
@@ -21,12 +21,13 @@ const lambdaLanguageSupport = LambdaLanguageSupport();
 export default {
     data() {
         return {
-            editorRef: 'editor_definitions',
+            editorRef: 'editor-definitions',
             view: null
         };
     },
     mounted() {
         const state = EditorState.create({
+            doc: "",
 // Church numerals 
     //doc: "0 = λs.λz.z\n1 = λs.z.s z\n2 = λs.λz.s(s z)\n3 = λs.λz.s(s(s z))\nadd = λm.λn.λs.λz.m s(n s z)\ntimes = λm.λn.m(add n)0\nsucc = λn.λs.λz.s(n s z)\niszero = λm.m(λx.false)true\ntimes 0 1\n",
             //doc: "0 = λs.λz.z\n1 = λs.z.s z\n2 = λs.λz.s(s z)\n3 = λs.λz.s(s(s z))\nadd = λm.λn.λs.λz.m s(n s z)\ntimes = λm.λn.m(add n)0\nsucc = λn.λs.λz.s(n s z)\niszero = λm.m(λx.false)true\nsucc (succ 0)\n",
@@ -98,7 +99,7 @@ export default {
         
         this.view = new EditorView({
             state,
-            parent: document.querySelector("#editor_definitions"),
+            parent: document.querySelector("#editor-definitions"),
       });
   },
     beforeUnmount() {
@@ -108,7 +109,7 @@ export default {
 </script>
 
 <style>
-#editor_definitions {
+#editor-definitions {
     height: 79%;
 }
 
@@ -123,6 +124,7 @@ export default {
 
 .cm-editor { 
     height: 100%;
+    width: 100%;
 }
 .cm-scroller { 
     max-height: 100%;

@@ -82,7 +82,9 @@ export default {
                     pos = next + 1;
                 }
             }
-            editorView.dispatch({changes});
+            if(changes.length > 0) {
+                editorView.dispatch({changes});
+            }
         },
         printSolution(event) {
             //console.log("Hello");
@@ -92,8 +94,8 @@ export default {
             this.nsteps = 0;
             this.guessAllowed = false;
             this.showSolution = false;
-            this.formatGuessText(".guess_message", "", "black");
-            this.formatGuessText(".guess_message", "", "black");
+            this.formatGuessText(".guess-message", "", "black");
+            this.formatGuessText(".guess-message", "", "black");
             let definitions = new Map();
             // select visitor
             let visitor;
@@ -111,7 +113,7 @@ export default {
             console.log("lastLine: ", lastLine); */
             let input, solution, steps = null;
             let i = 0;
-            // parse input from editor_definitions
+            // parse input from editor-definitions
             do {
                 input = this.$refs.editor_definitions.view.state.doc.text[i++];
                 if(input == null || input.length <= 0) {
@@ -215,8 +217,8 @@ export default {
                     }
                 }
                 this.guessAllowed = true;
-                this.formatGuessText(".guess_sol_message", "Try to guess the normal form of the term.", "black");
-                this.formatGuessText(".guess_message", "Try to guess the next step of reduction.", "black");
+                this.formatGuessText(".guess-sol-message", "Try to guess the normal form of the term.", "black");
+                this.formatGuessText(".guess-message", "Try to guess the next step of reduction.", "black");
                 console.log("Long solution = ", steps);
                 return [solution, steps];
             }
@@ -286,29 +288,29 @@ export default {
                 nsteps--;
                 this.guessAllowed = true;
                 if(!this.showSolution) {
-                    this.formatGuessText(".guess_sol_message", "Try to guess the normal form of the term.", "black");
+                    this.formatGuessText(".guess-sol-message", "Try to guess the normal form of the term.", "black");
                 }
-                this.formatGuessText(".guess_message", "Try to guess the next step of reduction.", "black");
+                this.formatGuessText(".guess-message", "Try to guess the next step of reduction.", "black");
             }            
             if(nsteps <= 0) {
                 this.guessAllowed = false;
-                this.formatGuessText(".guess_sol_message", "", "black");
-                this.formatGuessText(".guess_message", "", "black");
+                this.formatGuessText(".guess-sol-message", "", "black");
+                this.formatGuessText(".guess-message", "", "black");
             }
             return nsteps;
         },
         incrementVisibleLineNumber(nsteps, steps) {
             if(nsteps < steps.length) {
                 if(!this.showSolution) {
-                    this.formatGuessText(".guess_sol_message", "Try to guess the normal form of the term.", "black");
+                    this.formatGuessText(".guess-sol-message", "Try to guess the normal form of the term.", "black");
                 }
-                this.formatGuessText(".guess_message", "Try to guess the next step of reduction.", "black");
+                this.formatGuessText(".guess-message", "Try to guess the next step of reduction.", "black");
                 nsteps++;
             }            
             if(nsteps >= steps.length) {
                 this.guessAllowed = false;
-                this.formatGuessText(".guess_sol_message", "", "black");
-                this.formatGuessText(".guess_message", "", "black");
+                this.formatGuessText(".guess-sol-message", "", "black");
+                this.formatGuessText(".guess-message", "", "black");
             }
             return nsteps;
         },
@@ -387,13 +389,13 @@ export default {
                 console.log("Comparison: ", comparison);
                 console.log(correct, " = ", guess);
                 console.log("tree_correct = tree_guess");
-                if(element === ".guess_sol_message") {
+                if(element === ".guess-sol-message") {
                     this.showSolution = true;
-                } else if(element === ".guess_message") {
+                } else if(element === ".guess-message") {
                     this.nsteps = this.steps ? this.incrementVisibleLineNumber(this.nsteps, this.steps) : this.nsteps;
                 }
                 this.formatGuessText(element, "Correct!", "green");
-                /* this.formatGuessText(".guess_message", "", "black");           
+                /* this.formatGuessText(".guess-message", "", "black");           
                 this.guessAllowed = false; */
             } else {
                 console.log("Comparison: ", comparison);
@@ -403,9 +405,9 @@ export default {
             }
         },
         formatGuessText(element, message, color) {
-            if(element === ".guess_sol_message") {
+            if(element === ".guess-sol-message") {
                 this.guessSolMessage = message;
-            } else if(element === ".guess_message") {
+            } else if(element === ".guess-message") {
                 this.guessMessage = message;
             } else {
                 return;
@@ -424,8 +426,8 @@ export default {
         </header>
         <div id="layout">
             <div id="help"></div>
-            <div id="code_editor">
-                <div class="btn_heading_row">
+            <div id="code-editor">
+                <div class="btn-heading-row">
                     <button>
                         <label for="upload-file-definitions">Upload Definitions</label>
                         <input type="file" @change="importTextFromFile(this.$refs.editor_definitions.view, 'upload-file-definitions')" accept=".txt" id="upload-file-definitions"/>
@@ -433,14 +435,14 @@ export default {
                     <button @click="saveTextAsFile('lambda_kalkul_definitions', this.$refs.editor_definitions.view)">Save Definitions</button>
                 </div>
                 <CodeEditor ref="editor_definitions" @keyup="printGreekLetter($event, this.$refs.editor_definitions.view)"></CodeEditor>
-                <div class="btn_heading_row">
+                <div class="btn-heading-row">
                     <DropDown @option-selected="strategy = $event"></DropDown>
-                    <button id="evaluate_btn" @click="[sol, steps] = printSolution(), nsteps = steps ? 1 : 0"><span>EVALUATE </span></button>
+                    <button id="evaluate-btn" @click="[sol, steps] = printSolution(), nsteps = steps ? 1 : 0"><span>EVALUATE </span></button>
                     <!-- <button @click="logDocs">Log Docs</button> -->
                     <!-- <button>Strategy<br>call-by-value</button> -->
                 </div>
                 <CodeInput class="editor_redex" ref="editor_redex" @keyup="printGreekLetter($event, this.$refs.editor_redex.view)"></CodeInput>
-                <div class="btn_heading_row">
+                <div class="btn-heading-row">
                     <button>
                         <label for="upload-file-redex">Upload Redex</label>
                         <input type="file" @change="importTextFromFile(this.$refs.editor_redex.view, 'upload-file-redex')" accept=".txt" id="upload-file-redex"/>
@@ -449,40 +451,40 @@ export default {
                 </div>
             </div>
             <div id="results">
-                <div class="btn_heading_row">
-                    <p id="solution_txt">SOLUTION</p>
-                    <button :disabled="!this.sol" @click="showSolution = !showSolution; if(showSolution) formatGuessText('.guess_sol_message', '', 'black'); else formatGuessText('.guess_sol_message', 'Try to guess the normal form of the term.', 'black');">
+                <div class="btn-heading-row">
+                    <p id="solution-txt">SOLUTION</p>
+                    <button :disabled="!this.sol" @click="showSolution = !showSolution; if(showSolution) formatGuessText('.guess-sol-message', '', 'black'); else formatGuessText('.guess-sol-message', 'Try to guess the normal form of the term.', 'black');">
                         <p v-if="showSolution">Hide</p>
                         <p v-if="!showSolution">Show</p>
                     </button>
                 </div>
-                <div id="solution_short">
+                <div id="solution-short">
                     <SolutionShort v-if="showSolution" :solution="sol"></SolutionShort>
                 </div>
-                <div class="guess_sol_message">
+                <div class="guess-sol-message">
                     <p>{{ this.guessSolMessage }}</p>
                 </div>
-                <div class="btn_heading_row">
-                    <CodeInput class="editor_sol_guess" ref="editor_guess_sol" @keyup="printGreekLetter($event, this.$refs.editor_guess_sol.view)"></CodeInput>
+                <div class="btn-heading-row">
+                    <CodeInput class="editor-sol-guess" ref="editor_guess_sol" @keyup="printGreekLetter($event, this.$refs.editor_guess_sol.view)"></CodeInput>
                     <!-- <button @click="this.compareGuess(this.sol, this.$refs.editor_guess_sol.view.doc.toString())">Test</button> -->
-                    <button :disabled="this.showSolution || (this.steps && this.nsteps == this.steps.length)" @click="this.compareGuess('.guess_sol_message', this.sol, this.$refs.editor_guess_sol.view.state.doc.toString())">Try</button>
+                    <button :disabled="this.showSolution || (this.steps && this.nsteps == this.steps.length)" @click="this.compareGuess('.guess-sol-message', this.sol, this.$refs.editor_guess_sol.view.state.doc.toString())">Try</button>
                 </div>
-                <div class="btn_heading_row" id="steps_heading">
-                    <p id="step_by_step_txt">Step-by-step</p>
+                <div class="btn-heading-row" id="steps-heading">
+                    <p id="step-by-step-txt">Step-by-step</p>
                     <button :disabled="!this.steps || nsteps <= 1" @click="nsteps = steps ? decrementVisibleLineNumber(nsteps, steps) : null">Previous</button>
                     <button :disabled="!this.steps || nsteps >= steps.length" @click="nsteps = steps ? incrementVisibleLineNumber(nsteps, steps) : null">Next</button>
-                    <button :disabled="!this.steps || nsteps >= steps.length" @click="nsteps = steps ? steps.length : 0; this.guessAllowed = false; this.formatGuessText('.guess_sol_message', '', 'black'); this.formatGuessText('.guess_message', '', 'black')">View All</button>
+                    <button :disabled="!this.steps || nsteps >= steps.length" @click="nsteps = steps ? steps.length : 0; this.guessAllowed = false; this.formatGuessText('.guess-sol-message', '', 'black'); this.formatGuessText('.guess-message', '', 'black')">View All</button>
                 </div>
-                <div id="solution_steps">
+                <div id="solution-steps">
                     <SolutionSteps :steps="steps" :nsteps="nsteps"></SolutionSteps>
                 </div>
-                <div class="guess_message">
+                <div class="guess-message">
                     <p>{{ this.guessMessage }}</p>
                 </div>
-                <div class="btn_heading_row">
+                <div class="btn-heading-row">
                     <p id="step_count">{{ (steps && nsteps < steps.length) ? (nsteps + 1 + '.step') : '' }}</p>
-                    <CodeInput class="editor_step_guess" ref="editor_guess" @keyup="printGreekLetter($event, this.$refs.editor_guess.view)"></CodeInput>
-                    <button :disabled="!this.guessAllowed" @click="this.compareGuess('.guess_message',this.steps[nsteps], this.$refs.editor_guess.view.state.doc.toString())">Try</button>
+                    <CodeInput class="editor-step-guess" ref="editor_guess" @keyup="printGreekLetter($event, this.$refs.editor_guess.view)"></CodeInput>
+                    <button :disabled="!this.guessAllowed" @click="this.compareGuess('.guess-message',this.steps[nsteps], this.$refs.editor_guess.view.state.doc.toString())">Try</button>
                 </div>
             </div>
         </div>

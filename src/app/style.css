@@ -49,25 +49,25 @@ button:disabled {
     cursor: auto;
 }
 
-#evaluate_btn {
+#evaluate-btn {
     background-color: #609F5F;
     color: white;
     letter-spacing: 0.1rem;
     font-weight: 600;
 }
 
-#evaluate_btn:hover {
+#evaluate-btn:hover {
     padding: 0.6em auto;
 }
 
-#evaluate_btn span {
+#evaluate-btn span {
     cursor: pointer;
     display: inline-block;
     position: relative;
     transition: 0.5s;
 }
 
-#evaluate_btn span:after {
+#evaluate-btn span:after {
     content: '\25BA';
     position: absolute;
     opacity: 0;
@@ -76,16 +76,16 @@ button:disabled {
     transition: 0.5s;
 }
 
-#evaluate_btn:hover span {
+#evaluate-btn:hover span {
     padding-right: 1.5em;
 }
 
-#evaluate_btn:hover span:after {
+#evaluate-btn:hover span:after {
     opacity: 1;
     right: 0;
 }
-#evaluate_btn:focus,
-#evaluate_btn:focus-visible {
+#evaluate-btn:focus,
+#evaluate-btn:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;
 }
 
@@ -137,31 +137,38 @@ header h1 {
     width: 20vw;
 }
 
-#code_editor {
+#code-editor {
     display: flex;
     flex-direction: column;
     width: 40vw;
+    height: 100%;
     border-right: 1px solid #A8A4BA;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    align-content: stretch;
 }
 
-#editor_definitions {
+#editor-definitions {
     background-color: #EAEAEA;
-    flex: 1;
-    height: 72%;
-    max-height: 72%;
+    height: 40%;
+    /* flex-grow: auto; */
+    display: flex;
+    resize: vertical;
+    overflow: auto;
 }
 
-.editor_sol_guess {
+.editor-sol-guess {
     min-width: 80%;
     width: 80%;
 }
 
-.editor_step_guess {
+.editor-step-guess {
     min-width: 65%;
     width: 65%;
 }
 
-#step_count {
+#step-count {
     width: 10%;
     text-align: center;
 }
@@ -190,7 +197,7 @@ header h1 {
     padding: 0 !important;
 }
 
-.btn_heading_row {
+.btn-heading-row {
     display: flex;
     flex-direction: row;
     background-color: #A8A4BA;
@@ -199,7 +206,7 @@ header h1 {
     align-items: center;
     z-index: auto;
 }
-.btn_heading_row>button {
+.btn-heading-row>button {
     flex: 1;
     height: 100%;
     text-align: center;
@@ -208,36 +215,44 @@ header h1 {
     justify-content: center;
     align-items: center;
 }
-.btn_heading_row>p {
+.btn-heading-row>p {
     padding: 0 0.5em;
     font-size: 18px;
 }
 
-#solution_txt {
+#solution-txt {
     width: 70vw;
 }
 
-#step_by_step_txt {
+#step-by-step-txt {
     width: 15vw;
 }
 
 #results {
     background-color: #EAEAEA;
+    display: flex;
+    flex-direction: column;
     width: 40vw;
+    height: 100%;
     border-left: 1px solid #A8A4BA;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    align-content: stretch;
 }
-#solution_short {
+#solution-short {
     height: 8%;
 }
-#solution_steps {
-    height: 48%;
+#solution-steps {
+    flex-grow: 1;
+    overflow: auto;
+    resize: vertical;
 }
 #steps {
     height: 100%;
-    overflow: scroll;
 }
 
-.guess_sol_message, .guess_message {
+.guess-sol-message, .guess-message {
     height: 6%;
     padding-left: 0.7em;
     display: flex;
@@ -245,7 +260,7 @@ header h1 {
     background-color: #dfdde5;
 }
 
-#solution_short {
+#solution-short {
     padding: 0.6em 1.2em;
 }
 
@@ -266,11 +281,11 @@ footer {
     #help {
         display: none;
     }
-    #code_editor, #results {
+    #code-editor, #results {
         width: 50%;
         flex: 1;
     }
-    .btn_heading_row {
+    .btn-heading-row {
         height: 3em;
     }
 }
@@ -278,7 +293,11 @@ footer {
 /* phone resolution */
 @media screen and (max-width: 800px) {
     #app {
-        height: 200vh;
+        height: 153vh;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        align-content: stretch;
+        align-items: stretch;
     }
     h1 {
         font-size: 22px;
@@ -295,30 +314,42 @@ footer {
     #layout {
         height: 96%;
     }
-    #code_editor, #results {
+    #code-editor {
         width: 100%;
-        height: 100vh;
-        max-height: 100vh;
+        height: 55vh;
+        max-height: 55vh;
         flex: 1;
     }
-    .btn_heading_row {
+    #results {
+        width: 100%;
+        height: 87vh;
+        max-height: 87vh;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        align-items: stretch;
+        align-content: stretch;
+    /* display: flex; */
+    }
+    .btn-heading-row {
         height: 3em;
     }
-    #steps_heading button {
+    #steps-heading button {
         padding: 0.6em 1em;
     }
-    #step_by_step_txt {
+    #step-by-step-txt {
         width: 28vw;
     }
-    #editor_definitions {
-        height: 65%;
-        max-height: 65%;
+    #editor-definitions {
+        display: flex;
+        flex-grow: 1;
+        resize: none;
     }
-    #solution_short {
+    #solution-short {
         height: 10%;
     }
-    #solution_steps {
-        height: 46%;
+    #solution-steps {
+        flex-grow: 1;
+        display: flex;
     }
     #results textarea {
         line-height: 3em;
