@@ -29,13 +29,13 @@ export default {
         const state = EditorState.create({
             //doc: "",
             //doc: "(λ x. λ y. x) a",   // Ly.a *
-            doc: "(λx.x)(λz.z)(λb.b)a", // a *
+            //doc: "(λx.x)(λz.z)(λb.b)a", // a *
             //doc: "(λx.x)((λy.y)z)",   // z *
             //doc: "(λz.z)(λy.y y)(λx.x a)",    // aa 
             //doc: "(λz.z) (λz.z z) (λz.z y)",    // yy 
             //doc: "(λx.λy.x y y)(λa.a)b",  // bb *
             //doc: "(λx.λy.x y y)(λa.a)",   // λy. (λa.a) y y *
-            //doc: "(λx.λy.x y y) (λy.y) y",  // yy *
+            doc: "(λx.λy.x y y) (λy.y) y",  // yy *
     //doc: "(λx.y)((λy.y y y)(λx.x x x))",                            // y * recursion
             //doc: "(λa.a)((λy.y y y)(λx.x))", // λx.x *
             //doc: "(λx.x x)(λy.y x)z", // xxz *
