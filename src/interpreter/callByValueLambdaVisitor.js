@@ -12,7 +12,7 @@ export default class CallByValueLambdaVisitor extends LambdaVisitor {
         this.term = this.getBodyText(ctx);
         this.terms = [];
         this.terms.push(this.term);
-        this.maximumSteps = 10;
+        this.maximumSteps = 30;
         this.definitions = definitions;
     }
     // Visit a parse tree produced by LambdaParser#redex.

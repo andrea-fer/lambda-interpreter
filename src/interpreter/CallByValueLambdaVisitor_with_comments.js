@@ -54,7 +54,7 @@ export default class CallByValueLambdaVisitor extends LambdaVisitor {
                 break;
             }
             console.log("> SOLUTION: ", this.getBodyText(solution), "type: ", solution.constructor.name);
-            if(this.terms.length < 10) {
+            if(this.terms.length < this.maximumSteps) {
                 this.terms.push(this.getBodyText(solution));
             } else {
                 console.log("Recursion");
@@ -67,7 +67,7 @@ export default class CallByValueLambdaVisitor extends LambdaVisitor {
                 let value = this.makeTree(this.definitions.get(this.getBodyText(solution)));
                 if(value.getChild(0) instanceof LambdaParser.ApplicationContext) {
                     solution = value;
-                    if(this.terms.length < 10) {
+                    if(this.terms.length < this.maximumSteps) {
                         this.terms.push(this.getBodyText(solution));
                     } else {
                         console.log("Recursion");
@@ -103,7 +103,7 @@ export default class CallByValueLambdaVisitor extends LambdaVisitor {
         if(solution == null) {
             console.log("Recursion");
             // return last added term as a solution
-            return [this.getBodyText(this.terms[this.terms.length - 1]), this.terms];
+            return [this.terms[this.terms.length - 1], this.terms];
         }
         return [this.getBodyText(solution), this.terms];
 	}
@@ -184,7 +184,7 @@ export default class CallByValueLambdaVisitor extends LambdaVisitor {
                     let oldLeftChild = leftChild;
                     leftChild = this.makeTree(leftChildText).getChild(0);
                     let newCTX = this.terms[this.terms.length - 1].replace(this.getBodyText(oldLeftChild), leftChildText);
-                    if(this.terms.lenght < 10){
+                    if(this.terms.length < this.maximumSteps){
                         this.terms.push(newCTX);
                     } else {
                         console.log("Recursion");
@@ -237,8 +237,11 @@ export default class CallByValueLambdaVisitor extends LambdaVisitor {
             console.log("leftChild = ", this.getBodyText(leftChild), ", rightChild = ", this.getBodyText(rightChild));
             if(this.terms[this.terms.length - 1] != newCTX) {
                 this.terms.push(newCTX);
+            } else {
+                console.log("Recursion");
+                return null;
             }
-            if(this.terms.length > 10) {
+            if(this.terms.length > this.maximumSteps) {
                 console.log("Recursion");
                 return null;
             }
@@ -320,7 +323,7 @@ export default class CallByValueLambdaVisitor extends LambdaVisitor {
                 if(this.terms[this.terms.length - 1] == newCtx) {
                     break;
                 }
-                if(this.terms.length < 10){
+                if(this.terms.length < this.maximumSteps){
                     this.terms.push(newCtx);
                 } else {
                     console.log("Recursion");

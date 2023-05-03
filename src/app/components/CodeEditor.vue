@@ -7,7 +7,7 @@
 <script>
 import { EditorState } from '@codemirror/state';
 import { EditorView, lineNumbers, highlightActiveLineGutter, highlightSpecialChars, drawSelection, dropCursor, 
-    rectangularSelection, crosshairCursor, highlightActiveLine, keymap, scrollPastEnd } from '@codemirror/view';
+    rectangularSelection, crosshairCursor, highlightActiveLine, keymap, scrollPastEnd, placeholder } from '@codemirror/view';
 import { foldGutter, indentOnInput, syntaxHighlighting, defaultHighlightStyle, 
     bracketMatching, foldKeymap } from '@codemirror/language';
 import { history, defaultKeymap, historyKeymap } from '@codemirror/commands';
@@ -66,6 +66,7 @@ export default {
             //doc: "(λx.x)((λy.y y y)(λx.x a))\n", // a a (λx.x a) *
     //doc: "(((λx.λy.(xy))(λy.y))w)\n", //w *                           // needs alpha conversion
             extensions: [[
+                placeholder('Type your definitions here...'),
                 lambdaLanguageSupport,
                 lineNumbers(),
                 highlightActiveLineGutter(),

@@ -4,6 +4,8 @@ import SolutionShort from "./components/SolutionShort.vue"
 import SolutionSteps from "./components/SolutionSteps.vue"
 import CodeInput from "./components/CodeInput.vue"
 import DropDown from "./components/DropDown.vue";
+import HelpBar from "./components/HelpBar.vue";
+
 import antlr4 from "antlr4";
 const { CommonTokenStream, InputStream } = antlr4;
 import LambdaLexer from "../interpreter/LambdaLexer.js";
@@ -20,6 +22,7 @@ export default {
         SolutionSteps,
         CodeInput,
         DropDown,
+        HelpBar,
     },
     data() {
         return {
@@ -31,6 +34,7 @@ export default {
             guessMessage: "",
             showSolution: false,
             guessSolMessage: "",
+            showHelp: false,
         }
     },
     methods: {
@@ -201,6 +205,9 @@ export default {
                         console.log("*", key, ":", value, "*");
                 } */
                 [solution, steps] = new visitor(tree, definitions).visitRedex(tree);
+                if(solution == null) {
+                    return ["", null];
+                }
                 solution = solution.replaceAll(' ', '~');
                 solution = solution.replaceAll('\\lambda', '\\lambda ');
                 console.log("Solution = ", solution);
@@ -421,11 +428,15 @@ export default {
 <template>
     <div id="content">
         <header>
-            <h1>LAMBDA CALCULUS INTERPRETER</h1>
+            <button id="show-help-btn" @click="this.showHelp = !this.showHelp">
+                <img src="./assets/help.svg" class="help-logo" alt="Show help"/>
+            </button>
+            <h1 class="no-select">LAMBDA CALCULUS INTERPRETER</h1>
             <!-- <p>Strategy = {{ strategy.name }}</p> -->
         </header>
         <div id="layout">
-            <div id="help"></div>
+            <HelpBar v-if="this.showHelp" class="showing-help"></HelpBar>
+            <HelpBar v-if="!this.showHelp" class="not-showing-help"></HelpBar>
             <div id="code-editor">
                 <div class="btn-heading-row">
                     <button>
@@ -436,23 +447,23 @@ export default {
                 </div>
                 <CodeEditor ref="editor_definitions" @keyup="printGreekLetter($event, this.$refs.editor_definitions.view)"></CodeEditor>
                 <div class="btn-heading-row">
-                    <DropDown @option-selected="strategy = $event"></DropDown>
-                    <button id="evaluate-btn" @click="[sol, steps] = printSolution(), nsteps = steps ? 1 : 0"><span>EVALUATE </span></button>
-                    <!-- <button @click="logDocs">Log Docs</button> -->
-                    <!-- <button>Strategy<br>call-by-value</button> -->
-                </div>
-                <CodeInput class="editor_redex" ref="editor_redex" @keyup="printGreekLetter($event, this.$refs.editor_redex.view)"></CodeInput>
-                <div class="btn-heading-row">
                     <button>
                         <label for="upload-file-redex">Upload Redex</label>
                         <input type="file" @change="importTextFromFile(this.$refs.editor_redex.view, 'upload-file-redex')" accept=".txt" id="upload-file-redex"/>
                     </button>
                     <button @click="saveTextAsFile('lambda_kalkul_redex', this.$refs.editor_redex.view)">Save Redex</button>
                 </div>
+                <CodeInput placeholderText="Type your λ-term here..." class="editor_redex" ref="editor_redex" @keyup="printGreekLetter($event, this.$refs.editor_redex.view)"></CodeInput>
+                <div class="btn-heading-row">
+                    <DropDown @option-selected="strategy = $event"></DropDown>
+                    <button id="evaluate-btn" @click="[sol, steps] = printSolution(), nsteps = steps ? 1 : 0"><span>EVALUATE </span></button>
+                    <!-- <button @click="logDocs">Log Docs</button> -->
+                    <!-- <button>Strategy<br>call-by-value</button> -->
+                </div>
             </div>
             <div id="results">
                 <div class="btn-heading-row">
-                    <p id="solution-txt">SOLUTION</p>
+                    <p id="solution-txt" class="no-select">SOLUTION</p>
                     <button :disabled="!this.sol" @click="showSolution = !showSolution; if(showSolution) formatGuessText('.guess-sol-message', '', 'black'); else formatGuessText('.guess-sol-message', 'Try to guess the normal form of the term.', 'black');">
                         <p v-if="showSolution">Hide</p>
                         <p v-if="!showSolution">Show</p>
@@ -465,12 +476,12 @@ export default {
                     <p>{{ this.guessSolMessage }}</p>
                 </div>
                 <div class="btn-heading-row">
-                    <CodeInput class="editor-sol-guess" ref="editor_guess_sol" @keyup="printGreekLetter($event, this.$refs.editor_guess_sol.view)"></CodeInput>
+                    <CodeInput placeholderText="Type your guess here..." class="editor-sol-guess" ref="editor_guess_sol" @keyup="printGreekLetter($event, this.$refs.editor_guess_sol.view)"></CodeInput>
                     <!-- <button @click="this.compareGuess(this.sol, this.$refs.editor_guess_sol.view.doc.toString())">Test</button> -->
                     <button :disabled="this.showSolution || (this.steps && this.nsteps == this.steps.length)" @click="this.compareGuess('.guess-sol-message', this.sol, this.$refs.editor_guess_sol.view.state.doc.toString())">Try</button>
                 </div>
                 <div class="btn-heading-row" id="steps-heading">
-                    <p id="step-by-step-txt">Step-by-step</p>
+                    <p id="step-by-step-txt" class="no-select">Step-by-step</p>
                     <button :disabled="!this.steps || nsteps <= 1" @click="nsteps = steps ? decrementVisibleLineNumber(nsteps, steps) : null">Previous</button>
                     <button :disabled="!this.steps || nsteps >= steps.length" @click="nsteps = steps ? incrementVisibleLineNumber(nsteps, steps) : null">Next</button>
                     <button :disabled="!this.steps || nsteps >= steps.length" @click="nsteps = steps ? steps.length : 0; this.guessAllowed = false; this.formatGuessText('.guess-sol-message', '', 'black'); this.formatGuessText('.guess-message', '', 'black')">View All</button>
@@ -483,7 +494,7 @@ export default {
                 </div>
                 <div class="btn-heading-row">
                     <p id="step_count">{{ (steps && nsteps < steps.length) ? (nsteps + 1 + '.step') : '' }}</p>
-                    <CodeInput class="editor-step-guess" ref="editor_guess" @keyup="printGreekLetter($event, this.$refs.editor_guess.view)"></CodeInput>
+                    <CodeInput placeholderText="Type your guess here..." class="editor-step-guess" ref="editor_guess" @keyup="printGreekLetter($event, this.$refs.editor_guess.view)"></CodeInput>
                     <button :disabled="!this.guessAllowed" @click="this.compareGuess('.guess-message',this.steps[nsteps], this.$refs.editor_guess.view.state.doc.toString())">Try</button>
                 </div>
             </div>

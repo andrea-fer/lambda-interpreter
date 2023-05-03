@@ -7,7 +7,7 @@
 <script>
 import { EditorState } from '@codemirror/state';
 import { EditorView, lineNumbers, highlightSpecialChars, drawSelection, dropCursor, 
-    rectangularSelection, crosshairCursor, highlightActiveLine, keymap} from '@codemirror/view';
+    rectangularSelection, crosshairCursor, highlightActiveLine, keymap, placeholder } from '@codemirror/view';
 import { foldGutter, indentOnInput, syntaxHighlighting, defaultHighlightStyle, 
     bracketMatching, foldKeymap } from '@codemirror/language';
 import { history, defaultKeymap, historyKeymap } from '@codemirror/commands';
@@ -19,6 +19,9 @@ import { LambdaLanguageSupport } from "../../lang-lambda";
 const lambdaLanguageSupport = LambdaLanguageSupport();
 
 export default {
+    props: {
+        placeholderText: String,
+    },
     data() {
         return {
             editorRef: `editor-${Math.floor(Math.random() * 100000)}`,
@@ -27,7 +30,7 @@ export default {
     },
     mounted() {
         const state = EditorState.create({
-            //doc: "",
+            doc: "",
             //doc: "(λ x. λ y. x) a",   // Ly.a *
             //doc: "(λx.x)(λz.z)(λb.b)a", // a *
             //doc: "(λx.x)((λy.y)z)",   // z *
@@ -35,7 +38,7 @@ export default {
             //doc: "(λz.z) (λz.z z) (λz.z y)",    // yy 
             //doc: "(λx.λy.x y y)(λa.a)b",  // bb *
             //doc: "(λx.λy.x y y)(λa.a)",   // λy. (λa.a) y y *
-            doc: "(λx.λy.x y y) (λy.y) y",  // yy *
+            //doc: "(λx.λy.x y y) (λy.y) y",  // yy *
     //doc: "(λx.y)((λy.y y y)(λx.x x x))",                            // y * recursion
             //doc: "(λa.a)((λy.y y y)(λx.x))", // λx.x *
             //doc: "(λx.x x)(λy.y x)z", // xxz *
@@ -48,6 +51,7 @@ export default {
             //doc: "((a))",
             //doc: "((λx.x))",
             extensions: [[
+                placeholder(this.placeholderText),
                 lambdaLanguageSupport,
                 EditorState.transactionFilter.of(tr => {
                     return tr.newDoc.lines > 1 ? [] : [tr]
