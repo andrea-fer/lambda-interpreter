@@ -19,6 +19,9 @@
 
         <div class="interpreter-info">
             <h2>EXAMPLES OF INPUT</h2>
+            <div class="example">
+                <p class="important">type \lambda to get λ</p>
+            </div>
             <h3>Function Definition</h3>
             <div class="example">
                 <p>id =  λx.x</p>
@@ -76,7 +79,9 @@ p {
     overflow: auto;
     resize: horizontal;
 }
-
+.important {
+    text-shadow: 2px 2px 5px #000000;
+}
 .lambda-calculus-info, .interpreter-info {
     padding-bottom: 20px;
 }
