@@ -10,7 +10,7 @@ import antlr4 from "antlr4";
 const { CommonTokenStream, InputStream } = antlr4;
 import LambdaLexer from "../interpreter/LambdaLexer.js";
 import LambdaParser from "../interpreter/LambdaParser.js";
-import CallByValueLambdaVisitor from "../interpreter/CallByValueLambdaVisitor.js";
+import CallByValueLambdaVisitor from "../interpreter/CallByValueLambdaVisitor_with_comments.js";
 import CallByNameLambdaVisitor from "../interpreter/CallByNameLambdaVisitor.js";
 import CompareLambdaTreesVisitor from "../interpreter/CompareLambdaTreesVisitor.js";
 import LambdaErrorListener from "../interpreter/LambdaErrorListener.js";
@@ -91,7 +91,6 @@ export default {
             }
         },
         printSolution(event) {
-            //console.log("Hello");
             /* reset member variables */
             this.sol = '';
             this.steps = '';
@@ -113,8 +112,6 @@ export default {
                 default:
                     return ["", null];
             }
-            /* let lastLine = view.state.doc.lines;
-            console.log("lastLine: ", lastLine); */
             let input, solution, steps = null;
             let i = 0;
             // parse input from editor-definitions
@@ -122,9 +119,6 @@ export default {
                 input = this.$refs.editor_definitions.view.state.doc.text[i++];
                 if(input == null || input.length <= 0) {
                     console.log(input)
-                    /* console.log("input is null ", input == null)
-                    console.log("input len ", input.length)
-                    console.log("break") */
                     break;
                 }
                 console.log(input.length);
@@ -150,12 +144,9 @@ export default {
                     parser.buildParseTrees = true;
                     tree = parser.redex();
                 } catch(e) {
-                    console.error(e);
+                    console.info(e);
                     return ["", null];
                 }
-                /* for(let [key, value] of definitions) {
-                        console.log("*", key, ":", value, "*");
-                } */
                 [solution, steps] = new visitor(tree, definitions).visit(tree);
                 // if steps == null -> term is definition
                 if(steps == null) {
@@ -201,9 +192,6 @@ export default {
                     return ["", null];
                 }
 
-                /* for(let [key, value] of definitions) {
-                        console.log("*", key, ":", value, "*");
-                } */
                 [solution, steps] = new visitor(tree, definitions).visitRedex(tree);
                 if(solution == null) {
                     return ["", null];
@@ -230,9 +218,7 @@ export default {
                 return [solution, steps];
             }
             console.log(input)
-            /* console.log("input is null ", input == null)
-            console.log("input len ", input.length)
-            console.log("exit func") */
+
             return ["", null];
         },
         saveTextAsFile(fileName, editorView) {
@@ -478,7 +464,7 @@ export default {
                 <div class="btn-heading-row">
                     <CodeInput placeholderText="Type your guess here..." class="editor-sol-guess" ref="editor_guess_sol" @keyup="printGreekLetter($event, this.$refs.editor_guess_sol.view)"></CodeInput>
                     <!-- <button @click="this.compareGuess(this.sol, this.$refs.editor_guess_sol.view.doc.toString())">Test</button> -->
-                    <button :disabled="this.showSolution || (this.steps && this.nsteps == this.steps.length)" @click="this.compareGuess('.guess-sol-message', this.sol, this.$refs.editor_guess_sol.view.state.doc.toString())">Try</button>
+                    <button :disabled="!this.steps || this.showSolution || (this.steps && this.nsteps == this.steps.length)" @click="this.compareGuess('.guess-sol-message', this.sol, this.$refs.editor_guess_sol.view.state.doc.toString())">Try</button>
                 </div>
                 <div class="btn-heading-row" id="steps-heading">
                     <p id="step-by-step-txt" class="no-select">Step-by-step</p>

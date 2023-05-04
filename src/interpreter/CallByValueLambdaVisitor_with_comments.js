@@ -37,7 +37,7 @@ export default class CallByValueLambdaVisitor extends LambdaVisitor {
         
         while(solution != null && solution.getChild(0) instanceof LambdaParser.ApplicationContext) {
             console.log("Solution parent: ", this.getBodyText(solution), ", type: ", solution.constructor.name);
-            solution = this.visitApplication(solution.getChild(0));
+            solution = this.visit(solution.getChild(0));
             if(solution == null) {
                 break;
             }
@@ -82,7 +82,56 @@ export default class CallByValueLambdaVisitor extends LambdaVisitor {
                 console.log()
                 console.log("is abstraction");
                 console.log()
-                this.visitAbstraction(solution);
+                //this.visit(solution);
+                let param = null;
+                let body = null;
+                [param, body] = this.visit(solution);
+                let bodyText = body;
+                for(let [key, value] of this.definitions) {
+                    if(body == null) {
+                        break;
+                    }
+                    if(body.includes(key)) {
+                        console.log("body ", body, " includes key ", key);
+                        if(this.makeTree(value).getChild(0) instanceof LambdaParser.AbstractionContext) {
+                            value = '(' + value + ')';
+                            console.log("**Body: (added brackets)", value);
+                        }
+                        const key_text = "\\b".concat(key).concat("\\b");
+                        const _key = new RegExp(key_text, "g");
+                        bodyText = bodyText.replaceAll(_key, value);
+                        console.log("**Body: (after substitution)", bodyText);
+                        let oldSolution = solution;
+                        solution = this.makeTree(bodyText).getChild(0);
+                        let newCTX = this.terms[this.terms.length - 1].replace(body, bodyText);
+                        if(this.terms.length < this.maximumSteps){
+                            this.terms.push(newCTX);
+                        } else {
+                            console.log("Recursion");
+                            return null;
+                        }
+                        ctx = this.makeTree(newCTX).getChild(0);
+                        solution = ctx;
+                        [param, body] = this.visit(solution);
+                        bodyText = body;
+                        //break; 
+                    }
+                }
+                /* let bodyCTX = solution.getChild(3).getChild(0);
+                while(bodyCTX != null  && bodyCTX instanceof LambdaParser.AbstractionContext) {
+                    [param, body] = this.visit(bodyCTX);
+                    bodyCTX = bodyCTX.getChild(3).getChild(0);
+                    if(bodyCTX != null && bodyCTX instanceof LambdaParser.ApplicationContext) {
+                        let newBody = this.visit(bodyCTX);
+                        let newCTX = this.terms[this.terms.length - 1].replace(body, newBody);
+                        if(this.terms.length < this.maximumSteps){
+                            this.terms.push(newCTX);
+                        } else {
+                            console.log("Recursion");
+                            return null;
+                        }
+                    }
+                } */
             }
             /* let leftChild = solution.getChild(0);
             if(leftChild.getText() == '(') {
@@ -202,7 +251,7 @@ export default class CallByValueLambdaVisitor extends LambdaVisitor {
             let oldLeftChild = leftChild;
             console.log(this.getBodyText(oldLeftChild), " = ", this.getBodyText(leftChild));
             console.log("<UPDATING OLD CHILD...");
-            leftChild = this.visitApplication(leftChild);
+            leftChild = this.visit(leftChild);
             console.log("oldLeftChild: ", this.getBodyText(oldLeftChild), ", newLeftChild: ", this.getBodyText(leftChild));
             console.log("CTX: ", this.getBodyText(ctx));
             console.log("CHANGING THIS TERM: ", this.terms[this.terms.length - 1]);
@@ -273,7 +322,7 @@ export default class CallByValueLambdaVisitor extends LambdaVisitor {
             if(this.getBodyText(abstraction.getChild(0)) == '(') {
                 abstraction = abstraction.getChild(1);
             }
-            [param, body] = this.visitAbstraction(abstraction);
+            [param, body] = this.visit(abstraction);
             console.log("Param: ", param, ", Body: ", body, "Of: ", this.getBodyText(abstraction));
             //console.log(rightChild.getChild(0).constructor.name);
             let value = this.getBodyText(rightChild);
@@ -294,7 +343,7 @@ export default class CallByValueLambdaVisitor extends LambdaVisitor {
                 console.log("~~ evaluating right child: ", this.getBodyText(rightChild));
                 let oldRightChild = rightChild.getChild(0);
                 console.log("--oldRightChild: ", this.getBodyText(oldRightChild));
-                rightChild = this.visitApplication(rightChild.getChild(0));
+                rightChild = this.visit(rightChild.getChild(0));
                 value = this.getBodyText(rightChild);
                 if(oldRightChild instanceof LambdaParser.ApplicationContext && !(oldRightChild.getChild(0) instanceof LambdaParser.TermContext) 
                 && oldRightChild.getChild(0).getText() == '(' && oldRightChild.getChild(2).getText() == ')' && this.makeTree(value).getChild(0).getChild(0) != null) {

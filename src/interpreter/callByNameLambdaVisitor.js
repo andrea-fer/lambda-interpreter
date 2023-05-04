@@ -289,54 +289,7 @@ export default class CallByNameLambdaVisitor extends LambdaVisitor {
             let value = this.getBodyText(rightChild);
             console.log("*** before: (leftChild): ", this.getBodyText(leftChild), ", ", leftChild.constructor.name);
             console.log("*** before: (rightChild): ", this.getBodyText(rightChild.getChild(0)), ", ", rightChild.getChild(0).constructor.name);
-            while(rightChild.getChild(0) instanceof LambdaParser.ApplicationContext) {
-                // if the leftChild is Variable, don't apply reduction
-                if(rightChild.getChild(0).getChild(0).getText() == '(' && rightChild.getChild(0).getChild(1).getChild(0).getChild(0) == null
-                    || rightChild.getChild(0).getChild(0).getText() != '(' && rightChild.getChild(0).getChild(0).getChild(0) == null) {
-                    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                    console.log(this.getBodyText(rightChild.getChild(0)))
-                    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                    value = this.getBodyText(rightChild);
-                    break;
-                }
-                console.log("♠ rightChild.getChild(0): ", this.getBodyText(rightChild.getChild(0)));
-                console.log("♠ rightChild.constructor: ", rightChild.getChild(0).constructor.name);
-                console.log("~~ evaluating right child: ", this.getBodyText(rightChild));
-                let oldRightChild = rightChild.getChild(0);
-                console.log("--oldRightChild: ", this.getBodyText(oldRightChild));
-                rightChild = this.visitApplication(rightChild.getChild(0));
-                value = this.getBodyText(rightChild);
-                if(oldRightChild instanceof LambdaParser.ApplicationContext && !(oldRightChild.getChild(0) instanceof LambdaParser.TermContext) 
-                && oldRightChild.getChild(0).getText() == '(' && oldRightChild.getChild(2).getText() == ')' && this.makeTree(value).getChild(0).getChild(0) != null) {
-                    console.log(this.getBodyText(oldRightChild), "-", oldRightChild.constructor.name);
-                    value = '(' + value + ')';
-                    console.log("VALUE: ", value);
-                }
-                console.log("oldRightChild: ", this.getBodyText(oldRightChild), ", newRightChild: ", this.getBodyText(rightChild));
-                console.log("CHANGING THIS TERM: ", this.terms[this.terms.length - 1]);
-                console.log("REPLACING: ", this.getBodyText(oldRightChild), "WITH: ", value);
-                console.log("NEW CTX:= ", this.getBodyText(ctx).replace(this.getBodyText(oldRightChild), value));
-                let oldRightChildText = this.getBodyText(oldRightChild);
-                let oldCtx = this.terms[this.terms.length - 1];
-                let newCtx = oldCtx.replace(oldRightChildText, value);
-                console.log("newCTX= ", newCtx);
-                ctx = this.makeTree(newCtx);
-                //leftChild = ctx.getChild(0);
-                rightChild = ctx.getChild(0).getChild(1);
-                value = this.getBodyText(rightChild);
             
-                console.log("--RightChild: ", value);
-                newCtx = this.terms[this.terms.length - 1].replace(this.getBodyText(oldRightChild), value);
-                console.log("newCTX = ", this.terms[this.terms.length - 1], "replaced by: ", newCtx);
-                console.log("newCTX = ", this.getBodyText(oldRightChild), "replaced by:(val) ", value);
-                console.log("VALUE: ", value);
-                if(this.terms[this.terms.length - 1] == newCtx) {
-                    break;
-                }
-                this.terms.push(newCtx);
-                console.log("•(line 339)• Adding new term: ", this.terms[this.terms.length - 1]);
-                console.log("*** inside: (rightChild): ", this.getBodyText(rightChild), ", ", rightChild.constructor.name);
-            }
 
             // using regex so that no substrings are replaced
             const reg_text = "\\b".concat(param).concat("\\b");
