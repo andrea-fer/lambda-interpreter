@@ -90,9 +90,6 @@ export default class LambdaInterpreterVisitor extends LambdaVisitor {
     // helper function to track time of program execution
     isTimeout(startTime, maxTime) {
         // return true if time of program execution has exceeded maxTime
-        console.log("startTime: ", startTime);
-        console.log("startTime + 3s = ", startTime + maxTime);
-        console.log("now: ", new Date().getTime());
         return (new Date().getTime() > (startTime + maxTime));
     }
 }

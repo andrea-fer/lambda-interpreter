@@ -10,7 +10,7 @@ import antlr4 from "antlr4";
 const { CommonTokenStream, InputStream } = antlr4;
 import LambdaLexer from "../interpreter/LambdaLexer.js";
 import LambdaParser from "../interpreter/LambdaParser.js";
-import CallByValueLambdaVisitor from "../interpreter/CallByValueLambdaVisitor_with_comments.js";
+import CallByValueLambdaVisitor from "../interpreter/CallByValueLambdaVisitor.js";
 import CallByNameLambdaVisitor from "../interpreter/CallByNameLambdaVisitor.js";
 import CompareLambdaTreesVisitor from "../interpreter/CompareLambdaTreesVisitor.js";
 import LambdaErrorListener from "../interpreter/LambdaErrorListener.js";
@@ -43,10 +43,6 @@ export default {
             const doc2 = this.$refs.editor_definitions.view.state.doc;
             const doc3 = this.$refs.editor_guess_sol.view.state.doc;
             const doc4 = this.$refs.editor_guess.view.state.doc;
-            console.log("Doc Redex:", doc1.toString());
-            console.log("Doc Definitions:", doc2.toString());
-            console.log("Doc Guess Solution:", doc3.toString());
-            console.log("Doc Guess Step:", doc4.toString());
         },
         printGreekLetter(event, editorView) {
             let dictionary = {
@@ -118,10 +114,8 @@ export default {
             do {
                 input = this.$refs.editor_definitions.view.state.doc.text[i++];
                 if(input == null || input.length <= 0) {
-                    console.log(input)
                     break;
                 }
-                console.log(input.length);
                 input = input.replaceAll('λ', '\\lambda');
                 //var input = "Lx.Ly.x\n";
                 let chars = new InputStream(input, true);
@@ -147,15 +141,15 @@ export default {
                     console.info(e);
                     return ["", null];
                 }
-                [solution, steps] = new visitor(tree, definitions).visit(tree);
+                try {
+                    [solution, steps] = new visitor(tree, definitions).visit(tree);
+                } catch(e) {
+                    console.info(e);
+                    return ["", null];
+                }
                 // if steps == null -> term is definition
                 if(steps == null) {
                     definitions.set(solution[0], solution[1]);
-                    //console.log("Does map contain ", solution[0], "?", definitions.has(solution[0]));
-                    console.log("°°°°Adding to definitios");
-                    for(let [key, value] of definitions) {
-                        console.log("°", key, ":", value, "°");
-                    }
                 } else {
                     break;
                 }
@@ -166,7 +160,6 @@ export default {
             if(input != null && input.length > 0) {
                 input = input.replaceAll('λ', '\\lambda');
                 //var input = "Lx.Ly.x\n";
-                console.log(input);
                 let chars = new InputStream(input, true);
                 let lexer;
                 try {
@@ -186,19 +179,21 @@ export default {
                     parser.addErrorListener(new LambdaErrorListener());
                     parser.buildParseTrees = true;
                     tree = parser.redex();
-                    console.log("Tree : ", tree.getText());
                 } catch(e) {
                     console.info(e);
                     return ["", null];
                 }
-
-                [solution, steps] = new visitor(tree, definitions).visitRedex(tree);
+                try {
+                    [solution, steps] = new visitor(tree, definitions).visit(tree);
+                } catch(e) {
+                    console.info(e);
+                    return ["", null];
+                }
                 if(solution == null) {
                     return ["", null];
                 }
                 solution = solution.replaceAll(' ', '~');
                 solution = solution.replaceAll('\\lambda', '\\lambda ');
-                console.log("Solution = ", solution);
                 let stepsLen = steps.length;
                 for(let i = 0; i < stepsLen; i++) {
                     steps[i] = steps[i].replaceAll(' ', '~');
@@ -214,10 +209,8 @@ export default {
                 this.guessAllowed = true;
                 this.formatGuessText(".guess-sol-message", "Try to guess the normal form of the term.", "black");
                 this.formatGuessText(".guess-message", "Try to guess the next step of reduction.", "black");
-                console.log("Long solution = ", steps);
                 return [solution, steps];
             }
-            console.log(input)
 
             return ["", null];
         },
@@ -256,7 +249,6 @@ export default {
                 "load",
                 () => {
                     let fileContent = reader.result;
-                    console.log(fileContent);
                     if(input_id === "upload-file-redex"){
                         // if user tries to load multiline file, accept only first line
                         if(fileContent.includes("\n")) {
@@ -309,15 +301,11 @@ export default {
         },
         compareGuess(element, correct, guess) {
             /* build correct term tree */
-            //let correct = "(\\lambda z.z) (\\lambda z.z z) (\\lambda z.z y)";
-            //let correct = "(\\lambda x.x) ((\\lambda x.x a) (\\lambda x.x a) (\\lambda x.x a))";
             if(correct == null || correct.length <= 0) {
                 return;
             }            
             correct = correct.replaceAll('~', ' ');
             correct = correct.replaceAll('λ', '\\lambda ');
-            
-            console.log("Correct Solution: ", correct);
             
             let chars = new InputStream(correct, true);
             let lexer;
@@ -349,7 +337,6 @@ export default {
                 this.formatGuessText(element, "Invalid input!", "red");
                 return;
             }
-            console.log("Guess: ", guess);
             guess = guess.replaceAll('λ', '\\lambda ');
 
             chars = new InputStream(guess, true);
@@ -379,9 +366,6 @@ export default {
             let comparison = compareVisitor.visitRedex(tree_correct, tree_guess);
 
             if(comparison) {
-                console.log("Comparison: ", comparison);
-                console.log(correct, " = ", guess);
-                console.log("tree_correct = tree_guess");
                 if(element === ".guess-sol-message") {
                     this.showSolution = true;
                 } else if(element === ".guess-message") {
@@ -391,9 +375,6 @@ export default {
                 /* this.formatGuessText(".guess-message", "", "black");           
                 this.guessAllowed = false; */
             } else {
-                console.log("Comparison: ", comparison);
-                console.log(correct, " != ", guess);
-                console.log("tree_correct != tree_guess");
                 this.formatGuessText(element, "Wrong!", "red");
             }
         },
@@ -442,7 +423,7 @@ export default {
                 <CodeInput placeholderText="Type your λ-term here..." class="editor_redex" ref="editor_redex" @keyup="printGreekLetter($event, this.$refs.editor_redex.view)"></CodeInput>
                 <div class="btn-heading-row">
                     <DropDown @option-selected="strategy = $event"></DropDown>
-                    <button id="evaluate-btn" @click="[sol, steps] = printSolution(), nsteps = steps ? 1 : 0"><span>EVALUATE </span></button>
+                    <button id="evaluate-btn" @click="this.sol = ''; this.steps = ''; [sol, steps] = printSolution(), nsteps = steps ? 1 : 0"><span>EVALUATE </span></button>
                     <!-- <button @click="logDocs">Log Docs</button> -->
                     <!-- <button>Strategy<br>call-by-value</button> -->
                 </div>
