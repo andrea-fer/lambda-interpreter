@@ -45,46 +45,46 @@ export default class LambdaInterpreterVisitor extends LambdaVisitor {
     }
 
     // helper function for getting text from parse tree, without ignoring crutial whitespaces
-    getTreeText(body) {
-        if(body == null) {
+    getTreeText(tree) {
+        if(tree == null) {
             return;
         }
-        if(body instanceof LambdaParser.TermContext && body.getChild(0) != null && body.getChild(0).getText() != '(') {
-            body = body.getChild(0);
+        if(tree instanceof LambdaParser.TermContext && tree.getChild(0) != null && tree.getChild(0).getText() != '(') {
+            tree = tree.getChild(0);
         }
         let brackets = false;
         // in case of double brackets, e.g. application -> '(' application ')' -> '(' application ')'
-        while(body.getChild(0) != null  && body.getChild(0).getText() == '(') {
-            body = body.getChild(1);
+        while(tree.getChild(0) != null  && tree.getChild(0).getText() == '(') {
+            tree = tree.getChild(1);
             brackets = true;
         }
-        if(body instanceof LambdaParser.ApplicationContext) {
-            let child_0 = this.getTreeText(body.getChild(0));
-            let child_1 = this.getTreeText(body.getChild(1));
-            let bodyText = child_0.concat(' ').concat(child_1);
+        if(tree instanceof LambdaParser.ApplicationContext) {
+            let child_0 = this.getTreeText(tree.getChild(0));
+            let child_1 = this.getTreeText(tree.getChild(1));
+            let treeText = child_0.concat(' ').concat(child_1);
             if(brackets) {
-                bodyText = '('.concat(bodyText).concat(')');
+                treeText = '('.concat(treeText).concat(')');
             }
-            return bodyText; 
+            return treeText; 
         }
-        if(body instanceof LambdaParser.AbstractionContext) {
-            let bodyText = body.getChild(0).getText().concat(body.getChild(1).getText()).concat(body.getChild(2).getText()).concat(this.getTreeText(body.getChild(3)));
+        if(tree instanceof LambdaParser.AbstractionContext) {
+            let treeText = tree.getChild(0).getText().concat(tree.getChild(1).getText()).concat(tree.getChild(2).getText()).concat(this.getTreeText(tree.getChild(3)));
             if(brackets) {
-                bodyText = '('.concat(bodyText).concat(')');
+                treeText = '('.concat(treeText).concat(')');
             }
-            return bodyText;
+            return treeText;
         }
 
-        if(body instanceof LambdaParser.DefinitionContext) {
-            let bodyText = body.getChild(0).getText().concat(body.getChild(1).getText()).concat(this.getTreeText(body.getChild(2)));
-            return bodyText;
+        if(tree instanceof LambdaParser.DefinitionContext) {
+            let treeText = tree.getChild(0).getText().concat(tree.getChild(1).getText()).concat(this.getTreeText(tree.getChild(2)));
+            return treeText;
         }
 
-        if(body.getChild(0) == null) {
-            return body.getText();
+        if(tree.getChild(0) == null) {
+            return tree.getText();
         }
 
-        return this.getTreeText(body.getChild(0));
+        return this.getTreeText(tree.getChild(0));
     }
 
     // helper function to track time of program execution
