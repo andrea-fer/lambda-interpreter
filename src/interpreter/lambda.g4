@@ -25,7 +25,7 @@ definition
     ;
 
 VARIABLE
-    : [a-zA-Z0-9] [a-zA-Z0-9]*
+    : [a-z0-9] [a-zA-Z0-9]*
     ;
 
 WS
