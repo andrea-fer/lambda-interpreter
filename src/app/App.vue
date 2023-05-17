@@ -5,6 +5,8 @@ import SolutionSteps from "./components/SolutionSteps.vue"
 import CodeInput from "./components/CodeInput.vue"
 import DropDown from "./components/DropDown.vue";
 import HelpBar from "./components/HelpBar.vue";
+import ToastPlugin from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-default.css';
 
 import antlr4 from "antlr4";
 const { CommonTokenStream, InputStream } = antlr4;
@@ -38,6 +40,12 @@ export default {
         }
     },
     methods: {
+        showToast(message) {
+            this.$toast.error(message, {
+                position: 'top-right',
+                duration: 3000,
+            });
+        },
         logDocs() {
             const doc1 = this.$refs.editor_redex.view.state.doc;
             const doc2 = this.$refs.editor_definitions.view.state.doc;
@@ -125,7 +133,9 @@ export default {
                     lexer.removeErrorListeners();
                     lexer.addErrorListener(new LambdaErrorListener());
                 } catch(e) {
-                    console.info(e);
+                    //console.log(e.message);
+                    let msg = e.message.replaceAll('\\lambda', 'λ');
+                    this.showToast(msg);
                     return ["", null];
                 }
                 let tokens = new CommonTokenStream(lexer);
@@ -138,13 +148,17 @@ export default {
                     parser.buildParseTrees = true;
                     tree = parser.redex();
                 } catch(e) {
-                    console.info(e);
+                    //console.log(e.message);
+                    let msg = e.message.replaceAll('\\lambda', 'λ');
+                    this.showToast(msg);
                     return ["", null];
                 }
                 try {
                     [solution, steps] = new visitor(tree, definitions).visit(tree);
                 } catch(e) {
-                    console.info(e);
+                    //console.log(e.message);
+                    let msg = e.message.replaceAll('\\lambda', 'λ');
+                    this.showToast(msg);
                     return ["", null];
                 }
                 // if steps == null -> term is definition
@@ -173,6 +187,7 @@ export default {
                 let tokens = new CommonTokenStream(lexer);
                 let parser;
                 let tree;
+                let recursion;
                 try {
                     parser = new LambdaParser(tokens);
                     parser.removeErrorListeners();
@@ -180,14 +195,21 @@ export default {
                     parser.buildParseTrees = true;
                     tree = parser.redex();
                 } catch(e) {
-                    console.info(e);
+                    //console.log(e.message);
+                    let msg = e.message.replaceAll('\\lambda', 'λ');
+                    this.showToast(msg);
                     return ["", null];
                 }
                 try {
-                    [solution, steps] = new visitor(tree, definitions).visit(tree);
+                    [solution, steps, recursion] = new visitor(tree, definitions).visit(tree);
                 } catch(e) {
-                    console.info(e);
+                    //console.log(e.message);
+                    let msg = e.message.replaceAll('\\lambda', 'λ');
+                    this.showToast(msg);
                     return ["", null];
+                }
+                if(recursion) {
+                    this.showToast("Error: Program took too long to execute - possible recursion");
                 }
                 if(solution == null) {
                     return ["", null];
@@ -314,7 +336,9 @@ export default {
                 lexer.removeErrorListeners();
                 lexer.addErrorListener(new LambdaErrorListener());
             } catch(e) {
-                console.info(e);
+                //console.log(e.message);
+                let msg = e.message.replaceAll('\\lambda', 'λ');
+                this.showToast(msg);
                 return ["", null];
             }
             let tokens = new CommonTokenStream(lexer);
@@ -327,7 +351,9 @@ export default {
                 parser.buildParseTrees = true;
                 tree_correct = parser.redex();
             } catch(e) {
-                console.info(e);
+                //console.log(e.message);
+                let msg = e.message.replaceAll('\\lambda', 'λ');
+                this.showToast(msg);
                 return ["", null];
             }
             
@@ -345,7 +371,9 @@ export default {
                 lexer.removeErrorListeners();
                 lexer.addErrorListener(new LambdaErrorListener());
             } catch(e) {
-                console.info(e);
+                //console.log(e.message);
+                let msg = e.message.replaceAll('\\lambda', 'λ');
+                this.showToast(msg);
                 return ["", null];
             }
             tokens = new CommonTokenStream(lexer);
@@ -357,7 +385,9 @@ export default {
                 parser.buildParseTrees = true;
                 tree_guess = parser.redex();
             } catch(e) {
-                console.info(e);
+                //console.log(e.message);
+                let msg = e.message.replaceAll('\\lambda', 'λ');
+                this.showToast(msg);
                 return ["", null];
             }
 

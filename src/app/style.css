@@ -270,6 +270,7 @@ header h1 {
 }
 #solution-short {
     height: 8%;
+    overflow: auto;
 }
 #solution-steps {
     flex-grow: 1;

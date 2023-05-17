@@ -166,7 +166,7 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
         if(solution == null) {
             console.log("Recursion");
             // return last added term as a solution
-            return [this.terms[this.terms.length - 1], this.terms];
+            return [this.terms[this.terms.length - 1], this.terms, true];
         }
         return [super.getTreeText(solution), this.terms];
 	}
