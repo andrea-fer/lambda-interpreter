@@ -260,7 +260,7 @@ export default {
                     return ["", null];
                 }
                 if(recursion) {
-                    this.showToast("Error: Program took too long to execute - possible recursion");
+                    this.showToast("Error: program took too long to execute - possible recursion");
                 }
                 if(solution == null) {
                     return ["", null];
