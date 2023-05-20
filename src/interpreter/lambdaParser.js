@@ -9,17 +9,17 @@ const serializedATN = [4,1,7,57,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,
 2,1,2,1,2,1,2,3,2,32,8,2,1,3,1,3,1,3,1,3,1,3,1,3,1,3,1,3,1,3,1,3,3,3,44,
 8,3,1,3,1,3,5,3,48,8,3,10,3,12,3,51,9,3,1,4,1,4,1,4,1,4,1,4,0,1,6,5,0,2,
 4,6,8,0,0,59,0,10,1,0,0,0,2,21,1,0,0,0,4,31,1,0,0,0,6,43,1,0,0,0,8,52,1,
-0,0,0,10,11,3,2,1,0,11,12,5,0,0,1,12,1,1,0,0,0,13,22,5,6,0,0,14,22,3,4,2,
-0,15,22,3,6,3,0,16,17,5,1,0,0,17,18,3,2,1,0,18,19,5,2,0,0,19,22,1,0,0,0,
+0,0,0,10,11,3,2,1,0,11,12,5,0,0,1,12,1,1,0,0,0,13,22,5,3,0,0,14,22,3,4,2,
+0,15,22,3,6,3,0,16,17,5,5,0,0,17,18,3,2,1,0,18,19,5,6,0,0,19,22,1,0,0,0,
 20,22,3,8,4,0,21,13,1,0,0,0,21,14,1,0,0,0,21,15,1,0,0,0,21,16,1,0,0,0,21,
-20,1,0,0,0,22,3,1,0,0,0,23,24,5,3,0,0,24,25,5,6,0,0,25,26,5,4,0,0,26,32,
-3,2,1,0,27,28,5,1,0,0,28,29,3,4,2,0,29,30,5,2,0,0,30,32,1,0,0,0,31,23,1,
-0,0,0,31,27,1,0,0,0,32,5,1,0,0,0,33,34,6,3,-1,0,34,35,5,6,0,0,35,44,3,2,
-1,0,36,37,3,4,2,0,37,38,3,2,1,0,38,44,1,0,0,0,39,40,5,1,0,0,40,41,3,6,3,
-0,41,42,5,2,0,0,42,44,1,0,0,0,43,33,1,0,0,0,43,36,1,0,0,0,43,39,1,0,0,0,
+20,1,0,0,0,22,3,1,0,0,0,23,24,5,4,0,0,24,25,5,3,0,0,25,26,5,1,0,0,26,32,
+3,2,1,0,27,28,5,5,0,0,28,29,3,4,2,0,29,30,5,6,0,0,30,32,1,0,0,0,31,23,1,
+0,0,0,31,27,1,0,0,0,32,5,1,0,0,0,33,34,6,3,-1,0,34,35,5,3,0,0,35,44,3,2,
+1,0,36,37,3,4,2,0,37,38,3,2,1,0,38,44,1,0,0,0,39,40,5,5,0,0,40,41,3,6,3,
+0,41,42,5,6,0,0,42,44,1,0,0,0,43,33,1,0,0,0,43,36,1,0,0,0,43,39,1,0,0,0,
 44,49,1,0,0,0,45,46,10,2,0,0,46,48,3,2,1,0,47,45,1,0,0,0,48,51,1,0,0,0,49,
-47,1,0,0,0,49,50,1,0,0,0,50,7,1,0,0,0,51,49,1,0,0,0,52,53,5,6,0,0,53,54,
-5,5,0,0,54,55,3,2,1,0,55,9,1,0,0,0,4,21,31,43,49];
+47,1,0,0,0,49,50,1,0,0,0,50,7,1,0,0,0,51,49,1,0,0,0,52,53,5,3,0,0,53,54,
+5,2,0,0,54,55,3,2,1,0,55,9,1,0,0,0,4,21,31,43,49];
 
 
 const atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
@@ -31,9 +31,10 @@ const sharedContextCache = new antlr4.PredictionContextCache();
 export default class LambdaParser extends antlr4.Parser {
 
     static grammarFileName = "java-escape";
-    static literalNames = [ null, "'('", "')'", "'\\lambda'", "'.'", "'='" ];
-    static symbolicNames = [ null, null, null, null, null, null, "VARIABLE", 
-                             "WS" ];
+    static literalNames = [ null, "'.'", "'='", null, "'\\lambda'", "'('", 
+                            "')'" ];
+    static symbolicNames = [ null, null, null, "VARIABLE", "LAMBDA", "LPAR", 
+                             "RPAR", "WS" ];
     static ruleNames = [ "redex", "term", "abstraction", "application", 
                          "definition" ];
 
@@ -124,11 +125,11 @@ export default class LambdaParser extends antlr4.Parser {
 	        case 4:
 	            this.enterOuterAlt(localctx, 4);
 	            this.state = 16;
-	            this.match(LambdaParser.T__0);
+	            this.match(LambdaParser.LPAR);
 	            this.state = 17;
 	            this.term();
 	            this.state = 18;
-	            this.match(LambdaParser.T__1);
+	            this.match(LambdaParser.RPAR);
 	            break;
 
 	        case 5:
@@ -161,25 +162,25 @@ export default class LambdaParser extends antlr4.Parser {
 	        this.state = 31;
 	        this._errHandler.sync(this);
 	        switch(this._input.LA(1)) {
-	        case 3:
+	        case 4:
 	            this.enterOuterAlt(localctx, 1);
 	            this.state = 23;
-	            this.match(LambdaParser.T__2);
+	            this.match(LambdaParser.LAMBDA);
 	            this.state = 24;
 	            this.match(LambdaParser.VARIABLE);
 	            this.state = 25;
-	            this.match(LambdaParser.T__3);
+	            this.match(LambdaParser.T__0);
 	            this.state = 26;
 	            this.term();
 	            break;
-	        case 1:
+	        case 5:
 	            this.enterOuterAlt(localctx, 2);
 	            this.state = 27;
-	            this.match(LambdaParser.T__0);
+	            this.match(LambdaParser.LPAR);
 	            this.state = 28;
 	            this.abstraction();
 	            this.state = 29;
-	            this.match(LambdaParser.T__1);
+	            this.match(LambdaParser.RPAR);
 	            break;
 	        default:
 	            throw new antlr4.error.NoViableAltException(this);
@@ -231,11 +232,11 @@ export default class LambdaParser extends antlr4.Parser {
 
 	        case 3:
 	            this.state = 39;
-	            this.match(LambdaParser.T__0);
+	            this.match(LambdaParser.LPAR);
 	            this.state = 40;
 	            this.application(0);
 	            this.state = 41;
-	            this.match(LambdaParser.T__1);
+	            this.match(LambdaParser.RPAR);
 	            break;
 
 	        }
@@ -287,7 +288,7 @@ export default class LambdaParser extends antlr4.Parser {
 	        this.state = 52;
 	        this.match(LambdaParser.VARIABLE);
 	        this.state = 53;
-	        this.match(LambdaParser.T__4);
+	        this.match(LambdaParser.T__1);
 	        this.state = 54;
 	        this.term();
 	    } catch (re) {
@@ -310,10 +311,10 @@ export default class LambdaParser extends antlr4.Parser {
 LambdaParser.EOF = antlr4.Token.EOF;
 LambdaParser.T__0 = 1;
 LambdaParser.T__1 = 2;
-LambdaParser.T__2 = 3;
-LambdaParser.T__3 = 4;
-LambdaParser.T__4 = 5;
-LambdaParser.VARIABLE = 6;
+LambdaParser.VARIABLE = 3;
+LambdaParser.LAMBDA = 4;
+LambdaParser.LPAR = 5;
+LambdaParser.RPAR = 6;
 LambdaParser.WS = 7;
 
 LambdaParser.RULE_redex = 0;
@@ -395,8 +396,16 @@ class TermContext extends antlr4.ParserRuleContext {
 	    return this.getTypedRuleContext(ApplicationContext,0);
 	};
 
+	LPAR() {
+	    return this.getToken(LambdaParser.LPAR, 0);
+	};
+
 	term() {
 	    return this.getTypedRuleContext(TermContext,0);
+	};
+
+	RPAR() {
+	    return this.getToken(LambdaParser.RPAR, 0);
 	};
 
 	definition() {
@@ -442,6 +451,10 @@ class AbstractionContext extends antlr4.ParserRuleContext {
         this.ruleIndex = LambdaParser.RULE_abstraction;
     }
 
+	LAMBDA() {
+	    return this.getToken(LambdaParser.LAMBDA, 0);
+	};
+
 	VARIABLE() {
 	    return this.getToken(LambdaParser.VARIABLE, 0);
 	};
@@ -450,8 +463,16 @@ class AbstractionContext extends antlr4.ParserRuleContext {
 	    return this.getTypedRuleContext(TermContext,0);
 	};
 
+	LPAR() {
+	    return this.getToken(LambdaParser.LPAR, 0);
+	};
+
 	abstraction() {
 	    return this.getTypedRuleContext(AbstractionContext,0);
+	};
+
+	RPAR() {
+	    return this.getToken(LambdaParser.RPAR, 0);
 	};
 
 	enterRule(listener) {
@@ -505,8 +526,16 @@ class ApplicationContext extends antlr4.ParserRuleContext {
 	    return this.getTypedRuleContext(AbstractionContext,0);
 	};
 
+	LPAR() {
+	    return this.getToken(LambdaParser.LPAR, 0);
+	};
+
 	application() {
 	    return this.getTypedRuleContext(ApplicationContext,0);
+	};
+
+	RPAR() {
+	    return this.getToken(LambdaParser.RPAR, 0);
 	};
 
 	enterRule(listener) {

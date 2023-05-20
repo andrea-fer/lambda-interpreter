@@ -5,19 +5,19 @@ redex
     ;
 
 term
-    : VARIABLE | abstraction | application | '(' term ')' | definition
+    : VARIABLE | abstraction | application | LPAR term RPAR | definition
     ;
 
 abstraction
-    : '\\lambda' VARIABLE '.' term
-    | '(' abstraction ')'
+    : LAMBDA VARIABLE '.' term
+    | LPAR abstraction RPAR
     ;
 
 application
     : VARIABLE term
     | abstraction term
     | application term
-    | '(' application ')'
+    | LPAR application RPAR
     ;
 
 definition
@@ -26,6 +26,18 @@ definition
 
 VARIABLE
     : [a-z0-9] [a-zA-Z0-9]*
+    ;
+
+LAMBDA
+    : '\\lambda'
+    ;
+
+LPAR
+    : '('
+    ;
+
+RPAR
+    : ')'
     ;
 
 WS
