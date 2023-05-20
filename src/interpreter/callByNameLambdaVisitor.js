@@ -19,7 +19,7 @@ export default class CallByNameLambdaVisitor extends LambdaInterpreterVisitor {
     // ctx.getChild(1) = EOF
 	visitRedex(ctx) {
         ctx = ctx.getChild(0);
-	    return this.visitTerm(ctx);
+	    return this.visit(ctx);
 	}
 
 	// Visit a parse tree produced by LambdaParser#term.

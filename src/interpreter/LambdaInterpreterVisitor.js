@@ -8,31 +8,6 @@ import LambdaParser from "./LambdaParser.js";
 
 export default class LambdaInterpreterVisitor extends LambdaVisitor {
 
-    // Visit a parse tree produced by LambdaParser#redex.
-	visitRedex(ctx) {
-        return this.visitChildren(ctx);
-	}
-
-	// Visit a parse tree produced by LambdaParser#term.
-	visitTerm(ctx) {
-        return this.visitChildren(ctx);
-	}
-
-    // Visit a parse tree produced by LambdaParser#abstraction.
-	visitAbstraction(ctx) {
-        return this.visitChildren(ctx);
-	}
-
-	// Visit a parse tree produced by LambdaParser#application.
-	visitApplication(ctx) {
-        return this.visitChildren(ctx);
-	}
-
-    // Visit a parse tree produced by LambdaParser#definition.
-	visitDefinition(ctx) {
-        return this.visitChildren(ctx);
-	}
-
     // helper function for creating a subtree
     makeTree(input) {
         let chars = new InputStream(input, true);

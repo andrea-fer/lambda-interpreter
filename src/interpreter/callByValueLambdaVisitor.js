@@ -22,7 +22,7 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
         console.log("Redex type is: ", ctx.constructor.name);
         console.log("-------------------");
         ctx = ctx.getChild(0);
-	    return this.visitTerm(ctx);
+	    return this.visit(ctx);
 	}
 
 	// Visit a parse tree produced by LambdaParser#term.
