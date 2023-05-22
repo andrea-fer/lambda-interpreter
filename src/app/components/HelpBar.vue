@@ -1,16 +1,24 @@
 <template>
     <div id="help">
-        <div class="lambda-calculus-info">
-            <h2>LAMBDA CALCULUS SYNTAX</h2>
-            <h3>Grammar Rules for Term <span v-katex="'$t$'"></span></h3>
-            <p v-katex="'$ t := abstraction~|~application~|~variable $'"></p>
+        <div class="help">
+            <div class="heading">
+                <h2>Help</h2>
+            </div>
             <div class="example">
-                <h4>Abstraction</h4>
-                <p v-katex="'$ t :=  λx.t$'"></p>
-                <h4>Application</h4>
-                <p v-katex="'$ t :=  t~t$'"></p>
-                <h4>Variable</h4>
-                <p v-katex="'$ t := x$'"></p>
+                <p>type \lambda to get λ</p>
+            </div>
+        </div>
+        
+        <div class="lambda-calculus-info">
+            <div class="heading">
+                <h2>Lambda Calculus Syntax</h2>
+            </div>
+            <!-- <h3>Grammar Rules for Term <span v-katex="'$t$'"></span></h3>
+            <p v-katex="'$ t := abstraction~|~application~|~variable $'"></p> -->
+            <div class="example">
+                <div class="grammar_rule"><h4>Abstraction</h4><p v-katex="'$ t :=  λx.t$'"></p></div>
+                <div class="grammar_rule"><h4>Application</h4><p v-katex="'$ t :=  t~t$'"></p></div>
+                <div class="grammar_rule"><h4>Variable</h4><p v-katex="'$ ~~~~~t := x$'"></p></div>
             </div>
         </div>
 
@@ -18,9 +26,8 @@
         <p v-katex="'$ t :=  variable = t$'"></p> -->
 
         <div class="interpreter-info">
-            <h2>EXAMPLES OF INPUT</h2>
-            <div class="example">
-                <p class="important">type \lambda to get λ</p>
+            <div class="heading">
+                <h2>Examples</h2>
             </div>
             <h3>Function Definition</h3>
             <div class="example">
@@ -29,7 +36,7 @@
                 <p>false =  λx.λy.y</p>
             </div>
             
-            <h3>Lambda Reducible Term (Redex)</h3>
+            <h3>Reducible Term (Redex)</h3>
             <div class="example">
                 <p>(λx.x) a</p>
                 <p>id a</p>
@@ -53,11 +60,19 @@ p, h2, h3, h4 {
     padding-right: 10px;
 }
 
+.heading {
+    height: 3em;
+    background-color: #4C3D60;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 h2 {
     font-size: 20px;
-    padding-top: 10px;
-    padding-bottom: 5px;
-    text-shadow: 2px 2px 8px #350b6c;
+    /* padding-top: 10px;
+    padding-bottom: 5px; */
+    /* text-shadow: 2px 2px 8px #350b6c; */
 }
 
 h3 {
@@ -79,16 +94,19 @@ p {
     overflow: auto;
     resize: horizontal;
 }
-.important {
-    text-shadow: 2px 2px 5px #000000;
-}
-.lambda-calculus-info, .interpreter-info {
-    padding-bottom: 20px;
+/* .help, .lambda-calculus-info, .interpreter-info {
+    margin-bottom: 20px;
+} */
+
+.grammar_rule {
+    display: flex;
+    flex-direction: row;
 }
 
 .example {
-    padding-top: 8px;
-    padding-left: 40px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 30px;
 }
 
 .showing-help {
