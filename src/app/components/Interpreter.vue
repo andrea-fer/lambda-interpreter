@@ -145,7 +145,7 @@ export default {
                 editorView.dispatch({changes});
             }
         },
-        printSolution(event) {
+        printSolution() {
             /* reset member variables */
             this.sol = '';
             this.steps = '';
@@ -311,8 +311,8 @@ export default {
 
             downloadLink.click();
         },
-        importTextFromFile(editorView, input_id) {
-            const [file] = document.querySelector(`#${input_id}[type=file]`).files;
+        importTextFromFile(editorView, inputId) {
+            const [file] = document.querySelector(`#${inputId}[type=file]`).files;
             const reader = new FileReader();
             if(file) {
                 reader.readAsText(file);
@@ -322,7 +322,7 @@ export default {
                 "load",
                 () => {
                     let fileContent = reader.result;
-                    if(input_id === "upload-file-redex"){
+                    if(inputId === "upload-file-redex"){
                         // if user tries to load multiline file, accept only first line
                         if(fileContent.includes("\n")) {
                             fileContent = fileContent.substring(0, fileContent.indexOf("\n"));

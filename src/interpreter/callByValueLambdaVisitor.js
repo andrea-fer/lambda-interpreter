@@ -433,6 +433,45 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
                 console.log("*** inside: (rightChild): ", super.getTreeText(rightChild), ", ", rightChild.constructor.name);
             }
 
+            let val = value;
+            let valueTree = super.makeTree(val).getChild(0);
+            // if value is abstraction
+            if(valueTree instanceof LambdaParser.AbstractionContext) {
+                if(valueTree.getChild(0).getText() == '(') {
+                    valueTree = valueTree.getChild(1);
+                }
+                console.log("is abstraction")
+                let p;
+                [val, p] = this.visitAbstraction(valueTree);
+            }
+
+            // check if value is contained as a free variable in function body
+            if(param != val) {
+                console.log("param: ", param, "~ value: ", val);
+                // check if alpha conversion is needed
+                console.log("param: ", param, "~~ value: ", val);
+                // replace every occurence of right side param in body with param0
+                const reg_text_lambda = "\\b".concat('lambda').concat(val).concat("\\b");
+                const reg_lambda = new RegExp(reg_text_lambda, "g");
+                let lambdavalue0 = "lambda" + val + 0;
+                let oldBody = body;
+                let newBody = body;
+                newBody = newBody.replaceAll(reg_lambda, lambdavalue0);
+                // replace only bound variables in function body
+                if(newBody != oldBody) {
+                    const reg_text_val = "\\b".concat(val).concat("\\b");
+                    const reg_val = new RegExp(reg_text_val, "g");
+                    let value0 = val + "0";
+                    console.log("< Body(alfa): ", body, " > Value: ", value0);
+                    newBody = newBody.replaceAll(reg_val, value0);
+                    let newCTX = this.terms[this.terms.length - 1].replace(oldBody, newBody);
+                    if(this.terms[this.terms.length - 1] != newCTX) {
+                        this.terms.push(newCTX);
+                    }
+                    body = newBody;
+                }
+            }
+
             // using regex so that no substrings are replaced
             const reg_text = "\\b".concat(param).concat("\\b");
             const reg = new RegExp(reg_text, "g");

@@ -38,13 +38,13 @@ export default {
             //doc: "add 0 1",
             
             //doc: "not true",
-            //doc: "and true true",
+        doc: "and true true",
             //doc: "and true false",
-            //doc: "or true false",
+        //doc: "or true false",
             //doc: "test true v u",
             //doc: "test false v u",
-            //doc: "not (not true)",
-            //doc: "and false (not true)",
+        //doc: "not (not true)",
+    //doc: "and false (not true)",
 
             //doc: "(λ x. λ y. x) a",   // Ly.a *
             //doc: "(λx.x)(λz.z)(λb.b)a", // a *
@@ -54,7 +54,7 @@ export default {
             //doc: "(λx.λy.x y y)(λa.a)b",  // bb *
             //doc: "(λx.λy.x y y)(λa.a)",   // λy. (λa.a) y y *
             //doc: "(λx.λy.x y y) (λy.y) y",  // yy *
-        //doc: "(λx.y)((λy.y y y)(λx.x x x))",                            // y * recursion
+            //doc: "(λx.y)((λy.y y y)(λx.x x x))",                            // y * recursion
             //doc: "(λa.a)((λy.y y y)(λx.x))", // λx.x *
             //doc: "(λx.x x)(λy.y x)z", // xxz *
             //doc: "(λx.(λy.(x y))y)z",  // zy *
@@ -62,9 +62,14 @@ export default {
             //doc: "((λx.x x)(λy.y))(λy.y)",  // λy.y *
             //doc: "(λx.y)((λy.y y y)(λx.x a))", // y *
             //doc: "(λx.x)((λy.y y y)(λx.x a))", // a a (λx.x a) *
-    //doc: "(((λx.λa.(x a))(λy.y))w)", //w *                           // needs alpha conversion
+            //doc: "(((λx.λa.(x a))(λy.y))w)", //w *   
+        //doc: "(((λx.λy.(x y))(λy.y))w)", //w *  
+            //doc: "(λx.λy.y x)y",                             
             //doc: "((a))",
             //doc: "((λx.x))",
+            //doc: "(λx.x)(λx.x)(λx.x)(λx.x)(λx.x) y",
+            //doc: "(λx.x)(λx.x)",
+            //doc: "(λx.x) (λx.x) (λx.x) y ",
             extensions: [[
                 placeholder(this.placeholderText),
                 lambdaLanguageSupport,
