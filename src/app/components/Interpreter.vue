@@ -265,19 +265,19 @@ export default {
                 if(solution == null) {
                     return ["", null];
                 }
-                solution = solution.replaceAll(' ', '~');
-                solution = solution.replaceAll('\\lambda', '\\lambda ');
-                let stepsLen = steps.length;
-                for(let i = 0; i < stepsLen; i++) {
-                    steps[i] = steps[i].replaceAll(' ', '~');
-                    steps[i] = steps[i].replaceAll('\\lambda', '\\lambda ');
-                }
                 
                 for(let [key, value] of definitions) {
                     if(solution == value || solution.substring(1, solution.length - 1) == value) {
                         solution = key;
                         steps.push(solution);
                     }
+                }
+                solution = solution.replaceAll(' ', '~');
+                solution = solution.replaceAll('\\lambda', '\\lambda ');
+                let stepsLen = steps.length;
+                for(let i = 0; i < stepsLen; i++) {
+                    steps[i] = steps[i].replaceAll(' ', '~');
+                    steps[i] = steps[i].replaceAll('\\lambda', '\\lambda ');
                 }
                 this.guessAllowed = true;
                 this.formatGuessText(".guess-sol-message", "Try to guess the normal form of the term.", "black");

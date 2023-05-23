@@ -168,6 +168,14 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
             // return last added term as a solution
             return [this.terms[this.terms.length - 1], this.terms, true];
         }
+        // remove excess brackets
+        if(solution.getChild(0) != null && solution.getChild(0).getText() == '(' && solution.getChild(1) != null && solution.getChild(1) instanceof LambdaParser.AbstractionContext) {
+            console.log("!solution has brackets")
+            solution = solution.getChild(1);
+            console.log("new solution: ", super.getTreeText(solution))
+            this.terms.push(super.getTreeText(solution));
+        }
+        
         return [super.getTreeText(solution), this.terms];
 	}
 
