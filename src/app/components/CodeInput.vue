@@ -34,8 +34,8 @@ export default {
             //doc: "times 0 1",
         //doc: "succ (succ 0)",
         //doc: "add 1 (succ 1)",
-        doc: "add 1 1",
-        //doc: "add 0 1",
+        //doc: "add 1 1",
+        doc: "add 0 1",
             
             //doc: "not true",
             //doc: "and true true",

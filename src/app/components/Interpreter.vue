@@ -207,9 +207,9 @@ export default {
                 try {
                     [solution, steps] = new visitor(tree, definitions).visit(tree);
                 } catch(e) {
-                    //console.log(e.message);
-                    let msg = e.message.replaceAll('\\lambda', 'λ');
-                    this.showToast(msg);
+                    console.error(e.message);
+                    //let msg = e.message.replaceAll('\\lambda', 'λ');
+                    //this.showToast(msg);
                     return ["", null];
                 }
                 // if steps == null -> term is definition
@@ -254,9 +254,9 @@ export default {
                 try {
                     [solution, steps, recursion] = new visitor(tree, definitions).visit(tree);
                 } catch(e) {
-                    //console.log(e.message);
-                    let msg = e.message.replaceAll('\\lambda', 'λ');
-                    this.showToast(msg);
+                    console.info(e.message);
+                    //let msg = e.message.replaceAll('\\lambda', 'λ');
+                    //this.showToast(msg);
                     return ["", null];
                 }
                 if(recursion) {
