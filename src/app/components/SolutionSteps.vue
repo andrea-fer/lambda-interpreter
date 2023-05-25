@@ -3,9 +3,7 @@
             <span>
                 <div id="line" v-for="index in nsteps" :key="index">
                     <p>{{index + '.step'}}</p>
-                    <!-- {{ steps[index - 1] }} -->
                     <div v-katex="'$' + steps[index - 1] + '$'"></div>
-                    <!-- <math-jax :latex="steps[index - 1]" :block="true"></math-jax> -->
                 </div>
             </span>
     </div>

@@ -13,17 +13,12 @@
             <div class="heading">
                 <h2>Lambda Calculus Syntax</h2>
             </div>
-            <!-- <h3>Grammar Rules for Term <span v-katex="'$t$'"></span></h3>
-            <p v-katex="'$ t := abstraction~|~application~|~variable $'"></p> -->
             <div class="example">
                 <div class="grammar_rule"><h4>Abstraction</h4><p v-katex="'$ t :=  λx.t$'"></p></div>
                 <div class="grammar_rule"><h4>Application</h4><p v-katex="'$ t :=  t~t$'"></p></div>
                 <div class="grammar_rule"><h4>Variable</h4><p v-katex="'$ ~~~~~t := x$'"></p></div>
             </div>
         </div>
-
-        <!-- <h3>Function Definition</h3>
-        <p v-katex="'$ t :=  variable = t$'"></p> -->
 
         <div class="interpreter-info">
             <div class="heading">
@@ -70,9 +65,6 @@ p, h2, h3, h4 {
 
 h2 {
     font-size: 20px;
-    /* padding-top: 10px;
-    padding-bottom: 5px; */
-    /* text-shadow: 2px 2px 8px #350b6c; */
 }
 
 h3 {
@@ -94,9 +86,6 @@ p {
     overflow: auto;
     resize: horizontal;
 }
-/* .help, .lambda-calculus-info, .interpreter-info {
-    margin-bottom: 20px;
-} */
 
 .grammar_rule {
     display: flex;

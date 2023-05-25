@@ -67,7 +67,6 @@ export default {
     }
 
     .hidden li:hover {
-        /* background-color: #876CAC; */
         border-bottom: 1px solid #876CAC;
     }
 
@@ -77,20 +76,8 @@ export default {
         z-index: 2;
         position: relative;
         height: inherit;
-        /* height: 3em; */
-        
-        /* margin-bottom: 5%; */
-        /* display: flex;
-        text-align: center;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center; */
-        /* display: flex;
-        text-align: center;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center; */
     }
+    
     .visible span {
         position: relative;
         display: flex;

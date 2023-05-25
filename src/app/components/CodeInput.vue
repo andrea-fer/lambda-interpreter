@@ -31,48 +31,6 @@ export default {
     mounted() {
         const state = EditorState.create({
             doc: "",
-            //doc: "times 0 1",
-        doc: "succ (succ 0)",
-            //doc: "succ 0",
-            //doc: "add 1 (succ 1)",
-            //doc: "add 1 1",
-        //doc: "add 0 1",
-            
-            //doc: "not true",
-            //doc: "and true true",
-            //doc: "and true false",
-            //doc: "or true false",
-            //doc: "test true v u",
-            //doc: "test false v u",
-            //doc: "not (not true)",
-            //doc: "and false (not true)",
-            //doc: "false (not true) false",
-
-            //doc: "(λ x. λ y. x) a",   // Ly.a *
-            //doc: "(λx.x)(λz.z)(λb.b)a", // a *
-            //doc: "(λx.x)((λy.y)z)",   // z *
-        //doc: "(λz.z)(λy.y y)(λx.x a)",    // aa
-        //doc: "(λy.y y)a",    // aa  
-            //doc: "(λz.z) (λz.z z) (λz.z y)",    // yy 
-            //doc: "(λx.λy.x y y)(λa.a)b",  // bb *
-            //doc: "(λx.λy.x y y)(λa.a)",   // λy. (λa.a) y y *
-            //doc: "(λx.λy.x y y) (λy.y) y",  // yy *
-            //doc: "(λx.y)((λy.y y y)(λx.x x x))",                            // y * recursion
-            //doc: "(λa.a)((λy.y y y)(λx.x))", // λx.x *
-            //doc: "(λx.x x)(λy.y x)z", // xxz *
-            //doc: "(λx.(λy.(x y))y)z",  // zy *
-            //doc: "x y",
-            //doc: "((λx.x x)(λy.y))(λy.y)",  // λy.y *
-            //doc: "(λx.y)((λy.y y y)(λx.x a))", // y *
-            //doc: "(λx.x)((λy.y y y)(λx.x a))", // a a (λx.x a) *
-            //doc: "(((λx.λa.(x a))(λy.y))w)", //w *   
-            //doc: "(((λx.λy.(x y))(λy.y))w)", //w *  
-            //doc: "(λx.λy.y x)y",                             
-            //doc: "((a))",
-            //doc: "((λx.x))",
-            //doc: "(λx.x)(λx.x)(λx.x)(λx.x)(λx.x) y",
-            //doc: "(λx.x)(λx.x)",
-            //doc: "(λx.x) (λx.x) (λx.x) y ",
             extensions: [[
                 placeholder(this.placeholderText),
                 lambdaLanguageSupport,
@@ -128,12 +86,7 @@ export default {
 
 .code_input .cm-content {
     padding-top: 0.5em !important;
-    /* s */
 }
-
-/* .code_input .cm-gutters .cm-lineNumbers .cm-gutterElement {
-    display: none;
-} */
 
 .code_input .cm-gutters {
     display: none;
