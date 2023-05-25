@@ -1,5 +1,5 @@
-import LambdaInterpreterVisitor from "./LambdaInterpreterVisitor.js";
-import LambdaParser from "./LambdaParser.js";
+import LambdaInterpreterVisitor from "/lambda-interpreter/src/interpreter/LambdaInterpreterVisitor.js";
+import LambdaParser from "/lambda-interpreter/src/interpreter/LambdaParser.js";
 
 // This tree traverser class defines lambda calculus visitor for reduction strategy call-by-value
 
@@ -177,12 +177,9 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
                     console.log("???? body type : ", abstractionBody.constructor.name)
                     while(abstractionBody instanceof LambdaParser.ApplicationContext) {
                         console.log("VISITING BODY")
-                        let oldBody = abstractionBody;
                         abstractionBody = this.visit(abstractionBody);
                         //console.log("abtractionBody:", super.getTreeText(abstractionBody));
-                        //let newSolutionText = super.getTreeText(solution).replace(super.getTreeText(tmpSolution), super.getTreeText(abstractionBody));
-                        console.log("in term: ", super.getTreeText(solution), " replace: ", super.getTreeText(oldBody), " with: ", super.getTreeText(abstractionBody))
-                        let newSolutionText = super.getTreeText(solution).replace(super.getTreeText(oldBody), super.getTreeText(abstractionBody));
+                        let newSolutionText = super.getTreeText(solution).replace(super.getTreeText(tmpSolution), super.getTreeText(abstractionBody));
                         solution = super.makeTree(newSolutionText);
                         if(this.terms[this.terms.length - 1] != newSolutionText) {
                             console.log("☺☺ pushing > ☺☺ '", newSolutionText, "'");
@@ -474,6 +471,7 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
         let value = super.getTreeText(rightChild);
         console.log("*** before: (leftChild): ", super.getTreeText(leftChild), ", ", leftChild.constructor.name);
         console.log("*** before: (rightChild): ", super.getTreeText(rightChild), ", ", rightChild.constructor.name);
+        
         while(rightChild instanceof LambdaParser.ApplicationContext) {
             // if the leftChild is variable or variable inside brackets, don't apply reduction
             if(rightChild.getChild(0).getText() == '(' 
@@ -489,7 +487,7 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
             }
 
             // if term is application containing undefined variables, don't apply reduction
-            if(rightChild.getChild(0).getText() == '(' 
+            /* if(rightChild.getChild(0).getText() == '(' 
                 && rightChild.getChild(1).getChild(0).getChild(0) == null 
                 && rightChild.getChild(1).getChild(1).getChild(0).getChild(0) == null 
                 && rightChild.getChild(2) != null &&  rightChild.getChild(2).getText() == ')') {
@@ -507,16 +505,9 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
                     console.log(super.getTreeText(rightChild))
                     console.log("!!!!???????????????????!!!!")
                     value = super.getTreeText(rightChild);
-                    if(!(leftChild instanceof LambdaParser.AbstractionContext)) {
-                        console.log("Left side is not Abstraction");
-                        console.log("--leftChild-- ", super.getTreeText(leftChild), " + --rightChild-- ", super.getTreeText(rightChild))
-                    //let newCTX = super.getTreeText(leftChild).concat(' ').concat(super.getTreeText(rightChild));
-                        let newCTX = super.getTreeText(leftChild).concat(' ').concat(super.getTreeText(rightChild));
-                        return super.makeTree(newCTX);
-                    }
                     break;
                 }
-            }
+            } */
 
             console.log("♠ rightChild: ", super.getTreeText(rightChild));
             console.log("♠ rightChild.constructor: ", rightChild.constructor.name);
@@ -534,71 +525,55 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
             }
             value = super.getTreeText(rightChild);
             if(oldRightChild instanceof LambdaParser.ApplicationContext && !(oldRightChild.getChild(0) instanceof LambdaParser.TermContext) 
-            && oldRightChild.getChild(0).getText() == '(' && oldRightChild.getChild(2).getText() == ')' && super.makeTree(value).getChild(0).getChild(0) != null) {
+            && oldRightChild.getChild(0).getText() == '(' && oldRightChild.getChild(2).getText() == ')' && super.makeTree(value).getChild(0).getChild(0) != null
+            || oldRightChild.getChild(0).getText() == '(' && oldRightChild.getChild(3).getText() == ')') {
                 console.log(super.getTreeText(oldRightChild), "-", oldRightChild.constructor.name);
                 value = '(' + value + ')';
                 console.log("VALUE: ", value);
             }
-            console.log("oldRightChild: ", super.getTreeText(oldRightChild), ", newRightChild: ", super.getTreeText(rightChild));
+            console.log("oldRightChild: ", super.getTreeText(oldRightChild), ", newRightChild: ", value);
             console.log("CHANGING THIS TERM: ", this.terms[this.terms.length - 1]);
             console.log("REPLACING: ", super.getTreeText(oldRightChild), "WITH: ", value);
             console.log("NEW CTX:= ", super.getTreeText(ctx).replace(super.getTreeText(oldRightChild), value));
-            // if left side is not abstraction, we are not implementing substitution
-            if(!(leftChild instanceof LambdaParser.AbstractionContext)) {
-                console.log("Left side is not Abstraction");
-                console.log("--leftChild-- ", super.getTreeText(leftChild), " + --rightChild-- ", super.getTreeText(rightChild))
-                //let newCTX = super.getTreeText(leftChild).concat(' ').concat(super.getTreeText(rightChild));
-                return super.makeTree(super.getTreeText(ctx).replace(super.getTreeText(oldRightChild), value));
-            }
+            ctx = super.makeTree(super.getTreeText(ctx).replace(super.getTreeText(oldRightChild), value));
             // right child cannot evaluated any more
             if(super.getTreeText(oldRightChild) == value) {
                 break;
             }
-            /* let oldRightChildText = super.getTreeText(oldRightChild);
-            let oldCtx = this.terms[this.terms.length - 1];
-            let newCTX = oldCtx.replace(oldRightChildText, value);
-            console.log("newCTX= ", newCTX);
-            ctx = super.makeTree(newCTX);
-            //leftChild = ctx.getChild(0);
-            rightChild = ctx.getChild(0).getChild(1);
-            value = super.getTreeText(rightChild);
-        
-            console.log("--RightChild: ", value);
-            newCTX = this.terms[this.terms.length - 1].replace(super.getTreeText(oldRightChild), value);
-            console.log("newCTX = ", this.terms[this.terms.length - 1], "replaced by: ", newCTX);
-            console.log("newCTX = ", super.getTreeText(oldRightChild), "replaced by:(val) ", value);
-            console.log("VALUE: ", value);
-            if(this.terms[this.terms.length - 1] == newCTX) {
-                break;
-            }
-            this.terms.push(newCTX);
-            console.log("•(line 339)• Adding new term: ", this.terms[this.terms.length - 1]);
-            console.log("*** inside: (rightChild): ", super.getTreeText(rightChild), ", ", rightChild.constructor.name); */
 
             let oldRightChildText = super.getTreeText(oldRightChild);
-                //let oldCtx = this.terms[this.terms.length - 1];
-                let newRightChild = oldRightChildText.replace(oldRightChildText, value);
-                rightChild = super.makeTree(newRightChild);
-                console.log("newRIGHTchild = ", super.getTreeText(rightChild));
-                let newCTX = oldTerm.replace(oldRightChildText, value);
-                console.log("newCTX= ", newCTX);
-                if(this.terms[this.terms.length - 1] != newCTX) {
-                    console.log("☺☺ pushing > ☺☺ '", newCTX, "'");
-                    this.terms.push(newCTX);
-                    //console.log("•(line 339)• Adding new term: ", this.terms[this.terms.length - 1]);
-                    //break;
-                }
-                console.log("*** inside: (rightChild): ", super.getTreeText(rightChild), ", ", rightChild.constructor.name);
-                if(rightChild instanceof LambdaParser.TermContext && rightChild.getChild(0) instanceof LambdaParser.ApplicationContext) {
-                    rightChild = rightChild.getChild(0);
-                }
+            //let oldCtx = this.terms[this.terms.length - 1];
+            console.log("oldRightChild: ", oldRightChildText, ", newRightChild: ", value);
+            let newRightChild = oldRightChildText.replace(oldRightChildText, value);
+            rightChild = super.makeTree(newRightChild);
+            console.log("newRIGHTchild = ", super.getTreeText(rightChild));
+            let newCTX = oldTerm.replace(oldRightChildText, value);
+            console.log("newCTX= ", newCTX);
+            if(this.terms[this.terms.length - 1] != newCTX) {
+                console.log("☺☺ pushing > ☺☺ '", newCTX, "'");
+                this.terms.push(newCTX);
+                //console.log("•(line 339)• Adding new term: ", this.terms[this.terms.length - 1]);
+                //break;
+            }
+            console.log("*** inside: (rightChild): ", super.getTreeText(rightChild), ", ", rightChild.constructor.name);
+            if(rightChild instanceof LambdaParser.TermContext && rightChild.getChild(0) instanceof LambdaParser.ApplicationContext) {
+                rightChild = rightChild.getChild(0);
+            }
+        }
+
+        // if left side is not abstraction, we are not implementing substitution
+        if(!(leftChild instanceof LambdaParser.AbstractionContext)) {
+            console.log("Left side is not Abstraction");
+            console.log("--leftChild-- ", super.getTreeText(leftChild), " + --rightChild-- ", super.getTreeText(rightChild))
+            //let newCTX = super.getTreeText(leftChild).concat(' ').concat(super.getTreeText(rightChild));
+            return ctx;
         }
 
         let val = value;
         let valueTree = super.makeTree(val).getChild(0);
         // if value is abstraction
         if(valueTree instanceof LambdaParser.AbstractionContext) {
-            if(valueTree.getChild(0).getText() == '(') {
+            if(valueTree.getChild(0) != null && valueTree.getChild(0).getText() == '(') {
                 valueTree = valueTree.getChild(1);
             }
             console.log("is abstraction")
