@@ -33,9 +33,9 @@ export default {
             doc: "",
             //doc: "times 0 1",
         //doc: "succ (succ 0)",
-        //doc: "add 1 (succ 1)",
-        //doc: "add 1 1",
-        doc: "add 0 1",
+        doc: "add 1 (succ 1)",
+            //doc: "add 1 1",
+        //doc: "add 0 1",
             
             //doc: "not true",
             //doc: "and true true",
@@ -43,8 +43,9 @@ export default {
             //doc: "or true false",
             //doc: "test true v u",
             //doc: "test false v u",
-        //doc: "not (not true)",
-    //doc: "and false (not true)",
+            //doc: "not (not true)",
+            //doc: "and false (not true)",
+            //doc: "false (not true) false",
 
             //doc: "(λ x. λ y. x) a",   // Ly.a *
             //doc: "(λx.x)(λz.z)(λb.b)a", // a *
@@ -63,7 +64,7 @@ export default {
             //doc: "(λx.y)((λy.y y y)(λx.x a))", // y *
             //doc: "(λx.x)((λy.y y y)(λx.x a))", // a a (λx.x a) *
             //doc: "(((λx.λa.(x a))(λy.y))w)", //w *   
-        //doc: "(((λx.λy.(x y))(λy.y))w)", //w *  
+            //doc: "(((λx.λy.(x y))(λy.y))w)", //w *  
             //doc: "(λx.λy.y x)y",                             
             //doc: "((a))",
             //doc: "((λx.x))",

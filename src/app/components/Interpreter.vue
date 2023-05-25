@@ -71,8 +71,8 @@ import antlr4 from "antlr4";
 const { CommonTokenStream, InputStream } = antlr4;
 import LambdaLexer from "../../interpreter/LambdaLexer.js";
 import LambdaParser from "../../interpreter/LambdaParser.js";
-import CallByValueLambdaVisitor from "../../interpreter/CallByValueLambdaVisitor.js";
-import CallByNameLambdaVisitor from "../../interpreter/CallByNameLambdaVisitor.js";
+import CallByValueLambdaVisitor from "../../interpreter/CallByValueLambdaVisitorNew.js";
+import CallByNameLambdaVisitor from "../../interpreter/CallByNameLambdaVisitorNew.js";
 import CompareLambdaTreesVisitor from "../../interpreter/CompareLambdaTreesVisitor.js";
 import LambdaErrorListener from "../../interpreter/LambdaErrorListener.js";
 
