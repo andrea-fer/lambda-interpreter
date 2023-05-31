@@ -5,176 +5,7 @@ import LambdaParser from "./LambdaParser.js";
 
 export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
 
-    constructor(ctx, definitions) {
-        super();
-        this.term = super.getTreeText(ctx);
-        this.terms = [];
-        this.terms.push(this.term);
-        this.definitions = definitions;
-        this.startTime = new Date().getTime();
-        this.maxTime = 3000;
-    }
-    // Visit a parse tree produced by LambdaParser#redex.
-    // ctx.getChild(0) = Term
-    // ctx.getChild(1) = EOF
-	visitRedex(ctx) {
-        ctx = ctx.getChild(0);
-	    return this.visit(ctx);
-	}
-
-	// Visit a parse tree produced by LambdaParser#term.
-	visitTerm(ctx) {
-        if(ctx.getChild(0) instanceof LambdaParser.DefinitionContext) {
-            return this.visitDefinition(ctx);
-        }
-        if(ctx.getChild(0) instanceof LambdaParser.ApplicationContext) {
-            let oldCTX = ctx.getChild(0);
-            while(oldCTX.getChild(0) != null && oldCTX.getChild(0).getText() == '(' 
-                && oldCTX.getChild(2) != null && oldCTX.getChild(2).getText() == ')' 
-                && oldCTX.getChild(1) instanceof LambdaParser.ApplicationContext
-                && oldCTX.getChild(3) == null) {
-                    ctx = oldCTX.getChild(1);
-                    let newCTX = this.terms[this.terms.length - 1].replace(super.getTreeText(oldCTX), super.getTreeText(ctx));
-                    if(newCTX != this.terms[this.terms.length - 1]){
-                        this.terms.push(newCTX);
-                        ctx = super.makeTree(newCTX);
-                    }
-                    oldCTX = ctx;
-            }
-        }
-        let solution = ctx;
-        
-        while(solution != null && solution.getChild(0) instanceof LambdaParser.ApplicationContext) {
-            if(super.isTimeout(this.startTime, this.maxTime)) {
-                //console.log("Program took too long to execute...");
-                return [null, null];
-            }
-            solution = this.visit(solution.getChild(0));
-            if(solution == null) {
-                break;
-            }
-            // removing unnecessary brackets
-            if(solution.getChild(0).getChild(0) != null && solution.getChild(0).getChild(0).getText() == "(" 
-            && solution.getChild(0).getChild(2) != null && solution.getChild(0).getChild(2).getText() == ")") {
-                solution = super.makeTree(super.getTreeText(solution.getChild(0).getChild(1)));
-            }
-            if(super.getTreeText(solution) == this.terms[this.terms.length - 1]) {
-                break;
-            }
-            this.terms.push(super.getTreeText(solution));
-            if(this.definitions.has(super.getTreeText(solution))) {
-                let value = super.makeTree(this.definitions.get(super.getTreeText(solution)));
-                if(value.getChild(0) instanceof LambdaParser.ApplicationContext) {
-                    solution = value;
-                    if(this.terms[this.terms.length - 1] != super.getTreeText(solution)) {
-                        this.terms.push(super.getTreeText(solution));
-                    }
-                }
-            }
-
-            if(solution.getChild(0) != null && solution.getChild(0).getText() == '(' && solution.getChild(1) != null && solution.getChild(1) instanceof LambdaParser.AbstractionContext) {
-                solution = solution.getChild(1);
-                if(this.terms[this.terms.length - 1] != super.getTreeText(solution)) {
-                    this.terms.push(super.getTreeText(solution));
-                }
-            }
-
-            if(solution instanceof LambdaParser.AbstractionContext) {
-                let param = null;
-                let body = null;
-                if(super.isTimeout(this.startTime, this.maxTime)) {
-                    //console.log("Program took too long to execute...");
-                    return [null, null];
-                }
-                [param, body] = this.visitAbstraction(solution);
-
-                let bodyText = body;
-                for(let [key, value] of this.definitions) {
-                    if(body != null && body.includes(key)) {
-                        if(super.makeTree(value).getChild(0) instanceof LambdaParser.AbstractionContext) {
-                            value = '(' + value + ')';
-                        }
-                        const key_text = "\\b".concat(key).concat("\\b");
-                        const _key = new RegExp(key_text, "g");
-                        bodyText = bodyText.replaceAll(_key, value);
-                        solution = super.makeTree(bodyText).getChild(0);
-                        let newCTX = this.terms[this.terms.length - 1].replace(body, bodyText);
-                        if(this.terms[this.terms.length - 1] != newCTX) {
-                            this.terms.push(newCTX);
-                        }
-                        ctx = super.makeTree(newCTX).getChild(0);
-                        solution = ctx;
-                        if(super.isTimeout(this.startTime, this.maxTime)) {
-                            //console.log("Program took too long to execute...");
-                            return [null, null];
-                        }
-                        [param, body] = this.visit(solution);
-                        if(body == null) {
-                            return [null, null];
-                        }
-                        bodyText = body;
-                    }
-                }
-
-                let tmpSolution = solution;
-                let abstractionBody = body;
-                if(body != null) {
-                    while(tmpSolution instanceof LambdaParser.AbstractionContext) {
-                        [param, bodyText] = this.visit(tmpSolution);
-                        abstractionBody = super.makeTree(bodyText).getChild(0);
-                        tmpSolution = abstractionBody;
-                    }
-                }
-
-                if(body != null /* && body != super.getTreeText(abstractionBody) */) {
-                    while(abstractionBody instanceof LambdaParser.ApplicationContext) {
-                        let oldBody = abstractionBody;
-                        abstractionBody = this.visit(abstractionBody);
-                        let newSolutionText = super.getTreeText(solution).replace(super.getTreeText(oldBody), super.getTreeText(abstractionBody));
-                        solution = super.makeTree(newSolutionText);
-                        if(this.terms[this.terms.length - 1] != newSolutionText) {
-                            this.terms.push(newSolutionText);
-                        }
-                    }
-                }
-
-            }
-        }
-        // in case of recursion visit functions will return null
-        if(solution == null) {
-            //console.log("Recursion");
-            // return last added term as a solution
-            return [this.terms[this.terms.length - 1], this.terms, true];
-        }
-        // remove excess brackets
-        if(solution.getChild(0) != null && solution.getChild(0).getText() == '(' && solution.getChild(1) != null && solution.getChild(1) instanceof LambdaParser.AbstractionContext) {
-            solution = solution.getChild(1);
-            if(this.terms[this.terms.length - 1] != super.getTreeText(solution)) {
-                this.terms.push(super.getTreeText(solution));
-            }
-        }
-        
-        return [super.getTreeText(solution), this.terms];
-	}
-
-    // Visit a parse tree produced by LambdaParser#abstraction.
-	visitAbstraction(ctx) {
-        if(ctx.getText() == '(') {
-            ctx = ctx.getChild(1).getChild(0);
-        }
-        let param = null;
-        let body = null;
-        if(ctx.VARIABLE()) {
-            param = ctx.VARIABLE().getText();
-            let bodyScope = ctx.getChild(3).getChild(0);
-            if(bodyScope == '(') {
-                bodyScope = ctx.getChild(3).getChild(1);
-            }
-
-            body = super.getTreeText(bodyScope);
-        }
-        return [param, body];
-	}
+    
 
 	// Visit a parse tree produced by LambdaParser#application.
 	visitApplication(ctx) {
@@ -194,6 +25,7 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
             leftChild = leftChild.getChild(1);
             let newCTX = this.terms[this.terms.length - 1].replace(super.getTreeText(oldLeftChild), super.getTreeText(leftChild));
             if(newCTX != this.terms[this.terms.length - 1]){
+                console.log("*", newCTX, "*");
                 this.terms.push(newCTX);
             }
         }
@@ -217,6 +49,7 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
             rightChild = rightChild.getChild(1);
             let newCTX = this.terms[this.terms.length - 1].replace(super.getTreeText(oldRightChild), super.getTreeText(rightChild));
             if(newCTX != this.terms[this.terms.length - 1]){
+                console.log("*", newCTX, "*");
                 this.terms.push(newCTX);
             }
         }
@@ -239,11 +72,15 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
                         value = '(' + value + ')';
                     }
                     const key_text = "\\b".concat(key).concat("\\b");
-                    const _key = new RegExp(key_text, "g");
-                    leftChildText = leftChildText.replaceAll(_key, value);
+                    const _key = new RegExp(key_text);
+                    console.log("before: ", leftChildText);
+                    leftChildText = leftChildText.replace(_key, value);
+                    console.log("before: ", leftChildText);
                     let oldLeftChild = leftChild;
                     leftChild = super.makeTree(leftChildText).getChild(0);
+                    console.log("substituing: ", key, " in: ", this.terms[this.terms.length - 1], " for: ", leftChildText);
                     let newCTX = this.terms[this.terms.length - 1].replace(super.getTreeText(oldLeftChild), leftChildText);
+                    console.log("*", newCTX, "*");
                     this.terms.push(newCTX);
                     ctx = super.makeTree(newCTX).getChild(0);
                     break; 
@@ -279,6 +116,7 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
                 ctx = super.makeTree(newCTX).getChild(0);
             }
             if(this.terms[this.terms.length - 1] != newCTX) {
+                console.log("*", newCTX, "*");
                 this.terms.push(newCTX);
             } 
             if(rightChild instanceof LambdaParser.TermContext) {
@@ -378,6 +216,7 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
                 rightChild = super.makeTree(newRightChild);
                 let newCTX = oldTerm.replace(oldRightChildText, value);
                 if(this.terms[this.terms.length - 1] != newCTX) {
+                    console.log("*", newCTX, "*");
                     this.terms.push(newCTX);
                 }
                 if(rightChild instanceof LambdaParser.TermContext && rightChild.getChild(0) instanceof LambdaParser.ApplicationContext) {
@@ -402,7 +241,7 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
             // replace every occurence of right side param in body with param0
             const reg_text_lambda = "\\b".concat('lambda').concat(val).concat("\\b");
             const reg_lambda = new RegExp(reg_text_lambda, "g");
-            let lambdavalue0 = "lambda" + val + 0;
+            let lambdavalue0 = "lambda" + val + "_0";
             let oldBody = body;
             let newBody = body;
             newBody = newBody.replaceAll(reg_lambda, lambdavalue0);
@@ -410,10 +249,11 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
             if(newBody != oldBody) {
                 const reg_text_val = "\\b".concat(val).concat("\\b");
                 const reg_val = new RegExp(reg_text_val, "g");
-                let value0 = val + "0";
+                let value0 = val + "_0";
                 newBody = newBody.replaceAll(reg_val, value0);
                 let newCTX = this.terms[this.terms.length - 1].replace(oldBody, newBody);
                 if(this.terms[this.terms.length - 1] != newCTX) {
+                    console.log("*", newCTX, "*");
                     this.terms.push(newCTX);
                 }
                 body = newBody;
@@ -432,12 +272,6 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
         }
         
         return tree;
-	}
-
-    // Visit a parse tree produced by LambdaParser#definition.
-	visitDefinition(ctx) {
-        ctx = ctx.getChild(0);
-        return [[super.getTreeText(ctx.getChild(0)), super.getTreeText(ctx.getChild(2))], null];
 	}
 
 }
