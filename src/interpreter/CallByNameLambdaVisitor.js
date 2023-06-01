@@ -23,6 +23,7 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
             leftChild = leftChild.getChild(1);
             let newCTX = this.terms[this.terms.length - 1].replace(super.getTreeText(oldLeftChild), super.getTreeText(leftChild));
             if(newCTX != this.terms[this.terms.length - 1]){
+                console.log("*", newCTX, "*");
                 this.terms.push(newCTX);
             }
         }
@@ -45,7 +46,8 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
             && rightChild.getChild(3) == null) {
             rightChild = rightChild.getChild(1);
             let newCTX = this.terms[this.terms.length - 1].replace(super.getTreeText(oldRightChild), super.getTreeText(rightChild));
-            if(newCTX != this.terms[this.terms.length - 1]){
+            if(newCTX != this.terms[this.terms.length - 1]) {
+                console.log("*", newCTX, "*");
                 this.terms.push(newCTX);
             }
         }
@@ -68,12 +70,15 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
                         value = '(' + value + ')';
                     }
                     const key_text = "\\b".concat(key).concat("\\b");
-                    const _key = new RegExp(key_text, "g");
-                    leftChildText = leftChildText.replaceAll(_key, value);
+                    const _key = new RegExp(key_text);
+                    leftChildText = leftChildText.replace(_key, value);
                     let oldLeftChild = leftChild;
                     leftChild = super.makeTree(leftChildText).getChild(0);
                     let newCTX = this.terms[this.terms.length - 1].replace(super.getTreeText(oldLeftChild), leftChildText);
-                    this.terms.push(newCTX);
+                    console.log("*", newCTX, "*");
+                    if(newCTX != this.terms[this.terms.length - 1]) {
+                        this.terms.push(newCTX);
+                    }
                     ctx = super.makeTree(newCTX).getChild(0);
                     break; 
                 }
@@ -115,6 +120,7 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
             }
 
             if(this.terms[this.terms.length - 1] != newCTX) {
+                console.log("*", newCTX, "*");
                 this.terms.push(newCTX);
             } 
             if(rightChild instanceof LambdaParser.TermContext) {
@@ -210,6 +216,7 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
                 rightChild = super.makeTree(newRightChild);
                 let newCTX = oldTerm.replace(oldRightChildText, value);
                 if(this.terms[this.terms.length - 1] != newCTX) {
+                    console.log("*", newCTX, "*");
                     this.terms.push(newCTX);
                 }
                 if(rightChild instanceof LambdaParser.TermContext && rightChild.getChild(0) instanceof LambdaParser.ApplicationContext) {
@@ -258,6 +265,7 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
                 newBody = newBody.replaceAll(reg_val, value0);
                 let newCTX = this.terms[this.terms.length - 1].replace(oldBody, newBody);
                 if(this.terms[this.terms.length - 1] != newCTX) {
+                    console.log("*", newCTX, "*");
                     this.terms.push(newCTX);
                 }
                 body = newBody;

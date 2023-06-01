@@ -137,17 +137,17 @@ export default class LambdaInterpreterVisitor extends LambdaVisitor {
                     }
                 }
 
-                if(body != null /* && body != this.getTreeText(abstractionBody) */) {
+                if(body != null && body != this.getTreeText(abstractionBody)) {
                     while(abstractionBody instanceof LambdaParser.ApplicationContext) {
                         let oldBody = abstractionBody;
-                        abstractionBody = this.visit(abstractionBody);
+                        abstractionBody = this.visit(abstractionBody).getChild(0);
                         let newSolutionText = this.getTreeText(solution).replace(this.getTreeText(oldBody), this.getTreeText(abstractionBody));
-                        console.log("before maketree2", this.getTreeText(solution))
                         solution = this.makeTree(newSolutionText);
-                        console.log("after maketree2", this.getTreeText(solution))
                         if(this.terms[this.terms.length - 1] != newSolutionText) {
                             console.log("°", newSolutionText, "°");
                             this.terms.push(newSolutionText);
+                        } else {
+                            break;
                         }
                     }
                 }
@@ -179,6 +179,9 @@ export default class LambdaInterpreterVisitor extends LambdaVisitor {
             ctx = ctx.getChild(1);
             console.log("NEW ctx in visitAbstraction:", this.getTreeText(ctx))
         }
+        /* if(ctx.getText() == '(') {
+            ctx = ctx.getChild(1).getChild(0);
+        } */
         let param = null;
         let body = null;
         if(ctx.VARIABLE()) {

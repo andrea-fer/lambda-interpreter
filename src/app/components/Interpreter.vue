@@ -253,7 +253,8 @@ export default {
                 try {
                     [solution, steps, recursion] = new visitor(tree, definitions).visit(tree);
                 } catch(e) {
-                    console.info(e.message);
+                    console.info(e)
+                    //console.info(e.message);
                     //let msg = e.message.replaceAll('\\lambda', 'λ');
                     //this.showToast(msg);
                     return ["", null];

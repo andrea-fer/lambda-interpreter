@@ -31,6 +31,41 @@ export default {
     mounted() {
         const state = EditorState.create({
             doc: "",
+doc: "and false",
+doc: "and (and false true) (and false true)",
+doc: "fix g true",
+            //doc: "succ (succ 0)",
+            //doc: "times 0 1",
+            //doc: "succ (succ 0)",
+            //doc: "λs.λz.s (1 s z)",
+            //doc: "add 1 (succ 1)",
+            //doc: "add 1 1",
+            //doc: "add 0 1",
+            //doc: "add 1 (succ 1)",
+            //doc: "add 1 1",
+            //doc: "add 0 1",
+            
+            //doc: "not true",
+            //doc: "and true true",
+            //doc: "and true false",
+            //doc: "or true false",
+            //doc: "test true v u",
+            //doc: "test false v u",
+            //doc: "not (not true)",
+            //doc: "and false (not true)",
+            //doc: "not (not true)",
+            //doc: "and false (not true)",
+            //doc: "false (not true) false",
+            //doc: "(λ x. λ y. x) a",   // Ly.a *
+            //doc: "(λx.x)(λz.z)(λb.b)a", // a *
+            //doc: "(λx.y)((λy.y y y)(λx.x a))", // y *
+            //doc: "(λx.x)((λy.y y y)(λx.x a))", // a a (λx.x a) *
+            //doc: "(((λx.λa.(x a))(λy.y))w)", //w *   
+            //doc: "(((λx.λy.(x y))(λy.y))w)", //w *  
+            //doc: "(((λx.λy.(x y))(λy.y))w)", //w *  
+            //doc: "(λx.λy.y x)y",                             
+            //doc: "((a))",
+            //doc: "((λx.x))",
             extensions: [[
                 placeholder(this.placeholderText),
                 lambdaLanguageSupport,
