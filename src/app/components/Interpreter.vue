@@ -168,12 +168,13 @@ export default {
                     return ["", null];
             }
             let input, solution, steps = null;
-            let i = 0;
             // parse input from editor-definitions
-            do {
-                input = this.$refs.editor_definitions.view.state.doc.text[i++];
+            // read all lines and skip empty ones
+            let lastLine = this.$refs.editor_definitions.view.state.doc.lines;
+            for(let i = 0; i < lastLine; i++) {
+                input = this.$refs.editor_definitions.view.state.doc.text[i];
                 if(input == null || input.length <= 0) {
-                    break;
+                    continue;
                 }
                 input = input.replaceAll('λ', '\\lambda');
                 let chars = new InputStream(input, true);
@@ -217,8 +218,7 @@ export default {
                 } else {
                     break;
                 }
-            } while(input != null);
-
+            }
             // parse input from editor_redex
             input = this.$refs.editor_redex.view.state.doc.text[0];
             if(input != null && input.length > 0) {
