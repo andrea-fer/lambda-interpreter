@@ -129,10 +129,10 @@ export default class LambdaInterpreterVisitor extends LambdaVisitor {
                 if(body != null) {
                     while(tmpSolution instanceof LambdaParser.AbstractionContext) {
                         [param, bodyText] = this.visit(tmpSolution);
-                        console.log("before maketree1", this.getTreeText(tmpSolution))
-                        console.log("bodytext: <<", bodyText, ">>")
+                        //console.log("before maketree1", this.getTreeText(tmpSolution))
+                        //console.log("bodytext: <<", bodyText, ">>")
                         abstractionBody = this.makeTree(bodyText).getChild(0);
-                        console.log("after maketree1", this.getTreeText(tmpSolution))
+                        //console.log("after maketree1", this.getTreeText(tmpSolution))
                         tmpSolution = abstractionBody;
                     }
                 }
@@ -174,25 +174,34 @@ export default class LambdaInterpreterVisitor extends LambdaVisitor {
 
     // Visit a parse tree produced by LambdaParser#abstraction.
 	visitAbstraction(ctx) {
-        console.log("ctx in visitAbstraction:", this.getTreeText(ctx))
-        if(ctx.getChild(0).getText() == '(') {
-            ctx = ctx.getChild(1);
-            console.log("NEW ctx in visitAbstraction:", this.getTreeText(ctx))
+        let abstraction = ctx;
+        console.log("ctx in visitAbstraction:", this.getTreeText(ctx));
+        while(abstraction.getChild(0) != null && abstraction.getChild(0).getText() == '(' 
+        && abstraction.getChild(1) != null && abstraction.getChild(1) instanceof LambdaParser.AbstractionContext 
+        && abstraction.getChild(2) != null && abstraction.getChild(2).getText() == ')') {
+            console.log(">>", abstraction.getChild(0).getText(),"<<");
+            console.log(">>", this.getTreeText(abstraction.getChild(1)),"<<");
+            console.log(">>", abstraction.getChild(2).getText(),"<<");
+            abstraction = abstraction.getChild(1);
+            console.log("NEW ctx in visitAbstraction:", this.getTreeText(abstraction), abstraction.constructor.name);
         }
         /* if(ctx.getText() == '(') {
             ctx = ctx.getChild(1).getChild(0);
         } */
         let param = null;
         let body = null;
-        if(ctx.VARIABLE()) {
-            param = ctx.VARIABLE().getText();
-            let bodyScope = ctx.getChild(3).getChild(0);
+        //if(abstraction.VARIABLE()) {
+            //param = ctx.VARIABLE().getText();
+            param = abstraction.getChild(1).getText();
+            console.log("param:", param)
+            let bodyScope = abstraction.getChild(3).getChild(0);
             if(bodyScope == '(') {
-                bodyScope = ctx.getChild(3).getChild(1);
+                bodyScope = abstraction.getChild(3).getChild(1);
             }
 
             body = this.getTreeText(bodyScope);
-        }
+            console.log("body: ", body)
+        //}
         return [param, body];
 	}
 

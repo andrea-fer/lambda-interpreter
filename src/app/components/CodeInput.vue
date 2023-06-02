@@ -31,10 +31,10 @@ export default {
     mounted() {
         const state = EditorState.create({
             doc: "",
-doc: "and false",
-doc: "and (and false true) (and false true)",
-doc: "fix g true",
-            //doc: "succ (succ 0)",
+//doc: "and false",
+//doc: "and (and false true) (and false true)",
+//doc: "fix g true",
+            doc: "succ (succ 0)",
             //doc: "times 0 1",
             //doc: "succ (succ 0)",
             //doc: "λs.λz.s (1 s z)",
