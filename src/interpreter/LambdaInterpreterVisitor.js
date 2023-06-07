@@ -179,20 +179,21 @@ export default class LambdaInterpreterVisitor extends LambdaVisitor {
         while(abstraction.getChild(0) != null && abstraction.getChild(0).getText() == '(' 
         && abstraction.getChild(1) != null && abstraction.getChild(1) instanceof LambdaParser.AbstractionContext 
         && abstraction.getChild(2) != null && abstraction.getChild(2).getText() == ')') {
-            console.log(">>", abstraction.getChild(0).getText(),"<<");
-            console.log(">>", this.getTreeText(abstraction.getChild(1)),"<<");
-            console.log(">>", abstraction.getChild(2).getText(),"<<");
+            //console.log(">>", abstraction.getChild(0).getText(),"<<");
+            //console.log(">>", this.getTreeText(abstraction.getChild(1)),"<<");
+            //console.log(">>", abstraction.getChild(2).getText(),"<<");
             abstraction = abstraction.getChild(1);
-            console.log("NEW ctx in visitAbstraction:", this.getTreeText(abstraction), abstraction.constructor.name);
+            //console.log("NEW ctx in visitAbstraction:", this.getTreeText(abstraction), abstraction.constructor.name);
         }
         /* if(ctx.getText() == '(') {
             ctx = ctx.getChild(1).getChild(0);
         } */
         let param = null;
         let body = null;
-        //if(abstraction.VARIABLE()) {
-            //param = ctx.VARIABLE().getText();
-            param = abstraction.getChild(1).getText();
+        //if(abstraction.getChild(0).getText() == '\\lambda') {
+        if(abstraction.VARIABLE()) {
+            param = abstraction.VARIABLE().getText();
+            //param = abstraction.getChild(1).getText();
             console.log("param:", param)
             let bodyScope = abstraction.getChild(3).getChild(0);
             if(bodyScope == '(') {
@@ -201,7 +202,8 @@ export default class LambdaInterpreterVisitor extends LambdaVisitor {
 
             body = this.getTreeText(bodyScope);
             console.log("body: ", body)
-        //}
+        }
+        //console.log("returning [", param, ", ", body, "]");
         return [param, body];
 	}
 
