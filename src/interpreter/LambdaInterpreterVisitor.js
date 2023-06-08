@@ -125,25 +125,35 @@ export default class LambdaInterpreterVisitor extends LambdaVisitor {
                 }
 
                 let tmpSolution = solution;
-                let abstractionBody = body;
+                let abstractionBody = solution;
                 if(body != null) {
                     while(tmpSolution instanceof LambdaParser.AbstractionContext) {
                         [param, bodyText] = this.visit(tmpSolution);
-                        //console.log("before maketree1", this.getTreeText(tmpSolution))
-                        //console.log("bodytext: <<", bodyText, ">>")
+                        console.log("before maketree1", this.getTreeText(tmpSolution))
+                        console.log("bodytext: <<", bodyText, ">>")
                         abstractionBody = this.makeTree(bodyText).getChild(0);
-                        //console.log("after maketree1", this.getTreeText(tmpSolution))
+                        console.log("after maketree1", this.getTreeText(tmpSolution))
                         tmpSolution = abstractionBody;
                     }
                 }
 
-                if(body != null && body != this.getTreeText(abstractionBody)) {
+                if(body != null/*  && body != this.getTreeText(abstractionBody) */) {
                     while(abstractionBody instanceof LambdaParser.ApplicationContext) {
+                        console.log("!!!!!!!!!", this.getTreeText(abstractionBody), "IS APPLICATION")
                         let oldBody = abstractionBody;
-                        abstractionBody = this.visit(abstractionBody).getChild(0);
+                        abstractionBody = this.visit(abstractionBody);
+                        if(abstractionBody == null) {
+                            break;
+                        }
+                        if(abstractionBody instanceof LambdaParser.TermContext) {
+                            abstractionBody = abstractionBody.getChild(0);
+                        }
+                        console.log("---------abstractionBodyType:", abstractionBody.constructor.name);
+                        console.log("---------:", this.getTreeText(abstractionBody));
+                        console.log("in: ", this.getTreeText(solution), "replacing: ", this.getTreeText(oldBody), "with: ", this.getTreeText(abstractionBody));
                         let newSolutionText = this.getTreeText(solution).replace(this.getTreeText(oldBody), this.getTreeText(abstractionBody));
                         solution = this.makeTree(newSolutionText);
-                        if(this.terms[this.terms.length - 1] != newSolutionText) {
+                        if(this.terms[this.terms.length - 1] != newSolutionText || this.terms[this.terms.length - 2] != newSolutionText) {
                             console.log("°", newSolutionText, "°");
                             this.terms.push(newSolutionText);
                         } else {

@@ -267,6 +267,8 @@ header h1 {
     justify-content: flex-start;
     align-items: stretch;
     align-content: stretch;
+    overflow: auto;
+    resize: horizontal;
 }
 #solution-short {
     height: 8%;

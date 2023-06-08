@@ -97,6 +97,7 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
                 || (leftChild.getChild(1) instanceof LambdaParser.ApplicationContext && (leftChild.getChild(1).getChild(0) != null))
                 || leftChild.getChild(0) instanceof LambdaParser.AbstractionContext)) {
             let oldLeftChild = leftChild;
+            let oldLeftChildText = super.getTreeText(oldLeftChild);
             if(super.isTimeout(this.startTime, this.maxTime)) {
                 //console.log("Program took too long to execute...");
                 return null;
@@ -111,8 +112,10 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
             if(leftChild instanceof LambdaParser.AbstractionContext && leftChild.getChild(0).getText() != '(') {
                 leftChildText = "(" + leftChildText + ")";
             }
-            let newCTX = oldTerm.replace(super.getTreeText(oldLeftChild), leftChildText);
+            let newCTX = oldTerm.replace(oldLeftChildText, leftChildText);
             ctx = super.makeTree(super.getTreeText(ctx).replace(super.getTreeText(oldLeftChild), leftChildText)).getChild(0);
+            let ctxText = super.getTreeText(ctx);
+            console.log("---", ctxText, "---");
             if(rightChild instanceof LambdaParser.TermContext) {
                 rightChild = rightChild.getChild(0);
             }
@@ -127,6 +130,10 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
             // if left side is not abstraction, we are not implementing substitution
             if(!(leftChild instanceof LambdaParser.AbstractionContext)) {
                 //let newCTX = super.getTreeText(leftChild).concat(' ').concat(super.getTreeText(rightChild));
+                if(oldTerm != this.terms[this.terms.length - 1]) {
+                    let newCTX = super.getTreeText(leftChild).concat(' ').concat(super.getTreeText(rightChild).concat(excessRightChild));
+                    return super.makeTree(newCTX);
+                }
                 return super.makeTree(newCTX);
             }
 
@@ -249,24 +256,16 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
         }
         let value = super.getTreeText(rightChild);
 
-        let val = value;
-        let valueTree = super.makeTree(val).getChild(0);
-        // if value is abstraction
-        if(valueTree instanceof LambdaParser.AbstractionContext) {
-            if(valueTree.getChild(0).getText() == '(') {
-                valueTree = valueTree.getChild(1);
-            }
-            let p;
-            [val, p] = this.visitAbstraction(valueTree);
-        }
-
+        let val = value;        
         // check if value is contained as a free variable in function body
         if(param != val) {
+            console.log("param:", param);
+            console.log("val:", val);
             // check if alpha conversion is needed
             // replace every occurence of right side param in body with param0
             const reg_text_lambda = "\\b".concat('lambda').concat(val).concat("\\b");
             const reg_lambda = new RegExp(reg_text_lambda, "g");
-            let lambdavalue0 = "lambda" + val + 0;
+            let lambdavalue0 = "lambda" + val + "_0";
             let oldBody = body;
             let newBody = body;
             newBody = newBody.replaceAll(reg_lambda, lambdavalue0);
@@ -274,7 +273,7 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
             if(newBody != oldBody) {
                 const reg_text_val = "\\b".concat(val).concat("\\b");
                 const reg_val = new RegExp(reg_text_val, "g");
-                let value0 = val + "0";
+                let value0 = val + "_0";
                 newBody = newBody.replaceAll(reg_val, value0);
                 let newCTX = this.terms[this.terms.length - 1].replace(oldBody, newBody);
                 if(this.terms[this.terms.length - 1] != newCTX) {
@@ -283,7 +282,7 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
                 }
                 body = newBody;
             }
-        }
+        } 
 
         // using regex so that no substrings are replaced
         const reg_text = "\\b".concat(param).concat("\\b");
@@ -298,7 +297,7 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
             body = '(' + body + ')';
         }
         console.log("has brackets:", brackets);
-        console.log("newBody:", body, "(RightChild =", super.getTreeText(rightChild), ")");
+        console.log("newBody:", body, "(excessRightChild =", excessRightChild, ")");
 
         let tree = super.makeTree(body);
         if(tree.getChild(0) instanceof LambdaParser.AbstractionContext) {
