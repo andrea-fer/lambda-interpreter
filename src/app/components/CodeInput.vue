@@ -31,6 +31,7 @@ export default {
     mounted() {
         const state = EditorState.create({
             doc: "",
+//doc: "true true",            
 //doc: "and false",
 //doc: "and (and false true) (and false true)",
 //doc: "or (and false true) (and false true)",
@@ -39,8 +40,9 @@ export default {
             //doc: "(λx.λy.x y)(λy.y)",
         //doc: "succ (succ 0)",
         //doc: "times 0 1",
-        doc: "succ (succ 0)",
+        //doc: "succ (succ 0)",
         //doc: "λs.λz.s (1 s z)",
+            //doc: "add (succ 0) (succ 1)",
             //doc: "add 1 (succ 1)",
             //doc: "add 1 1",
             //doc: "add 0 1",
@@ -56,7 +58,7 @@ export default {
             //doc: "test false v u",
             //doc: "not (not true)",
             //doc: "and false (not true)",
-            //doc: "not (not true)",
+        //doc: "not (not true)",
             //doc: "and false (not true)",
             //doc: "false (not true) false",
             //doc: "(λ x. λ y. x) a",   // Ly.a *

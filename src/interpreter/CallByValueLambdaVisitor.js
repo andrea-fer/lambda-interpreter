@@ -232,7 +232,7 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
                 break;
             }
 
-            let oldRightChildText = super.getTreeText(oldRightChild);
+            let oldRightChildText = super.getTreeText(oldRightChild) + excessRightChild;
             let newRightChild = oldRightChildText.replace(oldRightChildText, value);
             rightChild = super.makeTree(newRightChild).getChild(0);
             let newCTX = oldTerm.replace(oldRightChildText, value);

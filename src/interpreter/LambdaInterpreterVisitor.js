@@ -15,14 +15,26 @@ export default class LambdaInterpreterVisitor extends LambdaVisitor {
         this.terms.push(this.term);
         this.definitions = definitions;
         this.startTime = new Date().getTime();
-        this.maxTime = 3000;
+        this.maxTime = 900;
     }
     // Visit a parse tree produced by LambdaParser#redex.
     // ctx.getChild(0) = Term
     // ctx.getChild(1) = EOF
 	visitRedex(ctx) {
         ctx = ctx.getChild(0);
-	    return this.visit(ctx);
+        let solution, steps;
+	    [solution, steps] = this.visit(ctx);
+        // delete possible duplicates from steps array
+        if(steps) {
+            let uniqueSteps = [];
+            steps.forEach((element) => {
+                if(uniqueSteps[uniqueSteps.length - 1] != element) {
+                    uniqueSteps.push(element);
+                }
+            });
+            return [solution, uniqueSteps];
+        }
+        return [solution, steps];
 	}
 
 	// Visit a parse tree produced by LambdaParser#term.
@@ -57,12 +69,13 @@ export default class LambdaInterpreterVisitor extends LambdaVisitor {
             if(solution == null) {
                 break;
             }
+            
             // removing unnecessary brackets
             if(solution.getChild(0).getChild(0) != null && solution.getChild(0).getChild(0).getText() == "(" 
             && solution.getChild(0).getChild(2) != null && solution.getChild(0).getChild(2).getText() == ")") {
                 solution = this.makeTree(this.getTreeText(solution.getChild(0).getChild(1)));
             }
-            if(this.getTreeText(solution) == this.terms[this.terms.length - 1]) {
+            if(this.getTreeText(solution) == this.terms[this.terms.length - 2]) {
                 break;
             }
             console.log("°", this.getTreeText(solution), "°");
@@ -86,84 +99,93 @@ export default class LambdaInterpreterVisitor extends LambdaVisitor {
                 }
             }
 
-            if(solution instanceof LambdaParser.AbstractionContext) {
-                let param = null;
-                let body = null;
-                if(this.isTimeout(this.startTime, this.maxTime)) {
-                    //console.log("Program took too long to execute...");
-                    return [null, null];
-                }
-                [param, body] = this.visitAbstraction(solution);
+            console.log("Solution: <", this.getTreeText(solution), ">");
+            console.log("Solution Type: <", solution.getChild(0).constructor.name, ">");
 
-                let bodyText = body;
-                for(let [key, value] of this.definitions) {
-                    if(body != null && body.includes(key)) {
-                        if(this.makeTree(value).getChild(0) instanceof LambdaParser.AbstractionContext) {
-                            value = '(' + value + ')';
-                        }
-                        const key_text = "\\b".concat(key).concat("\\b");
-                        const _key = new RegExp(key_text, "g");
-                        bodyText = bodyText.replaceAll(_key, value);
-                        solution = this.makeTree(bodyText).getChild(0);
-                        let newCTX = this.terms[this.terms.length - 1].replace(body, bodyText);
-                        if(this.terms[this.terms.length - 1] != newCTX) {
-                            console.log("°", newCTX, "°");
-                            this.terms.push(newCTX);
-                        }
-                        ctx = this.makeTree(newCTX).getChild(0);
-                        solution = ctx;
-                        if(this.isTimeout(this.startTime, this.maxTime)) {
-                            //console.log("Program took too long to execute...");
-                            return [null, null];
-                        }
-                        [param, body] = this.visit(solution);
-                        if(body == null) {
-                            return [null, null];
-                        }
-                        bodyText = body;
-                    }
-                }
-
-                let tmpSolution = solution;
-                let abstractionBody = solution;
-                if(body != null) {
-                    while(tmpSolution instanceof LambdaParser.AbstractionContext) {
-                        [param, bodyText] = this.visit(tmpSolution);
-                        console.log("before maketree1", this.getTreeText(tmpSolution))
-                        console.log("bodytext: <<", bodyText, ">>")
-                        abstractionBody = this.makeTree(bodyText).getChild(0);
-                        console.log("after maketree1", this.getTreeText(tmpSolution))
-                        tmpSolution = abstractionBody;
-                    }
-                }
-
-                if(body != null/*  && body != this.getTreeText(abstractionBody) */) {
-                    while(abstractionBody instanceof LambdaParser.ApplicationContext) {
-                        console.log("!!!!!!!!!", this.getTreeText(abstractionBody), "IS APPLICATION")
-                        let oldBody = abstractionBody;
-                        abstractionBody = this.visit(abstractionBody);
-                        if(abstractionBody == null) {
-                            break;
-                        }
-                        if(abstractionBody instanceof LambdaParser.TermContext) {
-                            abstractionBody = abstractionBody.getChild(0);
-                        }
-                        console.log("---------abstractionBodyType:", abstractionBody.constructor.name);
-                        console.log("---------:", this.getTreeText(abstractionBody));
-                        console.log("in: ", this.getTreeText(solution), "replacing: ", this.getTreeText(oldBody), "with: ", this.getTreeText(abstractionBody));
-                        let newSolutionText = this.getTreeText(solution).replace(this.getTreeText(oldBody), this.getTreeText(abstractionBody));
-                        solution = this.makeTree(newSolutionText);
-                        if(this.terms[this.terms.length - 1] != newSolutionText || this.terms[this.terms.length - 2] != newSolutionText) {
-                            console.log("°", newSolutionText, "°");
-                            this.terms.push(newSolutionText);
-                        } else {
-                            break;
-                        }
-                    }
-                }
-
-            }
         }
+
+        if(solution instanceof LambdaParser.TermContext) {
+            solution = solution.getChild(0);
+        }
+
+        if(solution instanceof LambdaParser.AbstractionContext) {
+            let param = null;
+            let body = null;
+            if(this.isTimeout(this.startTime, this.maxTime)) {
+                //console.log("Program took too long to execute...");
+                return [null, null];
+            }
+            [param, body] = this.visitAbstraction(solution);
+
+            let bodyText = body;
+            for(let [key, value] of this.definitions) {
+                if(body != null && body.includes(key)) {
+                    if(this.makeTree(value).getChild(0) instanceof LambdaParser.AbstractionContext) {
+                        value = '(' + value + ')';
+                    }
+                    const key_text = "\\b".concat(key).concat("\\b");
+                    const _key = new RegExp(key_text, "g");
+                    bodyText = bodyText.replaceAll(_key, value);
+                    solution = this.makeTree(bodyText).getChild(0);
+                    let newCTX = this.terms[this.terms.length - 1].replace(body, bodyText);
+                    if(this.terms[this.terms.length - 1] != newCTX) {
+                        console.log("°", newCTX, "°");
+                        this.terms.push(newCTX);
+                    }
+                    ctx = this.makeTree(newCTX).getChild(0);
+                    solution = ctx;
+                    if(this.isTimeout(this.startTime, this.maxTime)) {
+                        //console.log("Program took too long to execute...");
+                        return [null, null];
+                    }
+                    [param, body] = this.visit(solution);
+                    if(body == null) {
+                        return [null, null];
+                    }
+                    bodyText = body;
+                }
+            }
+
+            let tmpSolution = solution;
+            let abstractionBody = this.makeTree(bodyText).getChild(0);
+            if(body != null) {
+                while(tmpSolution instanceof LambdaParser.AbstractionContext) {
+                    [param, bodyText] = this.visit(tmpSolution);
+                    console.log("before maketree1", this.getTreeText(tmpSolution))
+                    console.log("bodytext: <<", bodyText, ">>")
+                    abstractionBody = this.makeTree(bodyText).getChild(0);
+                    console.log("after maketree1", this.getTreeText(tmpSolution))
+                    tmpSolution = abstractionBody;
+                }
+            }
+
+            if(body != null/*  && body != this.getTreeText(abstractionBody) */) {
+                while(abstractionBody instanceof LambdaParser.ApplicationContext) {
+                    console.log("!!!!!!!!!", this.getTreeText(abstractionBody), "IS APPLICATION")
+                    let oldBody = abstractionBody;
+                    abstractionBody = this.visit(abstractionBody);
+                    if(abstractionBody == null) {
+                        break;
+                    }
+                    if(abstractionBody instanceof LambdaParser.TermContext) {
+                        abstractionBody = abstractionBody.getChild(0);
+                    }
+                    console.log("---------abstractionBodyType:", abstractionBody.constructor.name);
+                    console.log("---------:", this.getTreeText(abstractionBody));
+                    console.log("in: ", this.getTreeText(solution), "replacing: ", this.getTreeText(oldBody), "with: ", this.getTreeText(abstractionBody));
+                    let newSolutionText = this.getTreeText(solution).replace(this.getTreeText(oldBody), this.getTreeText(abstractionBody));
+                    solution = this.makeTree(newSolutionText);
+                    if(this.terms[this.terms.length - 1] != newSolutionText || this.terms[this.terms.length - 2] != newSolutionText) {
+                        console.log("°", newSolutionText, "°");
+                        this.terms.push(newSolutionText);
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+        }
+
         // in case of recursion visit functions will return null
         if(solution == null) {
             //console.log("Recursion");
