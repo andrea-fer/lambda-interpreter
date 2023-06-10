@@ -18,6 +18,12 @@ export default class LambdaVisitor extends antlr4.tree.ParseTreeVisitor {
 	}
 
 
+	// Visit a parse tree produced by LambdaParser#body.
+	visitBody(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
 	// Visit a parse tree produced by LambdaParser#abstraction.
 	visitAbstraction(ctx) {
 	  return this.visitChildren(ctx);
@@ -32,6 +38,12 @@ export default class LambdaVisitor extends antlr4.tree.ParseTreeVisitor {
 
 	// Visit a parse tree produced by LambdaParser#definition.
 	visitDefinition(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LambdaParser#var.
+	visitVar(ctx) {
 	  return this.visitChildren(ctx);
 	}
 

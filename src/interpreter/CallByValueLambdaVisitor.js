@@ -353,6 +353,11 @@ export default class CallByValueLambdaVisitor extends LambdaInterpreterVisitor {
             }
         }
 
+        if(super.makeTree(value).getChild(0) instanceof LambdaParser.AbstractionContext 
+            && super.makeTree(value).getChild(0).getChild(0) != null && super.makeTree(value).getChild(0).getChild(0).getText() != '(') {
+                value = '(' + value + ')';
+        }
+
         // using regex so that no substrings are replaced
         const reg_text = "\\b".concat(param).concat("\\b");
         const reg = new RegExp(reg_text, "g");

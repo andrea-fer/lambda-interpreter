@@ -23,6 +23,15 @@ export default class LambdaListener extends antlr4.tree.ParseTreeListener {
 	}
 
 
+	// Enter a parse tree produced by LambdaParser#body.
+	enterBody(ctx) {
+	}
+
+	// Exit a parse tree produced by LambdaParser#body.
+	exitBody(ctx) {
+	}
+
+
 	// Enter a parse tree produced by LambdaParser#abstraction.
 	enterAbstraction(ctx) {
 	}
@@ -47,6 +56,15 @@ export default class LambdaListener extends antlr4.tree.ParseTreeListener {
 
 	// Exit a parse tree produced by LambdaParser#definition.
 	exitDefinition(ctx) {
+	}
+
+
+	// Enter a parse tree produced by LambdaParser#var.
+	enterVar(ctx) {
+	}
+
+	// Exit a parse tree produced by LambdaParser#var.
+	exitVar(ctx) {
 	}
 
 

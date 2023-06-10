@@ -8,13 +8,18 @@ term
     : VARIABLE | abstraction | application | LPAR term RPAR | definition
     ;
 
+body
+    : abstraction | application | VARIABLE | LPAR term RPAR
+    ;
+    
 abstraction
-    : LAMBDA VARIABLE '.' term
+    : LAMBDA VARIABLE '.' body
     | LPAR abstraction RPAR
     ;
 
 application
     : VARIABLE term
+    | var term
     | abstraction term
     | application term
     | LPAR application RPAR
@@ -22,6 +27,12 @@ application
 
 definition
     : VARIABLE '=' term
+    ;
+
+/* special case of variable in brackets */
+var
+    : LPAR VARIABLE RPAR
+    | LPAR var RPAR
     ;
 
 VARIABLE

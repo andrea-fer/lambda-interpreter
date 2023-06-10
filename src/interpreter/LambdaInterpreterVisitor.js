@@ -15,7 +15,7 @@ export default class LambdaInterpreterVisitor extends LambdaVisitor {
         this.terms.push(this.term);
         this.definitions = definitions;
         this.startTime = new Date().getTime();
-        this.maxTime = 900;
+        this.maxTime = 1500;
     }
     // Visit a parse tree produced by LambdaParser#redex.
     // ctx.getChild(0) = Term

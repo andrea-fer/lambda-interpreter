@@ -71,6 +71,7 @@ export default {
             //doc: "(λx.λy.y x)y",                             
             //doc: "((a))",
             //doc: "((λx.x))",
+            
             extensions: [[
                 placeholder(this.placeholderText),
                 lambdaLanguageSupport,
