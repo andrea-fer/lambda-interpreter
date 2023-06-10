@@ -23,7 +23,7 @@
     </div>
     <div id="results">
         <div class="btn-heading-row">
-            <p id="solution-txt" class="no-select">SOLUTION</p>
+            <h2 id="solution-txt" class="no-select">Solution</h2>
             <button :disabled="!this.sol" @click="showSolution = !showSolution; if(showSolution) formatGuessText('.guess-sol-message', '', 'black'); else formatGuessText('.guess-sol-message', 'Try to guess the normal form of the term.', 'black');">
                 <p v-if="showSolution">Hide</p>
                 <p v-if="!showSolution">Show</p>
@@ -33,14 +33,14 @@
             <SolutionShort v-if="showSolution" :solution="sol"></SolutionShort>
         </div>
         <div class="guess-sol-message">
-            <p>{{ this.guessSolMessage }}</p>
+            <p class="no-select">{{ this.guessSolMessage }}</p>
         </div>
         <div class="btn-heading-row">
             <CodeInput placeholderText="Type your guess here..." class="editor-sol-guess" ref="editor_guess_sol" @keyup="printGreekLetter(this.$refs.editor_guess_sol.view)"></CodeInput>
             <button :disabled="!this.steps || this.showSolution || (this.steps && this.nsteps == this.steps.length)" @click="this.compareGuess('.guess-sol-message', this.sol, this.$refs.editor_guess_sol.view.state.doc.toString())">Try</button>
         </div>
         <div class="btn-heading-row" id="steps-heading">
-            <p id="step-by-step-txt" class="no-select">Step-by-step</p>
+            <h2 id="step-by-step-txt" class="no-select">Step-by-step</h2>
             <button :disabled="!this.steps || nsteps <= 1" @click="nsteps = steps ? decrementVisibleLineNumber(nsteps, steps) : null">Previous</button>
             <button :disabled="!this.steps || nsteps >= steps.length" @click="nsteps = steps ? incrementVisibleLineNumber(nsteps, steps) : null">Next</button>
             <button :disabled="!this.steps || nsteps >= steps.length" @click="nsteps = steps ? steps.length : 0; this.guessAllowed = false; this.formatGuessText('.guess-sol-message', '', 'black'); this.formatGuessText('.guess-message', '', 'black')">View All</button>
@@ -49,10 +49,10 @@
             <SolutionSteps :steps="steps" :nsteps="nsteps"></SolutionSteps>
         </div>
         <div class="guess-message">
-            <p>{{ this.guessMessage }}</p>
+            <p class="no-select">{{ this.guessMessage }}</p>
         </div>
         <div class="btn-heading-row">
-            <p id="step_count">{{ (steps && nsteps < steps.length) ? (nsteps + 1 + '.step') : '' }}</p>
+            <p id="step_count" class="no-select">{{ (steps && nsteps < steps.length) ? (nsteps + 1 + '.step') : '' }}</p>
             <CodeInput placeholderText="Type your guess here..." class="editor-step-guess" ref="editor_guess" @keyup="printGreekLetter(this.$refs.editor_guess.view)"></CodeInput>
             <button :disabled="!this.guessAllowed" @click="this.compareGuess('.guess-message',this.steps[nsteps], this.$refs.editor_guess.view.state.doc.toString())">Try</button>
         </div>

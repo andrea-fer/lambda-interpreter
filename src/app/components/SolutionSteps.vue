@@ -2,7 +2,7 @@
     <div id="steps">
             <span>
                 <div id="line" v-for="index in nsteps" :key="index">
-                    <p>{{index + '.step'}}</p>
+                    <p class="no-select">{{index + '.step'}}</p>
                     <div v-katex="'$' + steps[index - 1] + '$'"></div>
                 </div>
             </span>

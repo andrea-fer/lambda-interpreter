@@ -58,6 +58,7 @@ export default {
         box-shadow: 3px 3px 3px rgba(105, 105, 105, 0.4);
         background-color: #CBC5EA;
         padding: 0 1.2em !important;
+        border-radius: 8px 8px 0 0;
     }
 
     .hidden li {

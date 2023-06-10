@@ -30,7 +30,7 @@ export default {
         </div>
     </div>
     <footer>
-        <p>2023</p>
+        <p class="no-select">2023</p>
     </footer>
 </template>
 

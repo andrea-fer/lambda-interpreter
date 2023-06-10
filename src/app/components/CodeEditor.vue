@@ -92,4 +92,10 @@ doc: "0 = λs.λz.z\n1 = λs.λz.s z\n2 = λs.λz.s(s z)\n3 = λs.λz.s(s(s z))\
     height: 100%;
     overflow: auto;
 }
+.cm-lineNumbers .cm-gutterElement{
+    -webkit-user-select: none; 
+    -ms-user-select: none; 
+    user-select: none;
+}
+
 </style>

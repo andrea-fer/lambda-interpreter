@@ -2,7 +2,7 @@
     <div id="help">
         <div class="help">
             <div class="heading">
-                <h2>Help</h2>
+                <h2 class="no-select">Help</h2>
             </div>
             <div class="example">
                 <p>type \lambda to get λ</p>
@@ -11,27 +11,30 @@
         
         <div class="lambda-calculus-info">
             <div class="heading">
-                <h2>Lambda Calculus Syntax</h2>
+                <h2 class="no-select">Lambda Calculus Syntax</h2>
             </div>
             <div class="example">
-                <div class="grammar_rule"><h4>Abstraction</h4><p v-katex="'$ t :=  λx.t$'"></p></div>
+                <div class="grammar_rule"><h4 class="no-select">Abstraction</h4><p>t :=  λx.t</p></div>
+                <div class="grammar_rule"><h4 class="no-select">Application</h4><p>t :=  t t</p></div>
+                <div class="grammar_rule"><h4 class="no-select">Variable</h4><p>&nbsp; &nbsp;t := x</p></div>
+                <!-- <div class="grammar_rule"><h4>Abstraction</h4><p v-katex="'$ t :=  λx.t$'"></p></div>
                 <div class="grammar_rule"><h4>Application</h4><p v-katex="'$ t :=  t~t$'"></p></div>
-                <div class="grammar_rule"><h4>Variable</h4><p v-katex="'$ ~~~~~t := x$'"></p></div>
+                <div class="grammar_rule"><h4>Variable</h4><p v-katex="'$ ~~~~~t := x$'"></p></div> -->
             </div>
         </div>
 
         <div class="interpreter-info">
             <div class="heading">
-                <h2>Examples</h2>
+                <h2 class="no-select">Examples</h2>
             </div>
-            <h3>Function Definition</h3>
+            <h3 class="no-select">Function Definition</h3>
             <div class="example">
                 <p>id =  λx.x</p>
                 <p>true =  λx.λy.x</p>
                 <p>false =  λx.λy.y</p>
             </div>
             
-            <h3>Reducible Term (Redex)</h3>
+            <h3 class="no-select">Reducible Term (Redex)</h3>
             <div class="example">
                 <p>(λx.x) a</p>
                 <p>id a</p>
@@ -57,10 +60,13 @@ p, h2, h3, h4 {
 
 .heading {
     height: 3em;
-    background-color: #4C3D60;
+    /* background-color: #4C3D60; */
+    border-bottom: 2px solid #4C3D60;
+    margin: 0 10px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
 }
 
 h2 {
@@ -70,7 +76,7 @@ h2 {
 h3 {
     padding-top: 10px;
     font-size: 18px;
-    text-shadow: 2px 2px 8px #5d378f;
+    /* text-shadow: 2px 2px 8px #5d378f; */
 }
 
 h4 {
@@ -78,8 +84,8 @@ h4 {
 }
 
 p {
-    font-family: 'Courier New', Courier, monospace;
-    font-weight: 600;
+    /* font-family: 'Courier New', Courier, monospace; */
+    font-weight: 300;
 }
 
 #help {
