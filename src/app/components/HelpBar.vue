@@ -59,7 +59,7 @@ p, h2, h3, h4 {
 }
 
 .heading {
-    height: 3em;
+    height: 2.6em;
     /* background-color: #4C3D60; */
     border-bottom: 2px solid #4C3D60;
     margin: 0 10px;
@@ -99,8 +99,12 @@ p {
 }
 
 .example {
-    padding-top: 20px;
+    padding-top: 10px;
     padding-bottom: 20px;
+    padding-left: 30px;
+}
+
+h3 {
     padding-left: 30px;
 }
 
@@ -111,7 +115,6 @@ p {
 .not-showing-help {
     display: block;
 }
-a
 .help-btn-fixed-pos {
     position: fixed;
 }
