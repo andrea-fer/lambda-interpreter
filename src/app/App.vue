@@ -2,16 +2,18 @@
 import HelpBar from "./components/HelpBar.vue";
 import Interpreter from "./components/Interpreter.vue";
 import HamburgerMenu from "./components/HamburgerMenu.vue";
+import Arrow from "./components/Arrow.vue";
 
 export default {
     components: {
         HelpBar,
         Interpreter,
-        HamburgerMenu
+        HamburgerMenu,
+        Arrow
     },
     data() {
         return {
-            showHelp: false,
+            showHelp: window.innerWidth > 1024 ? true : false,
         }
     },
 };
@@ -20,15 +22,13 @@ export default {
 <template>
     <div id="content">
         <header>
-<!--             <button id="show-help-btn" @click="this.showHelp = !this.showHelp">
-                <img src="./assets/help.svg" class="help-logo" alt="Show help"/>
-            </button> -->
-            <HamburgerMenu @show_help="this.showHelp" @showing-help="this.showHelp = $event"></HamburgerMenu>
+            <HamburgerMenu id="show-help-btn" :show_help="this.showHelp" @showing-help="this.showHelp = $event"></HamburgerMenu>
             <h1 class="no-select">LAMBDA CALCULUS INTERPRETER</h1>
         </header>
         <div id="layout">
             <HelpBar v-if="this.showHelp" class="showing-help"></HelpBar>
             <HelpBar v-if="!this.showHelp" class="not-showing-help"></HelpBar>
+            <Arrow :show_help="this.showHelp" @showing-help="this.showHelp = $event"></Arrow>
         <Interpreter/>
         </div>
     </div>

@@ -2,8 +2,10 @@
     <div id="steps">
             <span>
                 <div id="line" v-for="index in nsteps" :key="index">
-                    <p class="no-select">{{index + '.step'}}</p>
-                    <div v-katex="'$' + steps[index - 1] + '$'"></div>
+                    <div class="line-number">
+                        <p class="no-select">{{index + '.step'}}</p>
+                    </div>
+                    <div class="reduction-step" v-katex="'$' + steps[index - 1] + '$'"></div>
                 </div>
             </span>
     </div>
@@ -31,13 +33,23 @@ export default {
         align-items: center;
     }
 
-    #line p {
-        padding: 0.6em 1.2em;
-        background-color: rgba(193, 193, 193, 0.5);
-        /* border-radius: 5px; */
+    #line div {
+        flex-shrink: 0;
     }
 
-    #line div {
+    #line p {
+        padding: 0.6em 0;
+        background-color: rgba(193, 193, 193, 0.5);
+        /* border-radius: 5px; */
+        text-align: center;
+    }
+
+    #line .line-number {
+        width: 5.5em;
+        text-align: center;
+    }
+
+    #line .reduction-step {
         padding: 0.6em 1.2em;
     }
 

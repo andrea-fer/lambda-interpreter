@@ -56,7 +56,7 @@ export default {
         padding: 0;
         width: 100%;
         box-shadow: 3px 3px 3px rgba(105, 105, 105, 0.4);
-        background-color: #CBC5EA;
+        background-color: #ccb4f7;
         padding: 0 1.2em !important;
         border-radius: 8px 8px 0 0;
     }
@@ -64,7 +64,7 @@ export default {
     .hidden li {
         list-style-type: none;
         padding: 0.6em 0;
-        border-bottom: 1px solid #CBC5EA;
+        border-bottom: 1px solid #ccb4f7;
     }
 
     .hidden li:hover {

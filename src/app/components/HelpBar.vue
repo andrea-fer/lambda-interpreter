@@ -113,7 +113,7 @@ h3 {
 }
 
 .not-showing-help {
-    display: block;
+    display: none;
 }
 .help-btn-fixed-pos {
     position: fixed;
@@ -127,7 +127,7 @@ h3 {
         display: block;
         z-index: 4;
         position: fixed;
-        width: 90vw !important;
+        width: 100vw !important;
     }
     .showing-help .help-logo {
         z-index: 4;
@@ -135,6 +135,8 @@ h3 {
     }
     #help {
         resize: none;
+        background-color: #73628aec;
+        backdrop-filter: blur(4px);
     }
 }
 
@@ -146,7 +148,7 @@ h3 {
         display: block;
         z-index: 4;
         position: fixed;
-        width: 90vw !important;
+        width: 100vw !important;
     }
     .showing-help .help-logo {
         z-index: 4;
@@ -154,6 +156,8 @@ h3 {
     }
     #help {
         resize: none;
+        background-color: #73628aec;
+        backdrop-filter: blur(4px);
     }
 }
 </style>

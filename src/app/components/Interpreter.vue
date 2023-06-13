@@ -37,13 +37,21 @@
         </div>
         <div class="btn-heading-row">
             <CodeInput placeholderText="Type your guess here..." class="editor-sol-guess" ref="editor_guess_sol" @keyup="printGreekLetter(this.$refs.editor_guess_sol.view)"></CodeInput>
-            <button :disabled="!this.steps || this.showSolution || (this.steps && this.nsteps == this.steps.length)" @click="this.compareGuess('.guess-sol-message', this.sol, this.$refs.editor_guess_sol.view.state.doc.toString())">Try</button>
+            <button :disabled="!this.steps || this.showSolution || (this.steps && this.nsteps == this.steps.length)" @click="this.compareGuess('.guess-sol-message', this.sol, this.$refs.editor_guess_sol.view.state.doc.toString())">
+                <p>Try</p>
+            </button>
         </div>
         <div class="btn-heading-row" id="steps-heading">
             <h2 id="step-by-step-txt" class="no-select">Step-by-step</h2>
-            <button :disabled="!this.steps || nsteps <= 1" @click="nsteps = steps ? decrementVisibleLineNumber(nsteps, steps) : null">Previous</button>
-            <button :disabled="!this.steps || nsteps >= steps.length" @click="nsteps = steps ? incrementVisibleLineNumber(nsteps, steps) : null">Next</button>
-            <button :disabled="!this.steps || nsteps >= steps.length" @click="nsteps = steps ? steps.length : 0; this.guessAllowed = false; this.formatGuessText('.guess-sol-message', '', 'black'); this.formatGuessText('.guess-message', '', 'black')">View All</button>
+            <button :disabled="!this.steps || nsteps <= 1" @click="nsteps = steps ? decrementVisibleLineNumber(nsteps, steps) : null">
+                <p>Previous</p>
+            </button>
+            <button :disabled="!this.steps || nsteps >= steps.length" @click="nsteps = steps ? incrementVisibleLineNumber(nsteps, steps) : null">
+                <p>Next</p>
+                </button>
+            <button :disabled="!this.steps || nsteps >= steps.length" @click="nsteps = steps ? steps.length : 0; this.guessAllowed = false; this.formatGuessText('.guess-sol-message', '', 'black'); this.formatGuessText('.guess-message', '', 'black')">
+                <p>View All</p>
+            </button>
         </div>
         <div id="solution-steps">
             <SolutionSteps :steps="steps" :nsteps="nsteps"></SolutionSteps>
