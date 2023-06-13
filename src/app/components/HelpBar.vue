@@ -76,6 +76,7 @@ h2 {
 h3 {
     padding-top: 10px;
     font-size: 18px;
+    font-weight: 400;
     /* text-shadow: 2px 2px 8px #5d378f; */
 }
 
@@ -88,10 +89,10 @@ p {
     font-weight: 300;
 }
 
-#help {
+/* #help {
     overflow: auto;
     resize: horizontal;
-}
+} */
 
 .grammar_rule {
     display: flex;

@@ -29,7 +29,7 @@ export default {
             <HelpBar v-if="this.showHelp" class="showing-help"></HelpBar>
             <HelpBar v-if="!this.showHelp" class="not-showing-help"></HelpBar>
             <Arrow :show_help="this.showHelp" @showing-help="this.showHelp = $event"></Arrow>
-        <Interpreter/>
+            <Interpreter/>
         </div>
     </div>
     <footer>

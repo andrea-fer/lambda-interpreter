@@ -38,10 +38,10 @@ a:hover {
 }
 
 h2 {
-    padding-left: 2%;
+    padding-left: 1%;
     color: #5f3c8d;
-    font-weight: 400;
-    font-size: 20px;
+    font-weight: 500;
+    font-size: 17px;
 }
 
 button {
@@ -272,6 +272,7 @@ header h1 {
 #results {
     background-color: #EAEAEA;
     display: flex;
+    flex-grow: 1;
     flex-direction: column;
     width: 35vw;
     height: 100%;
@@ -281,7 +282,7 @@ header h1 {
     align-items: stretch;
     align-content: stretch;
     overflow: auto;
-    resize: horizontal;
+    /* resize: horizontal; */
 }
 
 #results .btn-heading-row {
