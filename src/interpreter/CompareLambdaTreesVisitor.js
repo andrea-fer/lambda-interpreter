@@ -22,7 +22,6 @@ export default class CompareLambdaTreesVisitor extends LambdaInterpreterVisitor 
 
 	// Visit a parse tree produced by LambdaParser#term.
 	visitTerm(ctx1, ctx2) {
-        //console.log("-----------------comparing-----------------")
         if(ctx1 == null || ctx2 == null) {
             return false;
         }

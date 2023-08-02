@@ -35,9 +35,6 @@ export default {
     display: block;
     height: 26px;
     width: 32px;
-    /* position: absolute;
-    top: 17px;
-    left: 20px; */
     padding-left: 2%;
     z-index: 2;
     display: flex;

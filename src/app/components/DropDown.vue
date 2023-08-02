@@ -1,8 +1,7 @@
 <template>
-    <button class="dropdown">
+    <button class="dropdown no-select">
         <div class="visible" @click="show = !show">
             <span>
-                <!-- <p>Strategy:</p> -->
                 <p>{{ selected.name }} &#9660;</p>
             </span>
         </div>

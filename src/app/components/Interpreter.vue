@@ -2,29 +2,29 @@
     <div id="code-editor">
         <div class="btn-heading-row">
             <button>
-                <label for="upload-file-definitions">Upload Definitions</label>
+                <label class="no-select" for="upload-file-definitions">Upload Definitions</label>
                 <input type="file" @change="importTextFromFile(this.$refs.editor_definitions.view, 'upload-file-definitions')" accept=".txt" id="upload-file-definitions"/>
             </button>
-            <button @click="saveTextAsFile('lambda_kalkul_definitions', this.$refs.editor_definitions.view)">Save Definitions</button>
+            <button class="no-select" @click="saveTextAsFile('lambda_kalkul_definitions', this.$refs.editor_definitions.view)">Save Definitions</button>
         </div>
         <CodeEditor ref="editor_definitions" @keyup="printGreekLetter(this.$refs.editor_definitions.view)"></CodeEditor>
         <div class="btn-heading-row">
             <button>
-                <label for="upload-file-redex">Upload Redex</label>
+                <label class="no-select" for="upload-file-redex">Upload Redex</label>
                 <input type="file" @change="importTextFromFile(this.$refs.editor_redex.view, 'upload-file-redex')" accept=".txt" id="upload-file-redex"/>
             </button>
-            <button @click="saveTextAsFile('lambda_kalkul_redex', this.$refs.editor_redex.view)">Save Redex</button>
+            <button class="no-select" @click="saveTextAsFile('lambda_kalkul_redex', this.$refs.editor_redex.view)">Save Redex</button>
         </div>
         <CodeInput placeholderText="Type your λ-term here..." class="editor_redex" ref="editor_redex" @keyup="printGreekLetter(this.$refs.editor_redex.view)"></CodeInput>
         <div class="btn-heading-row">
             <DropDown @option-selected="strategy = $event"></DropDown>
-            <button id="evaluate-btn" @click="this.sol = ''; this.steps = ''; [sol, steps] = printSolution(), nsteps = steps ? 1 : 0"><span>EVALUATE </span></button>
+            <button class="no-select" id="evaluate-btn" @click="this.sol = ''; this.steps = ''; [sol, steps] = printSolution(), nsteps = steps ? 1 : 0"><span>EVALUATE </span></button>
         </div>
     </div>
     <div id="results">
         <div class="btn-heading-row">
             <h2 id="solution-txt" class="no-select">Solution</h2>
-            <button :disabled="!this.sol" @click="showSolution = !showSolution; if(showSolution) formatGuessText('.guess-sol-message', '', 'black'); else formatGuessText('.guess-sol-message', 'Try to guess the normal form of the term.', 'black');">
+            <button class="no-select" :disabled="!this.sol" @click="showSolution = !showSolution; if(showSolution) formatGuessText('.guess-sol-message', '', 'black'); else formatGuessText('.guess-sol-message', 'Try to guess the normal form of the term.', 'black');">
                 <p v-if="showSolution">Hide</p>
                 <p v-if="!showSolution">Show</p>
             </button>
@@ -37,19 +37,19 @@
         </div>
         <div class="btn-heading-row">
             <CodeInput placeholderText="Type your guess here..." class="editor-sol-guess" ref="editor_guess_sol" @keyup="printGreekLetter(this.$refs.editor_guess_sol.view)"></CodeInput>
-            <button :disabled="!this.steps || this.showSolution || (this.steps && this.nsteps == this.steps.length)" @click="this.compareGuess('.guess-sol-message', this.sol, this.$refs.editor_guess_sol.view.state.doc.toString())">
+            <button class="no-select" :disabled="!this.steps || this.showSolution || (this.steps && this.nsteps == this.steps.length)" @click="this.compareGuess('.guess-sol-message', this.sol, this.$refs.editor_guess_sol.view.state.doc.toString())">
                 <p>Try</p>
             </button>
         </div>
         <div class="btn-heading-row" id="steps-heading">
             <h2 id="step-by-step-txt" class="no-select">Step-by-step</h2>
-            <button :disabled="!this.steps || nsteps <= 1" @click="nsteps = steps ? decrementVisibleLineNumber(nsteps, steps) : null">
+            <button class="no-select" :disabled="!this.steps || nsteps <= 1" @click="nsteps = steps ? decrementVisibleLineNumber(nsteps, steps) : null">
                 <p>Previous</p>
             </button>
-            <button :disabled="!this.steps || nsteps >= steps.length" @click="nsteps = steps ? incrementVisibleLineNumber(nsteps, steps) : null">
+            <button class="no-select" :disabled="!this.steps || nsteps >= steps.length" @click="nsteps = steps ? incrementVisibleLineNumber(nsteps, steps) : null">
                 <p>Next</p>
                 </button>
-            <button :disabled="!this.steps || nsteps >= steps.length" @click="nsteps = steps ? steps.length : 0; this.guessAllowed = false; this.formatGuessText('.guess-sol-message', '', 'black'); this.formatGuessText('.guess-message', '', 'black')">
+            <button class="no-select" :disabled="!this.steps || nsteps >= steps.length" @click="nsteps = steps ? steps.length : 0; this.guessAllowed = false; this.formatGuessText('.guess-sol-message', '', 'black'); this.formatGuessText('.guess-message', '', 'black')">
                 <p>View All</p>
             </button>
         </div>
@@ -62,7 +62,7 @@
         <div class="btn-heading-row">
             <p id="step_count" class="no-select">{{ (steps && nsteps < steps.length) ? (nsteps + 1 + '.step') : '' }}</p>
             <CodeInput placeholderText="Type your guess here..." class="editor-step-guess" ref="editor_guess" @keyup="printGreekLetter(this.$refs.editor_guess.view)"></CodeInput>
-            <button :disabled="!this.guessAllowed" @click="this.compareGuess('.guess-message',this.steps[nsteps], this.$refs.editor_guess.view.state.doc.toString())">Try</button>
+            <button class="no-select" :disabled="!this.guessAllowed" @click="this.compareGuess('.guess-message',this.steps[nsteps], this.$refs.editor_guess.view.state.doc.toString())">Try</button>
         </div>
     </div>
 </template>
@@ -298,11 +298,16 @@ export default {
         saveTextAsFile(fileName, editorView) {
             let input, textToWrite = "";
             input = editorView.state.doc.text[0];
-            let i = 1;
-            while(input != null && input != '') {
-                input = input.replaceAll('λ', '\\lambda');
+            //let i = 1;
+            let lastLine = editorView.state.doc.lines;
+            for(let i = 0; i < lastLine; i++) {
+                input = this.$refs.editor_definitions.view.state.doc.text[i];
+                if(input == null || input.length <= 0) {
+                    continue;
+                }
+                input = input.replaceAll('λ', '$\\lambda$');
                 textToWrite = textToWrite + input + '\n';
-                input = editorView.state.doc.text[i++];
+                input = editorView.state.doc.text[i];
             };
             let textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
             let downloadLink = document.createElement("a");
@@ -336,6 +341,7 @@ export default {
                             fileContent = fileContent.substring(0, fileContent.indexOf("\n"));
                         }
                     }
+                    fileContent = fileContent.replaceAll('$\\lambda$', '\\lambda');
                     let changes = [
                         { from: 0, to: editorView.state.doc.length, insert: "" },
                         { from: 0, insert: fileContent }
