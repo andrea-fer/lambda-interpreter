@@ -27,9 +27,9 @@ The local package for syntax highlighting `lang-lambda` is to be updated using t
 npm run prepare
 ````
 #### Updating interpreter's grammar files
-After any changes in the file `Lambda.g4`, a new Javascript files for Lexer and Parser must be generated with following command, which uses the tool antlr that needs to be installed from the official website (`https://www.antlr.org/`) in version 4.11.1 or newer:
+After any changes in the file `Lambda.g4`, a new Javascript files for Lexer and Parser must be generated with following command, which uses the tool ANTLR that needs to be installed from the official website (`https://www.antlr.org/`) in version 4.11.1 or newer:
 ````bash
-antlr4 -Dlanguage=JavaScript lambda.g4 -visitor
+antlr4 -Dlanguage=JavaScript Lambda.g4 -visitor
 ````
 
 ### Build instructions
